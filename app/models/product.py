@@ -27,3 +27,11 @@ WHERE available = :available
 ''',
                               available=available)
         return [Product(*row) for row in rows]
+
+    @staticmethod
+    def get_all_regardless_of_availability():
+        rows = app.db.execute('''
+            SELECT id, name, price, available
+            FROM Products
+            ''')
+        return [Product(*row) for row in rows]

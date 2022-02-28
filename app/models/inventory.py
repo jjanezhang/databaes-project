@@ -42,7 +42,6 @@ class Inventory:
     # Remove an item from a user's inventory
     def remove_item(uid, pid):
         # TODO: Update item's availability based on quantity
-        print("REMOVEEE")
         result = app.db.execute('''
             DELETE FROM Inventory
             WHERE uid = :uid AND pid = :pid

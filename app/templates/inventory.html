@@ -22,7 +22,7 @@
         <td>{{product.name}}</td>
         <td>{{product.quantity}}</td>
         <td>
-          <form action="/inventory/remove" method="post">
+          <form action="{{ url_for('inventory.remove_product') }}" method="post">
             <input type="hidden" name="pid" value="{{ product.pid }}"/>
             <input type="submit" value="Remove" />
           </form>
@@ -32,7 +32,7 @@
   </tbody>
 </table>
 <h2>Update the Quantity of a Product:</h2>
-<form action="" method="post">
+<form action="{{ url_for('inventory.update_quantity') }}" method="post">
     {{ quantity_form.hidden_tag() }}
   <p>
     {{ quantity_form.pid.label }}<br/>
@@ -42,16 +42,16 @@
     {% endfor %}
   </p>
   <p>
-    {{ quantity_form.quantity.label }}<br/>
-    {{ quantity_form.quantity(size=10) }}<br/>
-    {% for error in quantity_form.quantity.errors %}
+    {{ quantity_form.new_quantity.label }}<br/>
+    {{ quantity_form.new_quantity(size=10) }}<br/>
+    {% for error in quantity_form.new_quantity.errors %}
     <span style="color: red;">[{{ error }}]</span>
     {% endfor %}
   </p>
   <p>{{ quantity_form.submit() }}</p>
 </form>
 <h2>Add a Product to Your Inventory:</h2>
-<form action="" method="post">
+<form action="{{ url_for('inventory.add_product') }}" method="post">
     {{ add_product_form.hidden_tag() }}
   <p>
     {{ add_product_form.pid.label }}<br/>

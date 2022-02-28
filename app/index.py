@@ -1,11 +1,16 @@
-from flask import render_template
+from flask import Blueprint, render_template, redirect, url_for
 from flask_login import current_user
-import datetime
+from flask_wtf import FlaskForm
+from wtforms import IntegerField, SelectField, SubmitField
+from wtforms.validators import DataRequired, NumberRange
 
+import datetime
+import sys
+
+from .models.inventory import Inventory
 from .models.product import Product
 from .models.purchase import Purchase
 
-from flask import Blueprint
 bp = Blueprint('index', __name__)
 
 
@@ -24,3 +29,23 @@ def index():
                            avail_products=products,
                            purchase_history=purchases)
 
+class QuantityForm(FlaskForm):
+    pid = SelectField('Product ID', validators=[DataRequired()])
+    quantity = IntegerField('Quantity', validators=[DataRequired(), NumberRange(min=0)])
+    submit = SubmitField('Update Quantity')
+
+@bp.route('/inventory', methods=['GET', 'POST'])
+def inventory():
+    quantity_form = QuantityForm()
+    if current_user.is_authenticated:
+        inventory = Inventory.get_all(current_user.id)
+        quantity_form.pid.choices = [(product.pid, product.pid) for product in inventory]
+        quantity_form.pid.choices.sort()
+        if quantity_form.validate_on_submit():
+            if Inventory.update_item_quantity(current_user.id, quantity_form.pid.data, quantity_form.quantity.data):
+                return redirect(url_for('index.inventory'))
+    else:
+        inventory = None
+    return render_template('inventory.html', 
+                            inventory=inventory,
+                            quantity_form=quantity_form)

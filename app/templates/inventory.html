@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<br><br>
+
+{% if current_user.is_authenticated %}
+<h2>Products in Inventory:</h2>
+<table class='table table-hover table-bordered container'>
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">Product ID</th>
+      <th scope="col">Product Name</th>
+      <th scope="col">Quantity</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for product in inventory%}
+      <tr>
+        <th scope="row">{{product.pid}}</th>
+        <td>{{product.name}}</td>
+        <td>{{product.quantity}}</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+<h2>Update the Quantity of a Product</h2>
+<form action="" method="post">
+    {{ quantity_form.hidden_tag() }}
+  <p>
+    {{ quantity_form.pid.label }}<br/>
+    {{ quantity_form.pid }}<br/>
+    {% for error in quantity_form.pid.errors %}
+    <span style="color: red;">[{{ error }}]</span>
+    {% endfor %}
+  </p>
+  <p>
+    {{ quantity_form.quantity.label }}<br/>
+    {{ quantity_form.quantity(size=10) }}<br/>
+    {% for error in quantity_form.quantity.errors %}
+    <span style="color: red;">[{{ error }}]</span>
+    {% endfor %}
+  </p>
+  <p>{{ quantity_form.submit() }}</p>
+</form>
+{% else %}
+<p><a href="{{ url_for('users.login') }}">Log in</a> to see your inventory!</p>
+{% endif %}
+
+{% endblock %}

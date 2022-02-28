@@ -30,7 +30,7 @@ def index():
                            purchase_history=purchases)
 
 class QuantityForm(FlaskForm):
-    pid = SelectField('Product ID', validators=[DataRequired()])
+    pid = SelectField('Product Name', validators=[DataRequired()])
     quantity = IntegerField('Quantity', validators=[DataRequired(), NumberRange(min=0)])
     submit = SubmitField('Update Quantity')
 
@@ -39,7 +39,7 @@ def inventory():
     quantity_form = QuantityForm()
     if current_user.is_authenticated:
         inventory = Inventory.get_all(current_user.id)
-        quantity_form.pid.choices = [(product.pid, product.pid) for product in inventory]
+        quantity_form.pid.choices = [(product.pid, product.name) for product in inventory]
         quantity_form.pid.choices.sort()
         if quantity_form.validate_on_submit():
             if Inventory.update_item_quantity(current_user.id, quantity_form.pid.data, quantity_form.quantity.data):

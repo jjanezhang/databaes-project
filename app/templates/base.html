@@ -55,6 +55,7 @@
           <a href="{{ url_for('index.inventory') }}" type="button" class="btn btn-light">Inventory</a>
           <a href="{{ url_for('users.logout') }}" type="button" class="btn btn-light">Log out</a>
         {% else %}
+          <a href="{{ url_for('index.inventory') }}" type="button" class="btn btn-light">Inventory</a>
           <a href="{{ url_for('users.login') }}" type="button" class="btn btn-light">Log in</a>
         {% endif %}
       </div>

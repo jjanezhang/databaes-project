@@ -12,6 +12,7 @@
       <th scope="col">Product ID</th>
       <th scope="col">Product Name</th>
       <th scope="col">Quantity</th>
+      <th scope="col">Remove from Inventory?</th>
     </tr>
   </thead>
   <tbody>
@@ -20,6 +21,12 @@
         <th scope="row">{{product.pid}}</th>
         <td>{{product.name}}</td>
         <td>{{product.quantity}}</td>
+        <td>
+          <form action="/inventory/remove" method="post">
+            <input type="hidden" name="pid" value="{{ product.pid }}"/>
+            <input type="submit" value="Remove" />
+          </form>
+        </td>
       </tr>
     {% endfor %}
   </tbody>

@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, url_for
+from flask import Blueprint, render_template, redirect, url_for, request
 from flask_login import current_user
 from flask_wtf import FlaskForm
 from wtforms import IntegerField, SelectField, SubmitField
@@ -54,7 +54,7 @@ def inventory():
         if quantity_form.validate_on_submit():
             if Inventory.update_item_quantity(current_user.id, quantity_form.pid.data, quantity_form.quantity.data):
                 return redirect(url_for('index.inventory'))
-        if add_product_form.validate_on_submit():
+        elif add_product_form.validate_on_submit():
             if Inventory.add_item(current_user.id, add_product_form.pid.data, add_product_form.quantity.data):
                 return redirect(url_for('index.inventory'))
     else:
@@ -63,3 +63,9 @@ def inventory():
                             inventory=inventory,
                             add_product_form=add_product_form,
                             quantity_form=quantity_form)
+
+@bp.route('/inventory/remove', methods=['POST'])
+def inventory_remove():
+    if current_user.is_authenticated:
+        Inventory.remove_item(current_user.id, request.form['pid'])
+    return redirect(url_for('index.inventory'))

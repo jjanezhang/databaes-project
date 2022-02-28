@@ -21,6 +21,7 @@ class Inventory:
     @staticmethod
     # Add an item to a user's inventory
     def add_item(uid, pid, quantity):
+        # TODO: Update item's availability based on quantity
         result = app.db.execute('''
             INSERT INTO Inventory(uid, pid, quantity)
             VALUES(:uid, :pid, :quantity)
@@ -30,8 +31,20 @@ class Inventory:
     @staticmethod
     # Update the quantity of an item in a user's inventory
     def update_item_quantity(uid, pid, quantity):
+        # TODO: Update item's availability based on quantity
         result = app.db.execute('''
             UPDATE Inventory SET quantity = :quantity
-            WHERE uid = :uid and pid = :pid
+            WHERE uid = :uid AND pid = :pid
         ''', uid=uid, pid=pid, quantity=quantity)
+        return result
+
+    @staticmethod
+    # Remove an item from a user's inventory
+    def remove_item(uid, pid):
+        # TODO: Update item's availability based on quantity
+        print("REMOVEEE")
+        result = app.db.execute('''
+            DELETE FROM Inventory
+            WHERE uid = :uid AND pid = :pid
+        ''', uid=uid, pid=pid)
         return result

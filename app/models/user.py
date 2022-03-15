@@ -1,3 +1,6 @@
+from abc import update_abstractmethods
+import stat
+from turtle import update
 from flask_login import UserMixin
 from flask import current_app as app
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -11,6 +14,7 @@ class User(UserMixin):
         self.email = email
         self.firstname = firstname
         self.lastname = lastname
+        self.balance = 0
 
     @staticmethod
     def get_by_auth(email, password):
@@ -42,13 +46,13 @@ WHERE email = :email
     def register(email, password, firstname, lastname):
         try:
             rows = app.db.execute("""
-INSERT INTO Users(email, password, firstname, lastname)
-VALUES(:email, :password, :firstname, :lastname)
+INSERT INTO Users(email, password, firstname, lastname, balance)
+VALUES(:email, :password, :firstname, :lastname, :balance)
 RETURNING id
 """,
                                   email=email,
                                   password=generate_password_hash(password),
-                                  firstname=firstname, lastname=lastname)
+                                  firstname=firstname, lastname=lastname, balance=0)
             id = rows[0][0]
             return User.get(id)
         except Exception as e:
@@ -61,9 +65,24 @@ RETURNING id
     @login.user_loader
     def get(id):
         rows = app.db.execute("""
-SELECT id, email, firstname, lastname
+SELECT id, email, firstname, lastname, balance
 FROM Users
 WHERE id = :id
 """,
                               id=id)
         return User(*(rows[0])) if rows else None
+    
+    def withdraw_balance(self, id, amount):
+        if amount > self.balance:
+            print("Balance is too low")
+            return None
+        try:
+            new_balance = app.db.execute(f"""
+UPDATE Users SET balance = {self.balance - amount} WHERE id = {id}
+RETURNING balance
+""")
+            self.balance = new_balance
+            return new_balance
+        except Exception as e:
+            print(str(e))
+            return None

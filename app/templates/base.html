@@ -54,10 +54,12 @@
           Hello {{current_user.firstname}}! 
           <a href="{{ url_for('index.index') }}" type="button" class="btn btn-light">Home</a>
           <a href="{{ url_for('inventory.index') }}" type="button" class="btn btn-light">Inventory</a>
+          <a href="{{ url_for('balance.index') }}" type="button" class="btn btn-light">Manage Balance</a>
           <a href="{{ url_for('users.logout') }}" type="button" class="btn btn-light">Log out</a>
         {% else %}
           <a href="{{ url_for('index.index') }}" type="button" class="btn btn-light">Home</a>
           <a href="{{ url_for('inventory.index') }}" type="button" class="btn btn-light">Inventory</a>
+          <a href="{{ url_for('balance.index') }}" type="button" class="btn btn-light">Manage Balance</a>
           <a href="{{ url_for('users.login') }}" type="button" class="btn btn-light">Log in</a>
         {% endif %}
       </div>

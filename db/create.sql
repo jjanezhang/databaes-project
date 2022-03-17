@@ -28,4 +28,11 @@ CREATE TABLE Inventory (
     pid INT NOT NULL REFERENCES Products(id),
     quantity INT NOT NULL CHECK (quantity >= 0),
     PRIMARY KEY (uid, pid)
-)
+);
+
+CREATE TABLE Ratings (
+    uid INT NOT NULL REFERENCES Users(id),
+    pid INT NOT NULL REFERENCES Products(id),
+    rating INT NOT NULL CHECK(rating BETWEEN 1 AND 5),
+    PRIMARY KEY (uid, pid)
+);

@@ -1,0 +1,12 @@
+.entry-fulfilled {
+    background: green;
+}
+
+.entry-unfulfilled {
+    background: red;
+}
+
+.flashes {
+    color: red;
+    font-style: italic;
+}

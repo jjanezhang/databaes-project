@@ -28,6 +28,7 @@ CREATE TABLE Purchases (
     sid INT NOT NULL REFERENCES Users(id),
     fulfilled BOOLEAN NOT NULL,
     time_fulfilled timestamp without time zone DEFAULT NULL,
+    quantity INT NOT NULL CHECK (quantity >= 0),
     price DECIMAL(12,2) NOT NULL,
     PRIMARY KEY (oid, pid, sid)
 );

@@ -14,9 +14,10 @@ def index():
         flash(error)
         error = None
     if current_user.is_authenticated:
-        orders = Order.get_all_unfulfilled_orders_for_seller(current_user.id)
+        orders = Order.get_all_orders_for_seller(current_user.id)
         orderStats = list(map(lambda order: { "total_items": len(order.purchases),
-            "fulfilled_items": len(list(filter(lambda x: x.fulfilled, order.purchases))) }, orders))
+            "fulfilled_items": len(list(filter(lambda x: x.fulfilled, order.purchases))), 
+            "is_fulfilled": len(order.purchases) ==  len(list(filter(lambda x: x.fulfilled, order.purchases)))}, orders))
         orderInfo = list(map(lambda index: {"order": orders[index], "orderStats": orderStats[index]}, range(len(orders))))
         no_orders = len(orderInfo) == 0
     else:

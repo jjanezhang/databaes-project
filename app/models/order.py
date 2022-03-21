@@ -17,17 +17,13 @@ class Order:
 
     @staticmethod
     # Get all orders for a seller where at least one item in the order is unfulfilled
-    def get_all_unfulfilled_orders_for_seller(uid):
+    def get_all_orders_for_seller(uid):
         rows = app.db.execute('''
             SELECT O.id AS oid, O.uid as uid, O.time_placed AS time_placed, P.pid AS pid, 
             P.fulfilled AS fulfilled, P.time_fulfilled AS time_fulfilled, 
             P.quantity AS quantity, P.price AS price, Pr.name AS product_name
             FROM Orders O, Purchases P, Products Pr
-            WHERE O.id = P.oid AND P.sid = :uid AND Pr.id = P.pid AND EXISTS (
-                SELECT *
-                FROM Purchases P2
-                WHERE P2.oid = P.oid AND P2.sid = :uid AND P2.fulfilled = FALSE
-            )
+            WHERE O.id = P.oid AND P.sid = :uid AND Pr.id = P.pid
             ORDER BY O.time_placed DESC
         ''', uid=uid)
         result = {}

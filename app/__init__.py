@@ -27,4 +27,7 @@ def create_app():
     from .ratings import bp as ratings_bp
     app.register_blueprint(ratings_bp)
 
+    from .order_fulfillment import bp as order_fulfillment_bp
+    app.register_blueprint(order_fulfillment_bp)
+
     return app

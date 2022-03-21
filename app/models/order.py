@@ -16,7 +16,7 @@ class Order:
         self.buyer = buyer if buyer else None
 
     @staticmethod
-    # Get all orders for a seller where at least one item in the order is unfulfilled
+    # Get all orders for a seller
     def get_all_orders_for_seller(uid):
         rows = app.db.execute('''
             SELECT O.id AS oid, O.uid as uid, O.time_placed AS time_placed, P.pid AS pid, 

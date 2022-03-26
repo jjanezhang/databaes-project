@@ -6,25 +6,13 @@
 
 <link rel="stylesheet" href="{{ url_for('static', filename='css/order_fulfillment.css') }}">
 
-{% with messages = get_flashed_messages() %}
-  {% if messages %}
-    <div class=flashes>
-    {% for message in messages %}
-      <span>{{ message }}</span>
-    {% endfor %}
-    </div>
-  {% endif %}
-{% endwith %}
-
 {% if current_user.is_authenticated %}
+{% if noOrders %}
+<h2>No orders have been placed.</h2>
+{% else %}
 <h2>Orders:</h2>
 {% for order in orderInfo %}
-<h3>Order from: 
-    {{ order.order.buyer.firstname }} {{ order.order.buyer.lastname }}
-</h3>
-<div>
-    Time: {{ order.order.time_placed }}
-</div>
+<h3>Order placed on {{ order.order.time_placed }}</h3>
 <div>
     {{ order.orderStats.fulfilled_items }} out of {{ order.orderStats.total_items }} items
     have been fulfilled.
@@ -47,7 +35,7 @@
         <th scope="col">Product ID</th>
         <th scope="col">Product Name</th>
         <th scope="col">Quantity</th>
-        <th scope="col">Fulfill Item?</th>
+        <th scope="col">Status</th>
       </tr>
     </thead>
     <tbody>
@@ -58,16 +46,9 @@
           <td>{{purchase.quantity}}</td>
           <td class="{{ 'entry-fulfilled' if purchase.fulfilled else 'entry-unfulfilled' }}">
             {% if purchase.fulfilled %}
-            <div>Fulfilled!</div>
+            <div>Fulfilled on {{ purchase.time_fulfilled }}!</div>
             {% else %}
-            <div>
-              <form action="{{ url_for('order_fulfillment.fulfill_purchase') }}" method="post">
-                <input type="hidden" name="oid" value="{{ purchase.oid }}"/>
-                <input type="hidden" name="pid" value="{{ purchase.pid }}"/>
-                <input type="hidden" name="quantity" value="{{ purchase.quantity }}" />
-                <input type="submit" value="Fulfill" />
-              </form>
-            </div>
+            <div> Not fulfilled yet </div>
             {% endif %}
           </td>
         </tr>
@@ -75,6 +56,8 @@
     </tbody>
   </table>
 {% endfor %}
+{% endif %}
+
 {% else %}
 <p><a href="{{ url_for('users.login') }}">Log in</a> to see your order fulfillment!</p>
 {% endif %}

@@ -19,14 +19,14 @@ def seller():
             "fulfilled_items": len(list(filter(lambda x: x.fulfilled, order.purchases))), 
             "is_fulfilled": len(order.purchases) ==  len(list(filter(lambda x: x.fulfilled, order.purchases)))}, orders))
         orderInfo = list(map(lambda index: {"order": orders[index], "orderStats": orderStats[index]}, range(len(orders))))
-        no_orders = len(orderInfo) == 0
+        noOrders = len(orders) == 0
     else:
         orders = None
         orderStats = None
         orderInfo = None
-    return render_template('order_fulfillment.html', 
+    return render_template('order_fulfillment_seller.html', 
                             orderInfo = orderInfo,
-                            no_orders = no_orders)
+                            noOrders = noOrders)
 
 @bp.route('/seller/fulfill_purchase', methods=['POST'])
 def fulfill_purchase():
@@ -36,3 +36,20 @@ def fulfill_purchase():
             global error
             error = "Unable to fulfill purchase. You do not have enough items in your inventory."
     return redirect(url_for('order_fulfillment.seller'))
+
+@bp.route('buyer')
+def buyer():
+    if current_user.is_authenticated:
+        orders = Order.get_all_orders_for_buyer(current_user.id)
+        orderStats = list(map(lambda order: { "total_items": len(order.purchases),
+            "fulfilled_items": len(list(filter(lambda x: x.fulfilled, order.purchases))), 
+            "is_fulfilled": len(order.purchases) ==  len(list(filter(lambda x: x.fulfilled, order.purchases)))}, orders))
+        orderInfo = list(map(lambda index: {"order": orders[index], "orderStats": orderStats[index]}, range(len(orders))))
+        noOrders = len(orders) == 0
+    else:
+        orders = None
+        orderStats = None
+        orderInfo = None
+    return render_template('order_fulfillment_buyer.html', 
+                            orderInfo = orderInfo,
+                            noOrders = noOrders)

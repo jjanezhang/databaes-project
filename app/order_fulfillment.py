@@ -7,8 +7,8 @@ bp = Blueprint('order_fulfillment', __name__, url_prefix='/order_fulfillment')
 
 error = None
 
-@bp.route('/')
-def index():
+@bp.route('/seller')
+def seller():
     global error
     if error:
         flash(error)
@@ -28,11 +28,11 @@ def index():
                             orderInfo = orderInfo,
                             no_orders = no_orders)
 
-@bp.route('/fulfill_purchase', methods=['POST'])
+@bp.route('/seller/fulfill_purchase', methods=['POST'])
 def fulfill_purchase():
     if current_user.is_authenticated:
         result = Order.fulfill_purchase(request.form['oid'], request.form['pid'], current_user.id, request.form['quantity'])
         if result != 1:
             global error
             error = "Unable to fulfill purchase. You do not have enough items in your inventory."
-    return redirect(url_for('order_fulfillment.index'))
+    return redirect(url_for('order_fulfillment.seller'))

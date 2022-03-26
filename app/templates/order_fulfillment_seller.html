@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<br><br>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/order_fulfillment.css') }}">
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <div class=flashes>
+    {% for message in messages %}
+      <span>{{ message }}</span>
+    {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+{% if current_user.is_authenticated %}
+{% if noOrders %}
+<h2>No orders have been placed.</h2>
+{% else %}
+<h2>Orders:</h2>
+{% for order in orderInfo %}
+<h3>Order from: 
+    {{ order.order.buyer.firstname }} {{ order.order.buyer.lastname }}
+</h3>
+<div>
+    Time: {{ order.order.time_placed }}
+</div>
+<div>
+    {{ order.orderStats.fulfilled_items }} out of {{ order.orderStats.total_items }} items
+    have been fulfilled.
+</div>
+<div>
+  Order status:
+  {% if order.orderStats.is_fulfilled %}
+  <span class="entry-fulfilled">
+    fulfilled
+  </span>
+  {% else %}
+  <span class="entry-unfulfilled">
+    unfulfilled
+  </span>
+  {% endif %}
+</div>
+<table class='table table-hover table-bordered container'>
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">Product ID</th>
+        <th scope="col">Product Name</th>
+        <th scope="col">Quantity</th>
+        <th scope="col">Fulfill Item?</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for purchase in order.order.purchases %}
+        <tr>
+          <th scope="row">{{purchase.pid}}</th>
+          <td>{{purchase.product_name}}</td>
+          <td>{{purchase.quantity}}</td>
+          <td class="{{ 'entry-fulfilled' if purchase.fulfilled else 'entry-unfulfilled' }}">
+            {% if purchase.fulfilled %}
+            <div>Fulfilled!</div>
+            {% else %}
+            <div>
+              <form action="{{ url_for('order_fulfillment.fulfill_purchase') }}" method="post">
+                <input type="hidden" name="oid" value="{{ purchase.oid }}"/>
+                <input type="hidden" name="pid" value="{{ purchase.pid }}"/>
+                <input type="hidden" name="quantity" value="{{ purchase.quantity }}" />
+                <input type="submit" value="Fulfill" />
+              </form>
+            </div>
+            {% endif %}
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endfor %}
+{% endif %}
+
+{% else %}
+<p><a href="{{ url_for('users.login') }}">Log in</a> to see your order fulfillment!</p>
+{% endif %}
+
+{% endblock %}

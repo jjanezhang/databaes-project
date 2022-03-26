@@ -36,6 +36,7 @@
         <th scope="col">Product Name</th>
         <th scope="col">Quantity</th>
         <th scope="col">Status</th>
+        <th scope="col">Price</th>
       </tr>
     </thead>
     <tbody>
@@ -51,6 +52,7 @@
             <div> Not fulfilled yet </div>
             {% endif %}
           </td>
+          <td>${{ purchase.price }}</td>
         </tr>
       {% endfor %}
     </tbody>

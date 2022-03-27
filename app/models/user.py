@@ -1,6 +1,3 @@
-from abc import update_abstractmethods
-import stat
-from turtle import update
 from flask_login import UserMixin
 from flask import current_app as app
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -9,17 +6,17 @@ from .. import login
 
 
 class User(UserMixin):
-    def __init__(self, id, email, firstname, lastname):
+    def __init__(self, id, email, firstname, lastname, balance):
         self.id = id
         self.email = email
         self.firstname = firstname
         self.lastname = lastname
-        self.balance = 0
+        self.balance = 0 if not balance else balance
 
     @staticmethod
     def get_by_auth(email, password):
         rows = app.db.execute("""
-SELECT password, id, email, firstname, lastname
+SELECT password, id, email, firstname, lastname, balance
 FROM Users
 WHERE email = :email
 """,
@@ -79,6 +76,18 @@ WHERE id = :id
         try:
             new_balance = app.db.execute(f"""
 UPDATE Users SET balance = {self.balance - amount} WHERE id = {id}
+RETURNING balance
+""")
+            self.balance = new_balance
+            return new_balance
+        except Exception as e:
+            print(str(e))
+            return None
+
+    def add_balance(self, id, amount):
+        try:
+            new_balance = app.db.execute(f"""
+UPDATE Users SET balance = {self.balance + amount} WHERE id = {id}
 RETURNING balance
 """)
             self.balance = new_balance

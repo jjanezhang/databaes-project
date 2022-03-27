@@ -2,22 +2,24 @@
 
 {% block content %}
 
-{% if current_user.is_authenticated %}
-<h1>Manage Balance</h1>
-<h2>Current Balance: </h2>
+    {% if current_user.is_authenticated %}
+    <h1>Manage Balance</h1>
 
-<h2>Withdraw from Balance</h2>
-<form action=""
-<p>Insert amount of money to withdraw from your balance</p>
-<a class="btn btn-secondary" href="{{ url_for('users.withdraw_balance') }}" role="button">Withdraw</a>
+    Current Balance: {{current_user.balance}}!
 
-<h2>Add to Balance</h2>
-<p>Insert amount of money to add to your balance</p>
+    <h2>Withdraw from Balance</h2>
+    <form action="" method="post">
+        <p>Insert amount of money to withdraw from your balance</p>
+        <a class="btn btn-secondary" href="{{ url_for('users.withdraw_balance') }}" role="button">Withdraw</a>
 
-<a class="btn btn-secondary" href="{{ url_for('users.add_balance') }}" role="button">Add</a>
+        <h2>Add to Balance</h2>
+        <p>Insert amount of money to add to your balance</p>
 
-{% else %}
-<p><a href="{{ url_for('users.login') }}">Log in</a> to see your account balance!</p>
-{% endif %}
+        <a class="btn btn-secondary" href="{{ url_for('users.add_balance') }}" role="button">Add</a>
 
+        {% else %}
+        <p><a href="{{ url_for('users.login') }}">Log in</a> to see your account balance!</p>
+        {% endif %}
+    </form>
+    
 {% endblock %}

@@ -1,3 +1,4 @@
+from audioop import add
 from flask_login import UserMixin
 from flask import current_app as app
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -67,31 +68,18 @@ FROM Users
 WHERE id = :id
 """,
                               id=id)
-        return User(*(rows[0])) if rows else None
-    
-    def withdraw_balance(self, id, amount):
-        if amount > self.balance:
-            print("Balance is too low")
-            return None
-        try:
-            new_balance = app.db.execute(f"""
-UPDATE Users SET balance = {self.balance - amount} WHERE id = {id}
-RETURNING balance
-""")
-            self.balance = new_balance
-            return new_balance
-        except Exception as e:
-            print(str(e))
-            return None
+        return User(*(rows[0])) if rows else None        
 
-    def add_balance(self, id, amount):
+    def update_balance(self, withdraw_amt, add_amt):
         try:
+            print("update", withdraw_amt, add_amt)
             new_balance = app.db.execute(f"""
-UPDATE Users SET balance = {self.balance + amount} WHERE id = {id}
+UPDATE Users SET balance = {self.balance + add_amt - withdraw_amt} WHERE id = {id}
 RETURNING balance
 """)
             self.balance = new_balance
             return new_balance
+
         except Exception as e:
             print(str(e))
             return None

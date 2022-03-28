@@ -7,19 +7,18 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/order_fulfillment.css') }}">
 
 {% if current_user.is_authenticated %}
-{% if noOrders %}
-<h2>No orders have been placed.</h2>
-{% else %}
-<h2>Orders:</h2>
-{% for order in orderInfo %}
-<h3>Order placed on {{ order.order.time_placed }}</h3>
+{% if order %}
+<h3>Order placed on {{ order.time_placed }}</h3>
 <div>
-    {{ order.orderStats.fulfilled_items }} out of {{ order.orderStats.total_items }} items
+  Total price was ${{ orderStats.total_price }}
+</div>
+<div>
+    {{ orderStats.fulfilled_items }} out of {{ orderStats.total_items }} items
     have been fulfilled.
 </div>
 <div>
   Order status:
-  {% if order.orderStats.is_fulfilled %}
+  {% if orderStats.is_fulfilled %}
   <span class="entry-fulfilled">
     fulfilled
   </span>
@@ -40,7 +39,7 @@
       </tr>
     </thead>
     <tbody>
-      {% for purchase in order.order.purchases %}
+      {% for purchase in order.purchases %}
         <tr>
           <th scope="row">{{purchase.pid}}</th>
           <td>{{purchase.product_name}}</td>
@@ -57,7 +56,8 @@
       {% endfor %}
     </tbody>
   </table>
-{% endfor %}
+{% else %}
+<h4> Order was not found... </h4>
 {% endif %}
 
 {% else %}

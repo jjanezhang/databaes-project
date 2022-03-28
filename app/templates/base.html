@@ -55,14 +55,12 @@
           <a href="{{ url_for('index.index') }}" type="button" class="btn btn-light">Home</a>
           <a href="{{ url_for('inventory.index') }}" type="button" class="btn btn-light">Inventory</a>
           <a href="{{ url_for('ratings.index') }}" type="button" class="btn btn-light">My Ratings</a>
-          <a href="{{ url_for('order_fulfillment.buyer') }}" type="button" class="btn btn-light">My Orders (Buyer)</a>
           <a href="{{ url_for('order_fulfillment.seller') }}" type="button" class="btn btn-light">My Orders (Seller)</a>
           <a href="{{ url_for('users.logout') }}" type="button" class="btn btn-light">Log out</a>
         {% else %}
           <a href="{{ url_for('index.index') }}" type="button" class="btn btn-light">Home</a>
           <a href="{{ url_for('inventory.index') }}" type="button" class="btn btn-light">Inventory</a>
           <a href="{{ url_for('ratings.index') }}" type="button" class="btn btn-light">My Ratings</a>
-          <a href="{{ url_for('order_fulfillment.buyer') }}" type="button" class="btn btn-light">My Orders (Buyer)</a>
           <a href="{{ url_for('order_fulfillment.seller') }}" type="button" class="btn btn-light">My Orders (Seller)</a>
           <a href="{{ url_for('users.login') }}" type="button" class="btn btn-light">Log in</a>
         {% endif %}

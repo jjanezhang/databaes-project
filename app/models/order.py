@@ -62,27 +62,22 @@ class Order:
             return value.rowcount if value else 0
 
     @staticmethod
-    # Get all orders for a buyer
-    def get_all_orders_for_buyer(uid):
+    # Get a specific order for a buyer
+    def get_order_for_buyer(oid, uid):
         rows = app.db.execute('''
-            SELECT O.id AS oid, O.time_placed AS time_placed, P.sid AS sid, P.pid AS pid, 
+            SELECT O.id AS oid, O.uid AS uid, O.time_placed AS time_placed, P.sid AS sid, P.pid AS pid, 
             P.fulfilled AS fulfilled, P.time_fulfilled AS time_fulfilled, 
             P.quantity AS quantity, P.price AS price, Pr.name AS product_name
             FROM Orders O, Purchases P, Products Pr
-            WHERE O.id = P.oid AND O.uid = :uid AND Pr.id = P.pid
-            ORDER BY O.time_placed DESC
-        ''', uid=uid)
-        result = {}
-        for row in rows:
-            if row.oid in result:
-                result[row.oid].purchases.append(Purchase(row.oid, row.pid, row.sid, row.fulfilled, row.time_fulfilled, row.quantity, row.price, row.product_name, row.time_placed))
-            else:
-                result[row.oid] = Order(row.oid, uid, row.time_placed)
-                result[row.oid].purchases.append(Purchase(row.oid, row.pid, row.sid, row.fulfilled, row.time_fulfilled, row.quantity, row.price, row.product_name, row.time_placed))
+            WHERE O.id = :oid AND uid = :uid AND O.id = P.oid AND O.uid = :uid AND Pr.id = P.pid
+        ''', oid=oid, uid=uid)
 
-        user = User.get(uid)
-
-        for key in result:
-            result[key].buyer = user
-
-        return list(result.values())
+        if len(rows) > 0:
+            result = Order(rows[0].oid, uid, rows[0].time_placed)
+            for row in rows:
+                result.purchases.append(Purchase(row.oid, row.pid, row.sid, row.fulfilled, row.time_fulfilled, row.quantity, row.price, row.product_name, row.time_placed))
+            user = User.get(uid)
+            result.buyer = user
+            return result
+        else:
+            return None

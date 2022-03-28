@@ -37,19 +37,20 @@ def fulfill_purchase():
             error = "Unable to fulfill purchase. You do not have enough items in your inventory."
     return redirect(url_for('order_fulfillment.seller'))
 
-@bp.route('buyer')
-def buyer():
+@bp.route('buyer/<orderId>')
+def buyer(orderId):
     if current_user.is_authenticated:
-        orders = Order.get_all_orders_for_buyer(current_user.id)
-        orderStats = list(map(lambda order: { "total_items": len(order.purchases),
-            "fulfilled_items": len(list(filter(lambda x: x.fulfilled, order.purchases))), 
-            "is_fulfilled": len(order.purchases) ==  len(list(filter(lambda x: x.fulfilled, order.purchases)))}, orders))
-        orderInfo = list(map(lambda index: {"order": orders[index], "orderStats": orderStats[index]}, range(len(orders))))
-        noOrders = len(orders) == 0
+        order = Order.get_order_for_buyer(orderId, current_user.id)
+        if order is not None:
+            orderStats = { "total_items": len(order.purchases),
+                "fulfilled_items": len(list(filter(lambda x: x.fulfilled, order.purchases))), 
+                "is_fulfilled": len(order.purchases) ==  len(list(filter(lambda x: x.fulfilled, order.purchases))),
+                "total_price": sum(map(lambda purchase: purchase.price, order.purchases))}
+        else:
+            orderStats = None
     else:
-        orders = None
+        order = None
         orderStats = None
-        orderInfo = None
     return render_template('order_fulfillment_buyer.html', 
-                            orderInfo = orderInfo,
-                            noOrders = noOrders)
+                            order = order,
+                            orderStats = orderStats)

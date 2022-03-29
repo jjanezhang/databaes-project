@@ -15,6 +15,7 @@ class Inventory:
             SELECT I.uid AS uid, I.pid AS pid, P.name AS name, I.quantity AS quantity
             FROM Inventory I, Products P
             WHERE I.pid = P.id AND I.uid = :uid
+            ORDER BY P.id
         ''', uid=uid)
         return [Inventory(*row) for row in rows]
 
@@ -51,11 +52,13 @@ class Inventory:
         if not start_time:
             start_time = datetime(1980, 9, 14, 0, 0, 0)
         result = app.db.execute('''
-            WITH TopPids AS (SELECT P.pid AS pid, sum(quantity) AS quantity
-            FROM Purchases P, Orders O
-            WHERE P.sid = :uid AND O.id = P.oid AND O.time_placed >= :start_time
-            GROUP BY P.pid
-            LIMIT 5)
+            WITH TopPids AS (
+                SELECT P.pid AS pid, sum(quantity) AS quantity
+                FROM Purchases P, Orders O
+                WHERE P.sid = :uid AND O.id = P.oid AND O.time_placed >= :start_time
+                GROUP BY P.pid
+                LIMIT 5
+            )
             SELECT P.name AS name, P.id AS pid, T.quantity AS quantity
             FROM TopPids T, Products P
             WHERE T.pid = P.id
@@ -63,3 +66,27 @@ class Inventory:
         ''', uid=uid, start_time=start_time)
 
         return [{"name": row.name, "pid": row.pid, "quantity_sold": row.quantity} for row in result]
+
+    @staticmethod
+    def get_inventory_stats(uid):
+        result = app.db.execute('''
+            SELECT count(*) as count, sum(quantity) as total, 
+                avg(quantity) as avg, min(quantity) as min, max(quantity) as max
+            FROM Inventory
+            GROUP BY uid
+            HAVING uid = :uid
+        ''', uid=uid)
+
+        return [{"count": row.count, "total": row.total, "avg": row.avg, "min": row.min, "max": row.max} for row in result][0]
+
+    @staticmethod
+    def get_n_fewest_items_in_inventory(uid, n):
+        result = app.db.execute('''
+            SELECT I.pid AS pid, P.name AS name, I.quantity AS quantity
+            FROM Inventory I, Products P
+            WHERE I.pid = P.id AND uid = :uid
+            ORDER BY quantity ASC, P.id ASC
+            LIMIT :n
+        ''', uid=uid, n=n)
+
+        return [{"pid": row.pid, "name": row.name, "quantity": row.quantity} for row in result]

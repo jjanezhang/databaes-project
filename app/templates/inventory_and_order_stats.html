@@ -5,6 +5,32 @@
 <br><br>
 
 {% if current_user.is_authenticated %}
+<h3>Inventory Analytics</h3>
+<div># of Products: {{ inventory_stats.count }}</div>
+<div>Total Quantity of All Products: {{ inventory_stats.total }}</div>
+<div>Avg. Quantity of a Product: {{ inventory_stats.avg }}</div>
+<div>Max Quantity of a Product: {{ inventory_stats.max }} </div>
+<div>Min Quantity of a Product: {{ inventory_stats.min }}</div>
+<br />
+<h3>5 Fewest Items in Inventory</h3>
+<table class='table table-hover table-bordered container'>
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">Product ID</th>
+        <th scope="col">Product Name</th>
+        <th scope="col">Quantity in Inventory</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in inventory_low_items %}
+        <tr>
+          <th scope="row">{{item.pid}}</th>
+          <td>{{item.name}}</td>
+          <td>{{item.quantity}}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
 <h3>Top 5 Popular Items of All Time</h3>
 <table class='table table-hover table-bordered container'>
     <thead class="thead-dark">

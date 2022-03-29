@@ -1,3 +1,4 @@
+from datetime import datetime
 from flask import current_app as app
 
 class Inventory:
@@ -45,18 +46,20 @@ class Inventory:
         return result
     
     @staticmethod
-    # Get items which have been sold the most by this seller all time
-    def get_most_popular_items_all_time(uid):
+    # Get items which have been sold the most by this seller after start_time
+    def get_most_popular_items(uid, start_time=None):
+        if not start_time:
+            start_time = datetime(1980, 9, 14, 0, 0, 0)
         result = app.db.execute('''
             WITH TopPids AS (SELECT P.pid AS pid, sum(quantity) AS quantity
-            FROM Purchases P
-            WHERE P.sid = :uid
+            FROM Purchases P, Orders O
+            WHERE P.sid = :uid AND O.id = P.oid AND O.time_placed >= :start_time
             GROUP BY P.pid
             LIMIT 5)
             SELECT P.name AS name, P.id AS pid, T.quantity AS quantity
             FROM TopPids T, Products P
             WHERE T.pid = P.id
             ORDER BY quantity DESC
-        ''', uid=uid)
+        ''', uid=uid, start_time=start_time)
 
         return [{"name": row.name, "pid": row.pid, "quantity_sold": row.quantity} for row in result]

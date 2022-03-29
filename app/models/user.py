@@ -72,12 +72,14 @@ WHERE id = :id
 
     def update_balance(self, withdraw_amt, add_amt):
         try:
-            print("update", withdraw_amt, add_amt)
+            add_amt = 0 if not add_amt else add_amt
+            withdraw_amt = 0 if not withdraw_amt else withdraw_amt
             new_balance = app.db.execute(f"""
-UPDATE Users SET balance = {self.balance + add_amt - withdraw_amt} WHERE id = {id}
+UPDATE Users SET balance = {float(self.balance) + add_amt - withdraw_amt} 
+WHERE id = {self.id}
 RETURNING balance
-""")
-            self.balance = new_balance
+""")        
+            self.balance = float(new_balance[0][0])
             return new_balance
 
         except Exception as e:

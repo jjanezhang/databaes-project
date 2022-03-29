@@ -1,9 +1,9 @@
-from flask import render_template, redirect, url_for, flash, request
+from flask import render_template, redirect, url_for, flash, request, jsonify
 from werkzeug.urls import url_parse
 from flask_login import login_user, logout_user, current_user
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField
-from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, FloatField
+from wtforms.validators import ValidationError, DataRequired, Email, EqualTo, Optional, NumberRange
 
 from .models.user import User
 
@@ -72,3 +72,21 @@ def register():
 def logout():
     logout_user()
     return redirect(url_for('index.index'))
+
+class BalanceForm(FlaskForm):
+    withdraw_amt = FloatField('Amount to withdraw from balance', validators=[Optional(), NumberRange(min=0, message= 'Must enter a number greater than or equal to 0')])
+    add_amt = FloatField('Amount to add to balance', validators=[Optional(), NumberRange(min=0, message= 'Must enter a number greater than or equal to 0')])
+    submit = SubmitField('Update Account')
+
+    def validate_withdraw_amt(self, withdraw_amt):
+        if withdraw_amt.data > current_user.balance:
+            raise ValidationError('Withdraw amount is greater than your balance')
+
+@bp.route('/manage_balance', methods=['GET','POST'])
+def manage_balance():
+    form = BalanceForm()
+    if form.validate_on_submit():
+        if User.update_balance(current_user,form.withdraw_amt.data,form.add_amt.data):
+            flash('Account balance update successful!')
+            return redirect(url_for('users.manage_balance'))
+    return render_template('balance.html', title='Balance',form=form)

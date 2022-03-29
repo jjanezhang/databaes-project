@@ -43,3 +43,20 @@ class Inventory:
             WHERE uid = :uid AND pid = :pid
         ''', uid=uid, pid=pid)
         return result
+    
+    @staticmethod
+    # Get items which have been sold the most by this seller all time
+    def get_most_popular_items_all_time(uid):
+        result = app.db.execute('''
+            WITH TopPids AS (SELECT P.pid AS pid, sum(quantity) AS quantity
+            FROM Purchases P
+            WHERE P.sid = :uid
+            GROUP BY P.pid
+            LIMIT 5)
+            SELECT P.name AS name, P.id AS pid, T.quantity AS quantity
+            FROM TopPids T, Products P
+            WHERE T.pid = P.id
+            ORDER BY quantity DESC
+        ''', uid=uid)
+
+        return [{"name": row.name, "pid": row.pid, "quantity_sold": row.quantity} for row in result]

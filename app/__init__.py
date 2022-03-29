@@ -30,4 +30,7 @@ def create_app():
     from .order_fulfillment import bp as order_fulfillment_bp
     app.register_blueprint(order_fulfillment_bp)
 
+    from .inventory_stats import bp as inventory_stats_bp
+    app.register_blueprint(inventory_stats_bp)
+
     return app

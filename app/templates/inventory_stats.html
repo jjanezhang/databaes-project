@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<br><br>
+
+{% if current_user.is_authenticated %}
+<h3>Most Popular Items of All Time</h3>
+<table class='table table-hover table-bordered container'>
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">Product ID</th>
+        <th scope="col">Product Name</th>
+        <th scope="col">Quantity Sold</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in most_popular_all_time %}
+        <tr>
+          <th scope="row">{{item.pid}}</th>
+          <td>{{item.name}}</td>
+          <td>{{item.quantity_sold}}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+{% else %}
+<p><a href="{{ url_for('users.login') }}">Log in</a> to see your inventory stats!</p>
+{% endif %}
+
+{% endblock %}

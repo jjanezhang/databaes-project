@@ -77,7 +77,10 @@ class Inventory:
             HAVING uid = :uid
         ''', uid=uid)
 
-        return [{"count": row.count, "total": row.total, "avg": row.avg, "min": row.min, "max": row.max} for row in result][0]
+        if(len(result) == 0):
+            return {"count": 0, "total": 0, "avg": 0, "min": 0, "max": 0}
+
+        return {"count": result[0].count, "total": result[0].total, "avg": result[0].avg, "min": result[0].min, "max": result[0].max}
 
     @staticmethod
     def get_n_fewest_items_in_inventory(uid, n):

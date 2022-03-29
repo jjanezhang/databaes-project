@@ -35,3 +35,13 @@ WHERE available = :available
             FROM Products
             ''')
         return [Product(*row) for row in rows]
+
+    # @staticmethod
+    # def get_all_regardless_of_availability_by_uid(uid):
+    #     rows = app.db.execute('''
+    #         SELECT id, uid, name, price, available
+    #         FROM Products
+    #         WHERE uid = :uid
+    #         ''')
+    #     return [Product(*row) for row in rows]
+        #return [[Product(*row).uid, Product(*row).name] for row in rows]

@@ -10,6 +10,12 @@ Current Balance: {{current_user.balance}}
     {{ form.hidden_tag() }}
     <br/>
     <h2>Withdraw from Balance</h2>
+    {% for message in get_flashed_messages() %}
+    <div class="alert alert-warning">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        {{ message }}
+    </div>
+    {% endfor %}
     <p>
         {{form.withdraw_amt.label}} <br/>
         {{form.withdraw_amt(size=32)}} <br/>
@@ -24,7 +30,8 @@ Current Balance: {{current_user.balance}}
         <span style="color: red;">[{{ error }}]</span>
         {% endfor %}
     </p>
-    <p>{{ form.submit() }}</p>
+    <p>{{ form.submit(class_="btn btn-black") }}</p>
+    
 </form>
     
 {% endblock %}

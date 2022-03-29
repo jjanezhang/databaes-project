@@ -76,9 +76,9 @@ def logout():
 class BalanceForm(FlaskForm):
     withdraw_amt = FloatField('Amount to withdraw from balance', validators=[Optional(), NumberRange(min=0, message= 'Must enter a number greater than or equal to 0')])
     add_amt = FloatField('Amount to add to balance', validators=[Optional(), NumberRange(min=0, message= 'Must enter a number greater than or equal to 0')])
-    submit = SubmitField('Register')
+    submit = SubmitField('Update Account')
 
-    def validate_withdraw(form, withdraw_amt):
+    def validate_withdraw_amt(self, withdraw_amt):
         if withdraw_amt.data > current_user.balance:
             raise ValidationError('Withdraw amount is greater than your balance')
 
@@ -86,10 +86,7 @@ class BalanceForm(FlaskForm):
 def manage_balance():
     form = BalanceForm()
     if form.validate_on_submit():
-        if User.update_balance(
-            current_user,
-            form.withdraw_amt.data,
-            form.add_amt.data):
-            flash('Account balance update successful')
-            return redirect(url_for('index.index'))
+        if User.update_balance(current_user,form.withdraw_amt.data,form.add_amt.data):
+            flash('Account balance update successful!')
+            return redirect(url_for('users.manage_balance'))
     return render_template('balance.html', title='Balance',form=form)

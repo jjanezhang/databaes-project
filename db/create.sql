@@ -44,6 +44,8 @@ CREATE TABLE Inventory (
 CREATE TABLE Ratings (
     uid INT NOT NULL REFERENCES Users(id),
     pid INT NOT NULL REFERENCES Products(id),
+    sid INT NOT NULL REFERENCES Users(id),
     rating INT NOT NULL CHECK(rating BETWEEN 1 AND 5),
+    review VARCHAR UNIQUE NOT NULL,
     PRIMARY KEY (uid, pid)
 );

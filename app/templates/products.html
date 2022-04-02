@@ -4,16 +4,29 @@
 
 <br><br>
 
-<h2>{{pname}}</h2>
-<img src="{{url_for('static', filename='css/' + pname +'.png')}}" />
+<h2> <div style="color: darkblue; text-align: left; margin-bottom: 25px; 
+    text-transform: capitalize; font-weight: bolder; font-style: bold;">
+        {{product.name}} </div> 
+</h2>
 
-{% if current_user.is_authenticated %}
+<div class="sidenav2">
+    <div style="color: aliceblue; text-align: left; margin-bottom: 25px">
+    {% if purchased %}
+        You purchased this product last: 
+    {% endif %}
+    </div>
+    <div style="color: aliceblue; text-align: left; margin-bottom: 25px">
+        Price: {{product.price}} 
+    </div>
+</div>
+
 {% if purchased %}
 <form action="{{ url_for('ratings.add_rating') }}" method="post">
     <input type="hidden" name="pid" value="{{ product.id }}"/>
     <input type="submit" value="Rate" />
-  </form>
+</form>
 {% endif %}
-{% endif %}
+
+<img src="{{url_for('static', filename='css/' + pname +'.png')}}" />
 
 {% endblock %} 

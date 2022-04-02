@@ -29,12 +29,12 @@ def display_product(product_name):
     """ Displays the product. 'product_name' is also the name of img file
     """
     #p_name= product_name.name
-    this_product = Product.get_product_by_name(product_name)
-    product_id = this_product[0].id
+    this_product = Product.get_product_by_name(product_name)[0]
+    product_id = this_product.id
     purchased = True
 
     if current_user.is_authenticated:
-        #uid = current_user.id
+        #uid = current_user.id -- we'll add this after getting more data
         uid = 1
         purchased = Purchase.get_product_by_uid_pid(uid, product_id)
         if not purchased:

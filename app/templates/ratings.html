@@ -21,9 +21,7 @@
       <tr>
         <th scope="row">{{product.pid}}</th>
         
-        <td>
-          <a href="products/{{product.name}}"> {{product.name}} </a>   
-        </td>
+        <td>{{product.name}} </td>
         <td>{{product.rating}}</td>
         <td>
           <form action="{{ url_for('ratings.remove_rating') }}" method="post">

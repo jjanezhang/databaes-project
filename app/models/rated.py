@@ -21,9 +21,9 @@ class Rated:   # a rated item
     # Add a new rating to a product this user purchased 
     def add_rating(uid, pid, rating):
         result = app.db.execute('''
-            INSERT INTO Ratings(uid, pid, rating)
-            VALUES(:uid, :pid, :rating)
-        ''', uid=uid, pid=pid, rating=rating)
+            INSERT INTO Ratings(uid, pid, rating, review)
+            VALUES(:uid, :pid, :rating, :review)
+        ''', uid=uid, pid=pid, rating=rating, review="")
         return result
 
     @staticmethod

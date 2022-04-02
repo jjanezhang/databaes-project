@@ -26,7 +26,20 @@ def index():
                            
 @bp.route('/products/<product_name>/')
 def display_product(product_name):
-    """ Displays the product .
+    """ Displays the product. 'product_name' is also the name of img file
     """
-    return render_template('products.html', pname=product_name)
+    #p_name= product_name.name
+    this_product = Product.get_product_by_name(product_name)[0]
+    product_id = this_product.id
+    purchased = True
+
+    if current_user.is_authenticated:
+        #uid = current_user.id -- we'll add this after getting more data
+        uid = 1
+        purchased = Purchase.get_product_by_uid_pid(uid, product_id)
+        if not purchased:
+            purchased = False
+
+    return render_template('products.html', pname=product_name,
+        product=this_product, purchased=purchased)
 

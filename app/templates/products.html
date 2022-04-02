@@ -4,6 +4,16 @@
 
 <br><br>
 
+<h2>{{pname}}</h2>
 <img src="{{url_for('static', filename='css/' + pname +'.png')}}" />
+
+{% if current_user.is_authenticated %}
+{% if purchased %}
+<form action="{{ url_for('ratings.add_rating') }}" method="post">
+    <input type="hidden" name="pid" value="{{ product.id }}"/>
+    <input type="submit" value="Rate" />
+  </form>
+{% endif %}
+{% endif %}
 
 {% endblock %} 

@@ -24,3 +24,9 @@ def index():
                            avail_products=products,
                            purchase_history=purchases)
                            
+@bp.route('/products/<product_name>/')
+def display_product(product_name):
+    """ Displays the product .
+    """
+    return render_template('products.html', pname=product_name)
+

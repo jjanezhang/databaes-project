@@ -17,7 +17,7 @@
     {% for product in avail_products %}
       <tr>
         <th scope="row">{{product.id}}</th>
-        <td>{{product.name}}</td>
+        <td><a href="products/{{product.name}}"> {{product.name}} </a></td>
         <td>{{product.price}}</td>
       </tr>
     {% endfor %}

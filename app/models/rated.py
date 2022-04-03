@@ -23,6 +23,7 @@ class Rated:   # a rated item
         result = app.db.execute('''
             INSERT INTO Ratings(uid, pid, rating, review)
             VALUES(:uid, :pid, :rating, :review)
+            ON CONFLICT (uid, pid) DO NOTHING;
         ''', uid=uid, pid=pid, rating=rating, review="")
         return result
 

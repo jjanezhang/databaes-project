@@ -28,18 +28,24 @@ def index():
 def display_product(product_name):
     """ Displays the product. 'product_name' is also the name of img file
     """
-    #p_name= product_name.name
-    this_product = Product.get_product_by_name(product_name)[0]
-    product_id = this_product.id
-    purchased = True
+    clicked_product = Product.get_product_by_name(product_name)[0]
+    product_id = clicked_product.id
+    purchased_this_product = False
 
     if current_user.is_authenticated:
         #uid = current_user.id -- we'll add this after getting more data
         uid = 1
-        purchased = Purchase.get_product_by_uid_pid(uid, product_id)
-        if not purchased:
-            purchased = False
-
+        ret = Purchase.get_product_by_uid_pid(uid, product_id)
+        purchased_this_product = ret[0] # boolean
+        if purchased_this_product:
+            # return render_template('test.html')
+            purchased_product = ret[1]
+            return render_template('products.html', pname=product_name,
+            product=purchased_product, purchased_this_product=purchased_this_product)
+    
     return render_template('products.html', pname=product_name,
-        product=this_product, purchased=purchased)
+            product=clicked_product, purchased_this_product=purchased_this_product)
+    
+
+    
 

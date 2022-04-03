@@ -11,24 +11,24 @@
 
 <div class="sidenav2">
     <div style="color: aliceblue; text-align: left; margin-bottom: 25px">
-    {% if purchased %}
-        You purchased this product last: 
-    {% endif %}
+        Price: {{product.price}} 
     </div>
     <div style="color: aliceblue; text-align: left; margin-bottom: 25px">
-        Price: {{product.price}} 
+    {% if purchased_this_product %}
+        You purchased this product last: {{product.time_fulfilled}}
+    {% endif %}
     </div>
 </div>
 
 
 <div class="formwrapper">
 <div class="formstyler">
-{% if purchased %}
+
 <form action="{{ url_for('ratings.add_rating') }}" method="post">
     <input type="hidden" name="pid" value="{{ product.id }}"/>
     <input type="submit" value="Rate" />
 </form>
-{% endif %}
+
 </div>
 </div>
 

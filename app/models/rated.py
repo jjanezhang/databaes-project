@@ -44,3 +44,21 @@ class Rated:   # a rated item
             WHERE uid = :uid AND pid = :pid
         ''', uid=uid, pid=pid)
         return result
+
+    @staticmethod
+    def get_all_by_uid(uid):
+        rows = app.db.execute('''
+            SELECT R.uid AS uid, R.pid AS pid, P.name AS name, R.rating AS rating
+            FROM Ratings R, Products P
+            WHERE R.pid = P.id AND R.uid = :uid
+        ''', uid=uid)
+        
+        rows = app.db.execute('''
+            SELECT *
+            FROM Purchases P, Orders O, Products Pr
+            WHERE O.id = P.oid AND O.uid = :uid AND P.pid = :product_id 
+            AND P.pid = Pr.id AND P.fulfilled=true
+            '''
+            , uid=uid, product_id=product_id)
+        
+        return [Rated(*row) for row in rows]

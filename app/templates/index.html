@@ -3,30 +3,24 @@
 {% block content %}
 
 <br><br>
-
-<h2>Products for sale:</h2>
-<table class='table table-hover table-bordered container'>
-  <thead class="thead-dark">
-    <tr>
-      <th scope="col">Product ID</th>
-      <th scope="col">Product Name</th>
-      <th scope="col">Price</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for product in avail_products %}
-      <tr>
-        <th scope="row">{{product.id}}</th>
-        <td><a href="products/{{product.name}}"> {{product.name}} </a></td>
-        <td>{{product.price}}</td>
-      </tr>
-    {% endfor %}
-  </tbody>
-</table>
+<h2> 
+  <div style="color: darkblue; text-align: left; margin-bottom: 25px; 
+    text-transform: capitalize; font-weight: bolder; font-style: bold; 
+    box-shadow: 2px 2px 20px 23px skyblue;">
+    Welcome, {{current_user.firstname}} 
+  </div> 
+</h2>
 
 <br><br>
 {% if current_user.is_authenticated %}
-<h2>Your recent purchases:</h2>
+<h2><div style="color: darkblue; text-align: left; margin-bottom: 25px; 
+  text-transform: capitalize; font-weight: bolder; font-style: bold; 
+  box-shadow: 2px 2px 20px 20px skyblue;">
+  Rate your recent purchases:
+</div></h2>
+<h2> <div style="text-align:right; margin-bottom: 25px;"> 
+  <a href="products/"> Click to see all products</a>
+</div></h2>
 <table class='table table-hover table-bordered container'>
   <thead class="thead-dark">
     <tr>
@@ -39,7 +33,7 @@
     {% for purchase in purchase_history %}
       <tr>
         <th scope="row">{{purchase.oid}}</th>
-        <td>{{purchase.product_name}}</td>
+        <td><a href="products/{{purchase.product_name}}"> {{purchase.product_name}} </a></td>
         <td>{{purchase.time_purchased}}</td>
       </tr>
     {% endfor %}

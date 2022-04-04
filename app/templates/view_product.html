@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<br><br>
+
+<h2> <div style="color: darkblue; text-align: left; margin-bottom: 25px; 
+    text-transform: capitalize; font-weight: bolder; font-style: bold;">
+        {{product.name}} </div> 
+</h2>
+
+<div class="sidenav2">
+    <div style="color: aliceblue; text-align: left; margin-bottom: 25px">
+        Price: {{product.price}} 
+    </div>
+    <div style="color: aliceblue; text-align: left; margin-bottom: 25px">
+    {% if purchased_this_product %}
+        You purchased this product last: {{product.time_fulfilled}}
+    {% endif %}
+    </div>
+</div>
+
+
+<div class="formwrapper">
+<div class="formstyler">
+
+<form action="{{ url_for('ratings.add_rating') }}" method="post">
+    <input type="hidden" name="pid" value="{{ product.id }}"/>
+    <input type="submit" value="Rate" />
+</form>
+    
+
+</div>
+</div>
+
+<img src="{{url_for('static', filename='css/' + pname +'.png')}}" />
+
+{% endblock %} 

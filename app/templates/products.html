@@ -4,34 +4,23 @@
 
 <br><br>
 
-<h2> <div style="color: darkblue; text-align: left; margin-bottom: 25px; 
-    text-transform: capitalize; font-weight: bolder; font-style: bold;">
-        {{product.name}} </div> 
-</h2>
-
-<div class="sidenav2">
-    <div style="color: aliceblue; text-align: left; margin-bottom: 25px">
-        Price: {{product.price}} 
-    </div>
-    <div style="color: aliceblue; text-align: left; margin-bottom: 25px">
-    {% if purchased_this_product %}
-        You purchased this product last: {{product.time_fulfilled}}
-    {% endif %}
-    </div>
-</div>
-
-
-<div class="formwrapper">
-<div class="formstyler">
-
-<form action="{{ url_for('ratings.add_rating') }}" method="post">
-    <input type="hidden" name="pid" value="{{ product.id }}"/>
-    <input type="submit" value="Rate" />
-</form>
-
-</div>
-</div>
-
-<img src="{{url_for('static', filename='css/' + pname +'.png')}}" />
-
-{% endblock %} 
+<h2>Products for sale:</h2>
+<table class='table table-hover table-bordered container'>
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">Product ID</th>
+      <th scope="col">Product Name</th>
+      <th scope="col">Price</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for product in avail_products %}
+      <tr>
+        <th scope="row">{{product.id}}</th>
+        <td><a href="{{product.name}}"> {{product.name}} </a></td>
+        <td>{{product.price}}</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

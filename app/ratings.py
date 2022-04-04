@@ -34,9 +34,9 @@ def getTemplateVariables():
 
         all_user_purchases = Purchase.get_all_by_uid_since(current_user.id, since) # get all items purchased by this user
         all_products = Product.get_all_regardless_of_availability() #
-        purchased_products = filter(lambda product: product.id not in [x.pid for x in all_user_purchases], all_products)
+        purchased_products = filter(lambda product: product.id in [x.pid for x in all_user_purchases], all_products)
         # ratings_form.pid.choices = [(product.id, product.name) for product in purchased_products]
-        # TODO: show the date the product was purchased too 
+
         add_rating_form.pid.choices = [(product.id, product.name) for product in purchased_products]
         add_rating_form.pid.choices.sort()
     else:
@@ -46,6 +46,9 @@ def getTemplateVariables():
 @bp.route('/')
 def index():
     (purchased_products, ratings_form, add_rating_form) = getTemplateVariables()
+    # if current_user.is_authenticated:
+    #     if current_user.id ==2:
+    #         return render_template('test.html')
     return render_template('ratings.html', 
                             purchased_products=purchased_products,
                             ratings_form=ratings_form,

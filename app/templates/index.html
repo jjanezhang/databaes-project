@@ -3,6 +3,7 @@
 {% block content %}
 
 <br><br>
+{% if current_user.is_authenticated %}
 <h2> 
   <div style="color: darkblue; text-align: left; margin-bottom: 25px; 
     text-transform: capitalize; font-weight: bolder; font-style: bold; 
@@ -11,8 +12,7 @@
   </div> 
 </h2>
 
-<br><br>
-{% if current_user.is_authenticated %}
+<br> <br>
 <h2><div style="color: darkblue; text-align: left; margin-bottom: 25px; 
   text-transform: capitalize; font-weight: bolder; font-style: bold; 
   box-shadow: 2px 2px 20px 20px skyblue;">
@@ -40,7 +40,18 @@
   </tbody>
 </table>
 {% else %}
+<h2> 
+  <div style="color: darkblue; text-align: left; margin-bottom: 25px; 
+    text-transform: capitalize; font-weight: bolder; font-style: bold; 
+    box-shadow: 2px 2px 20px 23px skyblue;">
+    Welcome!
+  </div> 
+</h2>
 <p><a href="{{ url_for('users.login') }}">Log in</a> to see your purchase history!</p>
+
+<h2> <div style="text-align:center;"> 
+  <a href="products/"> Click to see all products</a>
+</div></h2>
 {% endif %}
 
 {% endblock %}

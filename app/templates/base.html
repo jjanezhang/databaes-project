@@ -23,6 +23,23 @@
         overflow-x: hidden;
         padding-top: 20px;
     }
+    .sidenav2 {
+        height: 100%;
+        background-color: #003087; 
+        overflow-x: hidden;
+        padding-top: 20px;
+        font-size: 1.5rem;
+        font-weight: bolder;
+        font-style: bold;
+        box-shadow: 2px 2px 20px 23px skyblue;
+    }
+    .formstyler form {
+        display: grid;
+        text-align: center;
+        font-size: 1.5rem;
+        font-weight: bolder;
+        font-style: bold;
+    }
 
     .main {
         padding: 0px 10px;
@@ -56,6 +73,8 @@
           <a href="{{ url_for('index.get_profile', uid=current_user.id) }}" type="button" class="btn btn-light">My Profile</a>
           <a href="{{ url_for('inventory.index') }}" type="button" class="btn btn-light">Inventory</a>
           <a href="{{ url_for('users.manage_balance') }}" type="button" class="btn btn-light">Manage Balance</a>
+          <a href="{{ url_for('inventory_and_order_stats.index') }}" type="button" class="btn btn-light">Inventory and Order Stats</a>
+          <a href="{{ url_for('users.manage_balance') }}" type="button" class="btn btn-light">Manage balance</a>
           <a href="{{ url_for('ratings.index') }}" type="button" class="btn btn-light">My Ratings</a>
           <a href="{{ url_for('order_fulfillment.seller') }}" type="button" class="btn btn-light">My Orders (Seller)</a>
           <a href="{{ url_for('users.logout') }}" type="button" class="btn btn-light">Log out</a>

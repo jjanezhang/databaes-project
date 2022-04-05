@@ -26,3 +26,32 @@ class Purchase:
             '''
         , uid=uid, since=since)
         return [Purchase(*row) for row in rows]
+
+    @staticmethod
+    def get_product_by_uid_pid(uid, product_id):
+        '''returns true if user with uid has purchased product with pid'''
+            #         SELECT P.oid AS oid, P.pid AS pid, P.sid AS sid, P.fulfilled AS fulfilled,
+            # P.time_fulfilled AS time_fulfilled, P.quantity AS quantity,
+            # P.price AS price, Pr.name AS product_name, O.time_placed AS time_purchased
+        rows = app.db.execute('''
+            SELECT P.oid AS oid, P.pid AS pid, P.sid AS sid, P.fulfilled AS fulfilled,
+            P.time_fulfilled AS time_fulfilled, P.quantity AS quantity,
+            P.price AS price, Pr.name AS product_name, O.time_placed AS time_purchased
+            FROM Purchases P, Orders O, Products Pr
+            WHERE O.id = P.oid AND O.uid = :uid AND P.pid = :product_id 
+            AND P.pid = Pr.id AND P.fulfilled=true
+            '''
+            , uid=uid, product_id=product_id)
+
+        rowcount = len(rows)
+        if rowcount>0:
+            ret = [True]
+            purchase = [Purchase(*row) for row in rows]
+            ret +=purchase
+            return ret
+
+        else:
+            ret = [False]
+            return ret
+        
+        # return [Purchase(*row) for row in rows]

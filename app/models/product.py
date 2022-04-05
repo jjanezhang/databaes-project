@@ -36,12 +36,12 @@ WHERE available = :available
             ''')
         return [Product(*row) for row in rows]
 
-    # @staticmethod
-    # def get_all_regardless_of_availability_by_uid(uid):
-    #     rows = app.db.execute('''
-    #         SELECT id, uid, name, price, available
-    #         FROM Products
-    #         WHERE uid = :uid
-    #         ''')
-    #     return [Product(*row) for row in rows]
-        #return [[Product(*row).uid, Product(*row).name] for row in rows]
+    @staticmethod
+    def get_product_by_name(product_name):
+        rows = app.db.execute('''
+SELECT id, name, price, available
+FROM Products
+WHERE name = :product_name
+''',
+                              product_name=product_name)
+        return [Product(*row) for row in rows]

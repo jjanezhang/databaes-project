@@ -1,10 +1,11 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, request
 from flask_login import current_user
 
 import datetime
 
 from .models.product import Product
 from .models.purchase import Purchase
+from .models.user import User
 
 bp = Blueprint('index', __name__)
 
@@ -23,4 +24,12 @@ def index():
     return render_template('index.html',
                            avail_products=products,
                            purchase_history=purchases)
-                           
+
+@bp.route('/profile/<uid>', methods=['GET'])
+def get_profile(uid):
+    user_profile = User.get(uid)
+    return render_template('profile.html',
+                        user_profile=user_profile)
+
+
+

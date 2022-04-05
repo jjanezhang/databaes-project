@@ -14,13 +14,21 @@ class User(UserMixin):
         self.lastname = lastname
         self.balance = 0 if not balance else balance
 
+        inventory_rows = app.db.execute('''
+            SELECT I.uid AS uid, I.pid AS pid, P.name AS name, I.quantity AS quantity
+            FROM Inventory I, Products P
+            WHERE I.pid = P.id AND I.uid = :uid
+        ''', uid=id)
+
+        self.is_seller = len(inventory_rows) > 0
+
     @staticmethod
     def get_by_auth(email, password):
         rows = app.db.execute("""
-SELECT password, id, email, firstname, lastname, balance
-FROM Users
-WHERE email = :email
-""",
+            SELECT password, id, email, firstname, lastname, balance
+            FROM Users
+            WHERE email = :email
+            """,
                               email=email)
         if not rows:  # email not found
             return None
@@ -33,10 +41,10 @@ WHERE email = :email
     @staticmethod
     def email_exists(email):
         rows = app.db.execute("""
-SELECT email
-FROM Users
-WHERE email = :email
-""",
+            SELECT email
+            FROM Users
+            WHERE email = :email
+            """,
                               email=email)
         return len(rows) > 0
 
@@ -44,10 +52,10 @@ WHERE email = :email
     def register(email, password, firstname, lastname):
         try:
             rows = app.db.execute("""
-INSERT INTO Users(email, password, firstname, lastname, balance)
-VALUES(:email, :password, :firstname, :lastname, :balance)
-RETURNING id
-""",
+                INSERT INTO Users(email, password, firstname, lastname, balance)
+                VALUES(:email, :password, :firstname, :lastname, :balance)
+                RETURNING id
+                """,
                                   email=email,
                                   password=generate_password_hash(password),
                                   firstname=firstname, lastname=lastname, balance=0)
@@ -63,11 +71,10 @@ RETURNING id
     @login.user_loader
     def get(id):
         rows = app.db.execute("""
-SELECT id, email, firstname, lastname, balance
-FROM Users
-WHERE id = :id
-""",
-                              id=id)
+            SELECT id, email, firstname, lastname, balance
+            FROM Users
+            WHERE id = :id
+            """, id=id)
         return User(*(rows[0])) if rows else None        
 
     def update_balance(self, withdraw_amt, add_amt):

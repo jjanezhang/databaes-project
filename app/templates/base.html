@@ -53,16 +53,14 @@
         {% if current_user.is_authenticated %}
           Hello {{current_user.firstname}}! 
           <a href="{{ url_for('index.index') }}" type="button" class="btn btn-light">Home</a>
+          <a href="{{ url_for('index.get_profile', uid=current_user.id) }}" type="button" class="btn btn-light">My Profile</a>
           <a href="{{ url_for('inventory.index') }}" type="button" class="btn btn-light">Inventory</a>
-          <a href="{{ url_for('users.manage_balance') }}" type="button" class="btn btn-light">Manage balance</a>
+          <a href="{{ url_for('users.manage_balance') }}" type="button" class="btn btn-light">Manage Balance</a>
           <a href="{{ url_for('ratings.index') }}" type="button" class="btn btn-light">My Ratings</a>
           <a href="{{ url_for('order_fulfillment.seller') }}" type="button" class="btn btn-light">My Orders (Seller)</a>
           <a href="{{ url_for('users.logout') }}" type="button" class="btn btn-light">Log out</a>
         {% else %}
           <a href="{{ url_for('index.index') }}" type="button" class="btn btn-light">Home</a>
-          <a href="{{ url_for('inventory.index') }}" type="button" class="btn btn-light">Inventory</a>
-          <a href="{{ url_for('ratings.index') }}" type="button" class="btn btn-light">My Ratings</a>
-          <a href="{{ url_for('order_fulfillment.seller') }}" type="button" class="btn btn-light">My Orders (Seller)</a>
           <a href="{{ url_for('users.login') }}" type="button" class="btn btn-light">Log in</a>
         {% endif %}
       </div>

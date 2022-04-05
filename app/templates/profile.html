@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<br>
+
+<h2> {{ user_profile.firstname }} {{ user_profile.lastname }}'s Profile</h2>
+<h3>Account Number: {{ user_profile.id }}</h3>
+
+{% if user_profile.is_seller %}
+<p> {{ user_profile.firstname }} {{ user_profile.lastname }} is a seller. You can reach them at {{ user_profile.email }}</p>
+
+{% else %}
+<p> {{ user_profile.firstname }} {{ user_profile.lastname }} is not a seller.</p>
+
+{% endif %}
+
+{% endblock %}

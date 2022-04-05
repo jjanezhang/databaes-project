@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, request
 from flask_login import current_user
 
 #
@@ -11,6 +11,7 @@ import datetime
 
 from .models.product import Product
 from .models.purchase import Purchase
+from .models.user import User
 from .models.rated import Rated
 from .ratings import AddRatingForm
 
@@ -54,6 +55,13 @@ def index():
     return render_template('index.html',
                            avail_products=products,
                            purchase_history=purchases)
+
+@bp.route('/profile/<uid>', methods=['GET'])
+def get_profile(uid):
+    user_profile = User.get(uid)
+    return render_template('profile.html',
+                        user_profile=user_profile)
+
                            
 @bp.route('/products/<product_name>/')
 def display_product(product_name):
@@ -81,6 +89,3 @@ def display_product(product_name):
 def all_products():
     avail_products = Product.get_all(True)
     return render_template('products.html', avail_products=avail_products)
-
-    
-

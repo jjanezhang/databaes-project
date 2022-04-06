@@ -105,9 +105,9 @@
           <a href="{{ url_for('inventory_and_order_stats.index') }}" class="menu-item">Inventory and Order Stats</a>
           <a href="{{ url_for('ratings.index') }}" class="menu-item">My Ratings</a>
           <a href="{{ url_for('order_fulfillment.seller') }}" class="menu-item">My Orders (Seller)</a>
-          <a href="{{ url_for('users.logout') }}" class="menu-item">Log out</a>
+          <a href="{{ url_for('users.logout') }}" class="menu-item">Log Out</a>
         {% else %}
-          <a href="{{ url_for('users.login') }}" class="menu-item">Log in</a>
+          <a href="{{ url_for('users.login') }}" class="menu-item">Log In</a>
         {% endif %}
       {% endblock %}
     </div>

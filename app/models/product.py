@@ -45,3 +45,12 @@ WHERE name = :product_name
 ''',
                               product_name=product_name)
         return [Product(*row) for row in rows]
+
+    @staticmethod
+    def get_sellers_and_quantities_for_product(product_name):
+        rows = app.db.execute('''
+            SELECT I.pid AS pid, U.firstname AS firstname, U.lastname AS lastname, I.quantity AS quantity
+            FROM Inventory I, Products P, Users U
+            WHERE I.pid = P.id AND U.id = I.uid AND I.quantity > 0 AND P.name = :product_name
+            ''', product_name=product_name)
+        return [{'pid': row['pid'], 'firstname': row['firstname'], 'lastname': row['lastname'], 'quantity': row['quantity']} for row in rows]

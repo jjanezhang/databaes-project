@@ -59,6 +59,10 @@ def get_profile(uid):
     return render_template('profile.html',
                         user_profile=user_profile)
 
+class AddToCartForm(FlaskForm):
+    seller = SelectField('Seller', validators=[DataRequired()])
+    quantity = IntegerField('Quantity', validators=[InputRequired(), NumberRange(min=0)])
+    submit = SubmitField('Add to Cart')
                            
 @bp.route('/products/<product_name>/')
 def display_product(product_name):
@@ -67,20 +71,25 @@ def display_product(product_name):
     clicked_product = Product.get_product_by_name(product_name)[0]
     product_id = clicked_product.id
     purchased_this_product = False
+    sellers_and_quantities = Product.get_sellers_and_quantities_for_product(product_name)
+    add_to_cart_form = AddToCartForm()
 
     if current_user.is_authenticated:
         uid = current_user.id #-- we'll add this after getting more data
         ret = Purchase.get_product_by_uid_pid(uid, product_id)
         purchased_this_product = ret[0] # boolean
+        print(sellers_and_quantities)
+        add_to_cart_form.seller.choices = [(val['pid'], val['firstname'] + " " + val['lastname']) for val in sellers_and_quantities]
         if purchased_this_product:
-            # return render_template('test.html')
             purchased_product = ret[1]
             return render_template('view_product.html', pname=product_name,
-            product=purchased_product, purchased_this_product=purchased_this_product)
+            product=purchased_product, purchased_this_product=purchased_this_product,
+            sellers_and_quantities=sellers_and_quantities, add_to_cart_form=add_to_cart_form)
     
     return render_template('view_product.html', pname=product_name,
             product=clicked_product, purchased_this_product=purchased_this_product,
-            add_rating_form = AddRatingForm())
+            add_rating_form = AddRatingForm(), sellers_and_quantities=sellers_and_quantities,
+            add_to_cart_form=add_to_cart_form)
     
 @bp.route('/products/')
 def all_products():

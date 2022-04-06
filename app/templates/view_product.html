@@ -4,37 +4,84 @@
 
 <br><br>
 
-<h2> <div style="text-align: left; margin-bottom: 25px; 
-    text-transform: capitalize; font-weight: bolder; font-style: bold;">
-        {{product.name}} </div> 
-</h2>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/view_product.css') }}">
 
-<div class="sidenav2">
-    <div style="color: white; text-align: left; margin-bottom: 25px">
-        Price: {{product.price}} 
+<div class="viewProductColumn">
+    <img class="viewProductImage" src="{{url_for('static', filename='css/' + pname +'.png')}}" />
+</div>
+
+<div class="viewProductColumn">
+    <h3 class="viewProductName">{{pname}}</h3>
+    <hr />
+    <div>
+        Price: 
+        <span class="viewProductPrice">
+            ${{product.price}}
+        </span>
     </div>
-    <div style="color: aliceblue; text-align: left; margin-bottom: 25px">
-    {% if purchased_this_product %}
-        You purchased this product last: {{product.time_fulfilled}}
-    {% endif %}
+    <br />
+    <div>
+        Description: Putting a placeholder here for now:) This product is super cool and super
+        good and you should definitely buy it.
+    </div>
+    <br />
+    <div>
+        {% if current_user.is_authenticated %}
+        {% if purchased_this_product %}
+            You purchased this product on <span class="viewProductTimestamp">{{product.time_purchased}}</span>
+            <br />
+        {% endif %}
+        <div class="rateProduct">
+            <form action="{{ url_for('ratings.add_rating') }}" method="post">
+                <input type="hidden" name="pid" value="{{ product.id }}"/>
+                <input class="viewProductButton" type="submit" value="Rate" />
+            </form>
+        </div>
+        {% else %}
+        <p><a href="{{ url_for('users.login') }}">Log in</a> to rate this product!</p>
+        {% endif %}
     </div>
 </div>
 
-
-<div class="formwrapper">
-<div class="formstyler">
-{% if current_user.is_authenticated %}
-<form action="{{ url_for('ratings.add_rating') }}" method="post">
-    <input type="hidden" name="pid" value="{{ product.id }}"/>
-    <input type="submit" value="Rate" />
-</form>
-{% else %}
-<p><a href="{{ url_for('users.login') }}">Log in</a> to rate this product!</p>
-{% endif %}
-
+<div class="viewProductColumn">
+    <div class="centerContent">
+        <h5>Sellers</h5>
+        <table class='table table-bordered container'>
+            <thead>
+                <tr>
+                <th scope="col">Seller</th>
+                <th scope="col">Quantity Available</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for val in sellers_and_quantities %}
+                <tr>
+                    <td>{{val.firstname}} {{val.lastname}}</th>
+                    <td>{{val.quantity}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <form class="centerContent">
+          <div>
+            {{ add_to_cart_form.seller.label }}
+            {{ add_to_cart_form.seller }}
+            {{ add_to_cart_form.quantity.label }}
+            {{ add_to_cart_form.quantity(size=10) }}
+          </div>
+          <span>
+          {% for error in add_to_cart_form.seller.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+          {% endfor %}
+          {% for error in add_to_cart_form.quantity.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+          {% endfor %}
+          </span>
+          <p> {{ add_to_cart_form.submit(class_="viewProductButton") }}</p>
+        </form>
+    </div>
 </div>
 </div>
-
-<img src="{{url_for('static', filename='css/' + pname +'.png')}}" />
+</div>
 
 {% endblock %} 

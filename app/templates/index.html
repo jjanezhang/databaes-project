@@ -1,24 +1,24 @@
 {% extends "base.html" %}
 
 {% block content %}
-
-<br><br>
+<br>
 {% if current_user.is_authenticated %}
-<h2> 
-  <div style="color: darkblue; text-align: left; margin-bottom: 25px; 
+<h3> 
+  <div style="color: black; text-align: left; margin-bottom: 20px; 
     text-transform: capitalize; font-weight: bolder; font-style: bold; ">
-    Welcome, {{current_user.firstname}} 
+    Welcome back, {{current_user.firstname}} 
   </div> 
-</h2>
-<h2> <div style="text-align:center;"> 
-  <a href="products/"> Click to see all products</a>
-</div></h2>
-<h2><div style="color: darkblue; text-align: left; margin-bottom: 25px; 
-  text-transform: capitalize; font-weight: bolder; font-style: bold;">
-  Your Recent Purchases:
-</div></h2>
+</h3>
+{% endif %}
 
-<table class='table table-hover table-bordered container'>
+{% include "products.html" %}
+<br>
+{% if current_user.is_authenticated %}
+<h3>
+  Your Recent Purchases:
+</h3>
+
+<table class="table table-hover table-bordered container">
   <thead class="thead-dark">
     <tr>
       <th scope="col">Order ID</th>
@@ -43,18 +43,7 @@
   </tbody>
 </table>
 {% else %}
-<h2> 
-  <div style="color: darkblue; text-align: left; margin-bottom: 25px; 
-    text-transform: capitalize; font-weight: bolder; font-style: bold; 
-    box-shadow: 0.5px 0.5px 0.5px 0.5px black;">
-    Welcome!
-  </div> 
-</h2>
-<p><a href="{{ url_for('users.login') }}">Log in</a> to see your purchase history!</p>
-
-<h2> <div style="text-align:center;"> 
-  <a href="products/"> Click to see all products</a>
-</div></h2>
+<p><a href="{{ url_for('users.login') }}">Log in</a> to see your purchase history</p>
 {% endif %}
 
 {% endblock %}

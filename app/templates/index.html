@@ -6,8 +6,7 @@
 {% if current_user.is_authenticated %}
 <h2> 
   <div style="color: darkblue; text-align: left; margin-bottom: 25px; 
-    text-transform: capitalize; font-weight: bolder; font-style: bold; 
-    box-shadow: 2px 2px 20px 23px skyblue;">
+    text-transform: capitalize; font-weight: bolder; font-style: bold; ">
     Welcome, {{current_user.firstname}} 
   </div> 
 </h2>
@@ -15,9 +14,8 @@
   <a href="products/"> Click to see all products</a>
 </div></h2>
 <h2><div style="color: darkblue; text-align: left; margin-bottom: 25px; 
-  text-transform: capitalize; font-weight: bolder; font-style: bold; 
-  box-shadow: 2px 2px 20px 20px skyblue;">
-  Rate your recent purchases:
+  text-transform: capitalize; font-weight: bolder; font-style: bold;">
+  Your Recent Purchases:
 </div></h2>
 
 <table class='table table-hover table-bordered container'>
@@ -25,6 +23,9 @@
     <tr>
       <th scope="col">Order ID</th>
       <th scope="col">Product Name</th>
+      <th scope="col">Qty Purchased</th>
+      <th scope="col">Total Price</th>
+      <th scope="col">Fullfillment Status</th>
       <th scope="col">Time Purchased</th>
     </tr>
   </thead>
@@ -33,7 +34,10 @@
       <tr>
         <th scope="row">{{purchase.oid}}</th>
         <td><a href="products/{{purchase.product_name}}"> {{purchase.product_name}} </a></td>
-        <td>{{purchase.time_purchased}}</td>
+        <td>{{purchase.quantity}}</td>
+        <td>{{purchase.price}}</td>
+        <td>{{purchase.fulfilled}}</td>
+        <td>{{purchase.time_purchased}}</td>        
       </tr>
     {% endfor %}
   </tbody>
@@ -42,7 +46,7 @@
 <h2> 
   <div style="color: darkblue; text-align: left; margin-bottom: 25px; 
     text-transform: capitalize; font-weight: bolder; font-style: bold; 
-    box-shadow: 2px 2px 20px 23px skyblue;">
+    box-shadow: 0.5px 0.5px 0.5px 0.5px black;">
     Welcome!
   </div> 
 </h2>

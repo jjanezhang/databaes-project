@@ -1,12 +1,9 @@
-from flask import Blueprint, render_template, request
+from flask import Blueprint, render_template, redirect, url_for, request
 from flask_login import current_user
-
-#
-from flask import redirect, url_for, request
 from flask_wtf import FlaskForm
 from wtforms import IntegerField, SelectField, SubmitField
 from wtforms.validators import DataRequired, NumberRange, InputRequired
-#
+
 import datetime
 
 from .models.product import Product

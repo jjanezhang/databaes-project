@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, url_for, request
+from flask import Blueprint, render_template, redirect, url_for, request, flash
 from flask_login import current_user
 from flask_wtf import FlaskForm
 from wtforms import IntegerField, SelectField, SubmitField
@@ -59,14 +59,16 @@ def display_product(product_name):
         add_to_cart_form.seller.choices = [(val['pid'], val['firstname'] + " " + val['lastname']) for val in sellers_and_quantities]
         if purchased_this_product:
             purchased_product = ret[1]
+            already_rated = Rated.already_rated(uid, product_id)
             return render_template('view_product.html', pname=product_name,
             product=purchased_product, purchased_this_product=purchased_this_product,
-            sellers_and_quantities=sellers_and_quantities, add_to_cart_form=add_to_cart_form)
+            sellers_and_quantities=sellers_and_quantities, 
+            add_to_cart_form=add_to_cart_form, already_rated=already_rated)
     
     return render_template('view_product.html', pname=product_name,
             product=clicked_product, purchased_this_product=purchased_this_product,
             add_rating_form = AddRatingForm(), sellers_and_quantities=sellers_and_quantities,
-            add_to_cart_form=add_to_cart_form)
+            add_to_cart_form=add_to_cart_form, already_rated=False)
 
 @bp.route('/add_rating/<product_name>', methods=['GET','POST'])
 def add_rating(product_name):
@@ -75,9 +77,15 @@ def add_rating(product_name):
     if request.method == 'POST':
         if current_user.is_authenticated:
             rating = request.form.get('Rating')
-            #review = request.form.get('Review')
-            if Rated.add_rating(current_user.id, product_id, rating):
+            already_rated = Rated.already_rated(current_user.id, product_id)
+            if already_rated: #Rated.add_rating(current_user.id, product_id, rating)
+                flash('Already rated this product!')
                 return redirect(url_for('index.display_product', product_name=product_name))
-
-    return redirect(url_for('ratings.index'))
+            else:
+                flash('Rating added successfully!')
+                return redirect(url_for('index.display_product', product_name=product_name))
+    else:
+        flash('Invalid rating')
+        return redirect(url_for('index.display_product', product_name=product_name))
+    # return redirect(url_for('ratings.index'))
 

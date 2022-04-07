@@ -18,6 +18,19 @@ class Rated:   # a rated item
         return [Rated(*row) for row in rows]
     
     @staticmethod
+    # Get all rated items purchased by this user
+    def already_rated(uid, pid):
+        rows = app.db.execute('''
+            SELECT R.uid AS uid, R.pid AS pid, P.name AS name, R.rating AS rating
+            FROM Ratings R, Products P
+            WHERE R.pid = P.id AND R.uid = :uid AND R.pid = :pid
+        ''', uid=uid, pid=pid)
+        rowcount = len(rows)
+        if rowcount>0:
+            return True
+        return False
+
+    @staticmethod
     # Add a new rating to a product this user purchased 
     def add_rating(uid, pid, rating):
         result = app.db.execute('''

@@ -1,5 +1,6 @@
+from unittest import result
 from flask import current_app as app
-
+from sqlalchemy.exc import SQLAlchemyError
 
 class Product:
     def __init__(self, id, name, price, available, image_url):
@@ -55,3 +56,14 @@ WHERE name = :product_name
             WHERE I.pid = P.id AND U.id = I.uid AND I.quantity > 0 AND P.name = :product_name
             ''', product_name=product_name)
         return [{'pid': row['pid'], 'firstname': row['firstname'], 'lastname': row['lastname'], 'quantity': row['quantity']} for row in rows]
+
+    @staticmethod
+    def create_product(name, price, available, image_url):
+        try: 
+            app.db.execute('''
+            INSERT INTO Products(name, price, available, image_url)
+            VALUES(:name, :price, :available, :image_url)
+            ''', name=name, price=price, available=available, image_url=image_url)
+        except SQLAlchemyError:
+            return 0
+        return result

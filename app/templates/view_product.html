@@ -26,6 +26,22 @@
     </div>
     <br />
     <div>
+        <div>
+            Average Rating: {% for a in avg_rating %}
+                {{a['rating']}}
+            {% endfor %}
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+                    {% for i in range(integer_rating) %}
+                        <span class="fa fa-star checked"></span>
+                        <!-- <span class="fa fa-star checked"></span>
+                        <span class="fa fa-star checked"></span>
+                        <span class="fa fa-star"></span>
+                        <span class="fa fa-star"></span> -->
+                    {% endfor %}
+                    {% for i in range(5-integer_rating) %}
+                    <span class="fa fa-star"></span>
+                    {% endfor %}
+            </div>
         {% if purchased_this_product %}
             You purchased this product on <span class="viewProductTimestamp">{{product.time_purchased}}</span>
             <br />
@@ -33,16 +49,8 @@
         <div class="rateProduct">
             <form action="{{ url_for('index.add_rating', product_name=pname) }}" method="post">
                 <!-- input type="hidden" name="pid" value="{{ product.id }}"/ -->
-                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-                    <span class="fa fa-star checked"></span>
-                    <span class="fa fa-star checked"></span>
-                    <span class="fa fa-star checked"></span>
-                    <span class="fa fa-star"></span>
-                    <span class="fa fa-star"></span>
-                <div></div>
-                <input class="addRatingButton" placeholder=
-                "1-5" type="number" name="Rating"
-                min="1" max="5"/>
+                <input class="addRatingButton" placeholder="1-5" 
+                type="number" name="Rating" min="1" max="5"/>
                 <input class="viewProductButton" type="submit" value="Rate" />
             </form>
         </div>

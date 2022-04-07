@@ -45,43 +45,54 @@ class AddToCartForm(FlaskForm):
 def display_product(product_name):
     """ Displays the product. 'product_name' is also the name of img file
     """
-    clicked_product = Product.get_product_by_name(product_name)[0]
-    product_id = clicked_product.id
+    product = Product.get_product_by_name(product_name)[0]
+    if product ==None:
+        return render_template("fail.html")
+    pid = product.id
+
     purchased_this_product = False
     sellers_and_quantities = Product.get_sellers_and_quantities_for_product(product_name)
     add_to_cart_form = AddToCartForm()
+    avg_rating = Rated.avg_rating_for_product(pid)
+    integer_rating = 0
+    for a in avg_rating:
+        #print("rating:", a['rating'])
+        integer_rating = int(a['rating'])
+    # print(type(avg_rating))
 
     if current_user.is_authenticated:
         uid = current_user.id 
-        ret = Purchase.get_product_by_uid_pid(uid, product_id)
+        ret = Purchase.get_product_by_uid_pid(uid, pid)
         purchased_this_product = ret[0] # boolean
         print(sellers_and_quantities)
         add_to_cart_form.seller.choices = [(val['pid'], val['firstname'] + " " + val['lastname']) for val in sellers_and_quantities]
         if purchased_this_product:
             purchased_product = ret[1]
-            already_rated = Rated.already_rated(uid, product_id)
+            already_rated = Rated.already_rated(uid, pid)
             return render_template('view_product.html', pname=product_name,
             product=purchased_product, purchased_this_product=purchased_this_product,
             sellers_and_quantities=sellers_and_quantities, 
-            add_to_cart_form=add_to_cart_form, already_rated=already_rated)
+            add_to_cart_form=add_to_cart_form, avg_rating=avg_rating, integer_rating =integer_rating)
     
     return render_template('view_product.html', pname=product_name,
-            product=clicked_product, purchased_this_product=purchased_this_product,
+            product=product, purchased_this_product=purchased_this_product,
             add_rating_form = AddRatingForm(), sellers_and_quantities=sellers_and_quantities,
-            add_to_cart_form=add_to_cart_form, already_rated=False)
+            add_to_cart_form=add_to_cart_form, avg_rating=avg_rating, integer_rating =integer_rating)
 
 @bp.route('/add_rating/<product_name>', methods=['GET','POST'])
 def add_rating(product_name):
     product = Product.get_product_by_name(product_name)[0]
-    product_id = product.id
+    pid = product.id
+    uid = current_user.id
     if request.method == 'POST':
         if current_user.is_authenticated:
-            rating = request.form.get('Rating')
-            already_rated = Rated.already_rated(current_user.id, product_id)
+            already_rated = Rated.already_rated(uid, pid)
             if already_rated: #Rated.add_rating(current_user.id, product_id, rating)
                 flash('Already rated this product!')
                 return redirect(url_for('index.display_product', product_name=product_name))
             else:
+                rating = request.form.get('Rating')
+                result = Rated.add_rating(uid, pid, rating)
                 flash('Rating added successfully!')
                 return redirect(url_for('index.display_product', product_name=product_name))
     else:

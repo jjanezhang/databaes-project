@@ -1,3 +1,4 @@
 0,icecream@tastes.good,pbkdf2:sha256:260000$1GvmeoAkcWb89TyU$5f711eafb243c1c1a884715dd9bd6d185f29ccd3dab59ad19cc201a7260091cb,Joey,Shmoey,10
 1,icecream@tastes.bad,pbkdf2:sha256:260000$1GvmeoAkcWb89TyU$5f711eafb243c1c1a884715dd9bd6d185f29ccd3dab59ad19cc201a7260091cb,Joey,Shmoey,20
 2,a@b.com,pbkdf2:sha256:260000$rYRR5myrgUxzdyln$48465a1e60fbd3ad2df5c79ebb0a03753a1cde0f4366cdb24563fe54cbc35f6e,a,b,200
+3,c@d.com,pbkdf2:sha256:260000$HE9EA2JojEunT9E0$394af81686ec83442227920d979ed6e6382ee662f33c59db4e6c336d8b34dcd3,c,d,1000

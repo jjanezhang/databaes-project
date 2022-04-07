@@ -44,6 +44,8 @@ FROM Products
 WHERE name = :product_name
 ''',
                               product_name=product_name)
+        if len(rows) ==0:
+            return [None]
         return [Product(*row) for row in rows]
 
     @staticmethod

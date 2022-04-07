@@ -29,6 +29,19 @@ class Rated:   # a rated item
         if rowcount>0:
             return True
         return False
+    
+    @staticmethod
+    # Get all rated items purchased by this user
+    def avg_rating_for_product(pid):
+        rows = app.db.execute('''
+            SELECT ROUND(AVG(R.rating),1) AS rating
+            FROM Ratings R
+            WHERE R.pid = :pid
+        ''', pid=pid)
+        rowcount = len(rows)
+        if rowcount>0:
+            return rows
+        return None
 
     @staticmethod
     # Add a new rating to a product this user purchased 

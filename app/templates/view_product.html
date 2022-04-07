@@ -7,11 +7,11 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/view_product.css') }}">
 
 <div class="viewProductColumn">
-    <img class="viewProductImage" src="{{url_for('static', filename='css/' + pname +'.png')}}" />
+    <img class="viewProductImage" src="{{ product.image_url }}" />
 </div>
 
 <div class="viewProductColumn">
-    <h3 class="viewProductName">{{pname}}</h3>
+    <h3 class="viewProductName">{{ product.name }}</h3>
     <hr />
     <div>
         Price: 
@@ -28,7 +28,7 @@
     <div>
         {% if current_user.is_authenticated %}
         {% if purchased_this_product %}
-            You purchased this product on <span class="viewProductTimestamp">{{product.time_purchased}}</span>
+            You purchased this product on <span class="viewProductTimestamp">{{purchase.time_purchased}}</span>
             <br />
         {% endif %}
         <div class="rateProduct">

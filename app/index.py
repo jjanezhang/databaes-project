@@ -67,28 +67,17 @@ def display_product(product_name):
             product=clicked_product, purchased_this_product=purchased_this_product,
             add_rating_form = AddRatingForm(), sellers_and_quantities=sellers_and_quantities,
             add_to_cart_form=add_to_cart_form)
-    
-@bp.route('/products/')
-def all_products():
-    avail_products = Product.get_all(True)
-    return render_template('products.html', avail_products=avail_products)
 
 @bp.route('/add_rating/<product_name>', methods=['GET','POST'])
 def add_rating(product_name):
-    # return "Failure!"
     product = Product.get_product_by_name(product_name)[0]
     product_id = product.id
-    # product_id =1
     if request.method == 'POST':
-        # return "POST!" # works
         if current_user.is_authenticated:
-            # return "AUTHENTICATED!" # works
             rating = request.form.get('Rating')
+            #review = request.form.get('Review')
             if Rated.add_rating(current_user.id, product_id, rating):
-                # return 'Rating added!'
                 return redirect(url_for('index.display_product', product_name=product_name))
-        #review = request.form.get('Review')
-    #return redirect(url_for('index.display_product', product_name=product_name))
-    return "NOT!"
-    # return redirect(url_for('ratings.index'))
+
+    return redirect(url_for('ratings.index'))
 

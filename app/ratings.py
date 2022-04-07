@@ -46,9 +46,6 @@ def getTemplateVariables():
 @bp.route('/')
 def index():
     (purchased_products, ratings_form, add_rating_form) = getTemplateVariables()
-    # if current_user.is_authenticated:
-    #     if current_user.id ==2:
-    #         return render_template('test.html')
     return render_template('ratings.html', 
                             purchased_products=purchased_products,
                             ratings_form=ratings_form,

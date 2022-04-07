@@ -65,16 +65,16 @@ def update_rating():
                             ratings_form=ratings_form,
                             add_rating_form=add_rating_form)
 
-@bp.route('/add_rating', methods=['POST'])
-def add_rating():
-    (purchased_products, ratings_form, add_rating_form) = getTemplateVariables()
-    if current_user.is_authenticated and add_rating_form.validate_on_submit():
-        if Rated.add_rating(current_user.id, ratings_form.pid.data, ratings_form.new_rating.data):
-            return redirect(url_for('ratings.index'))
-    return render_template('ratings.html', 
-                            purchased_products=purchased_products,
-                            ratings_form=ratings_form,
-                            add_rating_form=add_rating_form)
+# @bp.route('/add_rating', methods=['POST'])
+# def add_rating():
+#     (purchased_products, ratings_form, add_rating_form) = getTemplateVariables()
+#     if current_user.is_authenticated and add_rating_form.validate_on_submit():
+#         if Rated.add_rating(current_user.id, ratings_form.pid.data, ratings_form.new_rating.data):
+#             return redirect(url_for('ratings.index'))
+#     return render_template('ratings.html', 
+#                             purchased_products=purchased_products,
+#                             ratings_form=ratings_form,
+#                             add_rating_form=add_rating_form)
 
 @bp.route('/remove_rating', methods=['POST'])
 def remove_rating():

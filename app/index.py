@@ -14,29 +14,6 @@ from .ratings import AddRatingForm
 
 bp = Blueprint('index', __name__)
 
-class AddRatingForm(FlaskForm):
-    #pid = SelectField('Product Name', validators=[DataRequired()])
-    new_rating = IntegerField('Rating', validators=[InputRequired(), NumberRange(min=0, max=5)])
-    submit = SubmitField('Add Rating')
-
-class RatingsForm(FlaskForm):
-    #pid = SelectField('Product Name', validators=[DataRequired()])
-    new_rating = IntegerField('Rating', validators=[InputRequired(), NumberRange(min=0, max=5)])
-    submit = SubmitField('Update Rating')
-
-@bp.route('/products/<product_name>/add_rating', methods=['GET','POST'])
-def add_rating(product_name):
-    add_rating_form = AddRatingForm()
-    pid = Product.get_product_by_name(product_name)[0].id
-
-    if current_user.is_authenticated and add_rating_form.validate_on_submit():
-        if Rated.add_rating(current_user.id, pid, add_rating_form.new_rating.data):
-            return redirect(url_for('index.index'))
-    return render_template('products.html',
-                            ratings_form=ratings_form,
-                            add_rating_form=add_rating_form,
-                            product_name=product_name, pid=pid)
-
 @bp.route('/')
 def index():
     # get all available products for sale:
@@ -75,7 +52,7 @@ def display_product(product_name):
     add_to_cart_form = AddToCartForm()
 
     if current_user.is_authenticated:
-        uid = current_user.id #-- we'll add this after getting more data
+        uid = current_user.id 
         ret = Purchase.get_product_by_uid_pid(uid, product_id)
         purchased_this_product = ret[0] # boolean
         print(sellers_and_quantities)
@@ -95,3 +72,23 @@ def display_product(product_name):
 def all_products():
     avail_products = Product.get_all(True)
     return render_template('products.html', avail_products=avail_products)
+
+@bp.route('/add_rating/<product_name>', methods=['GET','POST'])
+def add_rating(product_name):
+    # return "Failure!"
+    product = Product.get_product_by_name(product_name)[0]
+    product_id = product.id
+    # product_id =1
+    if request.method == 'POST':
+        # return "POST!" # works
+        if current_user.is_authenticated:
+            # return "AUTHENTICATED!" # works
+            rating = request.form.get('Rating')
+            if Rated.add_rating(current_user.id, product_id, rating):
+                # return 'Rating added!'
+                return redirect(url_for('index.display_product', product_name=product_name))
+        #review = request.form.get('Review')
+    #return redirect(url_for('index.display_product', product_name=product_name))
+    return "NOT!"
+    # return redirect(url_for('ratings.index'))
+

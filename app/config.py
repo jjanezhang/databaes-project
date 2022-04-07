@@ -8,3 +8,5 @@ class Config(object):
                 os.environ.get('DB_PASSWORD'),
                 os.environ.get('DB_NAME'))
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
+    AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')

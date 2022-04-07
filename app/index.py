@@ -1,15 +1,15 @@
-from flask import Blueprint, render_template, redirect, url_for, request
+import datetime
+
+from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask_login import current_user
 from flask_wtf import FlaskForm
 from wtforms import IntegerField, SelectField, SubmitField
-from wtforms.validators import DataRequired, NumberRange, InputRequired
-
-import datetime
+from wtforms.validators import DataRequired, InputRequired, NumberRange
 
 from .models.product import Product
 from .models.purchase import Purchase
-from .models.user import User
 from .models.rated import Rated
+from .models.user import User
 from .ratings import AddRatingForm
 
 bp = Blueprint('index', __name__)
@@ -91,4 +91,3 @@ def add_rating(product_name):
     #return redirect(url_for('index.display_product', product_name=product_name))
     return "NOT!"
     # return redirect(url_for('ratings.index'))
-

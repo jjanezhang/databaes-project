@@ -9,14 +9,17 @@
 <div class="viewProductColumn">
     <img class="viewProductImage" src="{{url_for('static', filename='css/' + pname +'.png')}}" />
 </div>
+<!-- <a href="/reviews" class="reviewsLink"> Reviews </a> -->
 
 <div class="viewProductColumn">
-    <h3 class="viewProductName">{{pname}}</h3>
+    <h3 class="viewProductName">{{pname}}
+    </h3>
     <hr />
     <div>
         Price: 
         <span class="viewProductPrice">
-            ${{product.price}}
+            ${{product.price}} 
+            <a href="{{ url_for('index.display_reviews', product_name=pname) }}" class="reviewsLink"> Reviews </a>
         </span>
     </div>
     <br />
@@ -41,11 +44,12 @@
                     {% for i in range(5-integer_rating) %}
                     <span class="fa fa-star"></span>
                     {% endfor %}
+
+            <div>Rated by: {{num_ratings}} people</div> 
             </div>
         {% if purchased_this_product %}
             You purchased this product on <span class="viewProductTimestamp">{{product.time_purchased}}</span>
             <br />
-
         <div class="rateProduct">
             <form action="{{ url_for('index.add_rating', product_name=pname) }}" method="post">
                 <!-- input type="hidden" name="pid" value="{{ product.id }}"/ -->

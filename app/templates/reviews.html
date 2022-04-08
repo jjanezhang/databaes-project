@@ -1,0 +1,26 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+<br> <br>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/view_product.css') }}">
+
+{% for rn in reviews_and_names %}
+{% if rn['review']=="" %}
+<div class="rateProduct">
+    <p>{{rn['firstname']}} &#160 {{rn['lastname']}}</p>
+    <p>{{rn['rating']}} </p>
+    <p>{{rn['review']}} </p>
+    <form action="{{ url_for('index.display_reviews', product_name=pname) }}" method="post">
+        <input class="viewProductButton" type="submit" value="Upvote" />
+    </form>
+</div>
+{% else %}
+<p>Failure!</p> 
+{% endif %}
+
+{% endfor %}
+<!-- <input type="button" class="arrow up" name="upvote" value="Upvote" > -->
+
+{% endblock %} 

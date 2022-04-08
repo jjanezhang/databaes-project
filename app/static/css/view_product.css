@@ -8,6 +8,14 @@
     text-align: center;
 }
 
+.reviewsLink{
+    color: teal;
+    font-size: 18px;
+    text-decoration: none;
+    align-items: center;
+    padding: 0px 20px;
+}
+
 .addRatingButton {
     background: #e0dcc9;
     border: none;
@@ -79,4 +87,16 @@
 }
 .checked{
     color: orange
+}
+.arrow{
+    border: solid green;
+    border-width: 0 3px 3px 0;
+    display: inline-block;
+    padding: 3px;
+    align-items: right;
+}
+
+.up {
+    transform: rotate(-135deg);
+    -webkit-transform: rotate(-135deg);
 }

@@ -1,4 +1,6 @@
-from flask import Blueprint, render_template, redirect, url_for, request, flash
+import datetime
+
+from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask_login import current_user
 from flask_wtf import FlaskForm
 from wtforms import IntegerField, SelectField, SubmitField
@@ -51,13 +53,14 @@ def display_product(product_name):
     purchased_this_product = False
     sellers_and_quantities = Product.get_sellers_and_quantities_for_product(product_name)
     add_to_cart_form = AddToCartForm()
+
     avg_rating = Rated.avg_rating_for_product(pid)
-    # print(avg_rating)
     integer_rating =0
     for a in avg_rating:
-        if avg_rating != []:
-            integer_rating = int(a['rating'])
-    print(type(avg_rating))
+        if avg_rating != [(None,)]:
+            print("a in avg rating: " , a)
+            # integer_rating = int(a['rating'])
+    # print(type(avg_rating))
 
     num_ratings = Rated.num_ratings_for_product(pid)
     for num in num_ratings:
@@ -67,7 +70,7 @@ def display_product(product_name):
         uid = current_user.id 
         ret = Purchase.get_product_by_uid_pid(uid, pid)
         purchased_this_product = ret[0] # boolean
-        print(sellers_and_quantities)
+        # print(sellers_and_quantities)
         add_to_cart_form.seller.choices = [(val['pid'], val['firstname'] + " " + val['lastname']) for val in sellers_and_quantities]
         if purchased_this_product:
             purchased_product = ret[1]

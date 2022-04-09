@@ -58,6 +58,7 @@ class Rated:   # a rated item
             WHERE R.pid = :pid
         ''', pid=pid)
         rowcount = len(rows)
+        # print("rows: ", rows)
         if rowcount>0:
             return rows
         return []

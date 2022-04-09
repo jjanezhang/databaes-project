@@ -128,6 +128,7 @@ def display_reviews(product_name):
         # print("user: ", both['firstname']+ " " + both['lastname'])
         # for u in user:
         #     print("u: ", u)
+    # if request.method == 'POST':
     return render_template("reviews.html", pname=product_name, reviews=reviews,
     usernames=usernames, reviews_and_names=reviews_and_names)
 

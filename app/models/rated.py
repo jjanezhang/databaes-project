@@ -30,7 +30,7 @@ class Rated:   # a rated item
     def get_reviews_and_reviewers_by_pid_uid(pid, uid):
         rows = app.db.execute('''
             SELECT U.firstname as firstname, U.lastname as lastname, 
-            R.rating as rating, R.review as review
+            R.rating as rating, R.review as review, R.uid as uid
             FROM Ratings R, Users U
             WHERE R.pid = :pid AND R.uid = U.id AND U.id = :uid
         ''', pid=pid, uid=uid)

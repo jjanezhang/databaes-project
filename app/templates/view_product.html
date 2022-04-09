@@ -95,7 +95,8 @@
             </tbody>
         </table>
             {% if current_user.is_authenticated %}
-            <form class="centerContent">
+            <form action="{{ url_for('cart.add_product') }}" method="post" class="centerContent">
+                {{ add_to_cart_form.hidden_tag() }}
                 <div>
                     {{ add_to_cart_form.seller.label }}
                     {{ add_to_cart_form.seller }}
@@ -112,6 +113,12 @@
                 </span>
                 <p> {{ add_to_cart_form.submit(class_="viewProductButton") }}</p>
             </form>
+            {% for message in get_flashed_messages() %}
+                <div class="alert alert-warning">
+                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    {{ message }}
+                </div>
+            {% endfor %}
             {% else %}
             <p><a href="{{ url_for('users.login') }}">Log in</a> to add this product to your cart!</p>
             {% endif %}

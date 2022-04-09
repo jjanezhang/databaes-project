@@ -45,49 +45,89 @@ class AddToCartForm(FlaskForm):
 def display_product(product_name):
     """ Displays the product. 'product_name' is also the name of img file
     """
-    clicked_product = Product.get_product_by_name(product_name)[0]
-    product_id = clicked_product.id
+    product = Product.get_product_by_name(product_name)[0]
+    if product ==None:
+        return render_template("fail.html")
+    pid = product.id
+
     purchased_this_product = False
     sellers_and_quantities = Product.get_sellers_and_quantities_for_product(product_name)
     add_to_cart_form = AddToCartForm()
 
+    avg_rating = Rated.avg_rating_for_product(pid)
+    integer_rating =0
+    for a in avg_rating:
+        if avg_rating != [(None,)]:
+            print("a in avg rating: " , a)
+            integer_rating = int(a['rating'])
+    # print(type(avg_rating))
+
+    num_ratings = Rated.num_ratings_for_product(pid)
+    for num in num_ratings:
+        num_ratings = int(num['num_ratings'])
+
     if current_user.is_authenticated:
         uid = current_user.id 
-        ret = Purchase.get_product_by_uid_pid(uid, product_id)
+        ret = Purchase.get_product_by_uid_pid(uid, pid)
         purchased_this_product = ret[0] # boolean
-        print(sellers_and_quantities)
+        # print(sellers_and_quantities)
         add_to_cart_form.seller.choices = [(val['pid'], val['firstname'] + " " + val['lastname']) for val in sellers_and_quantities]
         if purchased_this_product:
             purchased_product = ret[1]
+            already_rated = Rated.already_rated(uid, pid)
             return render_template('view_product.html', pname=product_name,
-            product=clicked_product, purchase=purchased_product, purchased_this_product=purchased_this_product,
-            sellers_and_quantities=sellers_and_quantities, add_to_cart_form=add_to_cart_form)
+            product=purchased_product, purchased_this_product=purchased_this_product,
+            sellers_and_quantities=sellers_and_quantities, 
+            add_to_cart_form=add_to_cart_form, avg_rating=avg_rating, 
+            integer_rating =integer_rating, num_ratings=num_ratings)
     
     return render_template('view_product.html', pname=product_name,
-            product=clicked_product, purchased_this_product=purchased_this_product,
+            product=product, purchased_this_product=purchased_this_product,
             add_rating_form = AddRatingForm(), sellers_and_quantities=sellers_and_quantities,
-            add_to_cart_form=add_to_cart_form)
-    
-@bp.route('/products/')
-def all_products():
-    avail_products = Product.get_all(True)
-    return render_template('products.html', avail_products=avail_products)
+            add_to_cart_form=add_to_cart_form, avg_rating=avg_rating, 
+            integer_rating =integer_rating, num_ratings=num_ratings)
 
 @bp.route('/add_rating/<product_name>', methods=['GET','POST'])
 def add_rating(product_name):
-    # return "Failure!"
     product = Product.get_product_by_name(product_name)[0]
-    product_id = product.id
-    # product_id =1
+    pid = product.id
+    uid = current_user.id
     if request.method == 'POST':
-        # return "POST!" # works
         if current_user.is_authenticated:
-            # return "AUTHENTICATED!" # works
-            rating = request.form.get('Rating')
-            if Rated.add_rating(current_user.id, product_id, rating):
-                # return 'Rating added!'
+            already_rated = Rated.already_rated(uid, pid)
+            if already_rated: #Rated.add_rating(current_user.id, product_id, rating)
+                flash('Already rated this product!')
                 return redirect(url_for('index.display_product', product_name=product_name))
-        #review = request.form.get('Review')
-    #return redirect(url_for('index.display_product', product_name=product_name))
-    return "NOT!"
+            else:
+                rating = request.form.get('Rating')
+                result = Rated.add_rating(uid, pid, rating)
+                flash('Rating added successfully!')
+                return redirect(url_for('index.display_product', product_name=product_name))
+    else:
+        flash('Invalid rating')
+        return redirect(url_for('index.display_product', product_name=product_name))
     # return redirect(url_for('ratings.index'))
+
+@bp.route('/<product_name>/reviews')
+def display_reviews(product_name):
+    # return render_template("fail.html")
+    product = Product.get_product_by_name(product_name)[0]
+    pid = product.id
+    reviews = Rated.get_all_reviews_by_pid(pid)
+    usernames = []
+    reviews_and_names = []
+    for review in reviews:
+        print("review: ", review)
+        uid = review['uid']
+        review_and_name = Rated.get_reviews_and_reviewers_by_pid_uid(pid, uid)[0]
+        # print("review+ reviewer: ", review_and_name)
+        reviews_and_names.append(review_and_name)
+        # user = User.get_names(uid)[0]
+        # username = user['firstname']+ " " + user['lastname']
+        # usernames.append(username)
+        # print("user: ", both['firstname']+ " " + both['lastname'])
+        # for u in user:
+        #     print("u: ", u)
+    return render_template("reviews.html", pname=product_name, reviews=reviews,
+    usernames=usernames, reviews_and_names=reviews_and_names)
+

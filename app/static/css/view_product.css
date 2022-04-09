@@ -8,13 +8,21 @@
     text-align: center;
 }
 
+.reviewsLink{
+    color: teal;
+    font-size: 18px;
+    text-decoration: none;
+    align-items: center;
+    padding: 0px 20px;
+}
+
 .addRatingButton {
     background: #e0dcc9;
     border: none;
     border-radius: 20px;
     cursor: pointer;
-    padding: 5px 40px;
-    margin-top: 20px;
+    padding: 5px 30px;
+    margin-top: 0px;
 }
 .viewProductButton {
     background: #ffd814;
@@ -46,4 +54,49 @@
 
 .viewProductTimestamp {
     color: #007185;
+}
+
+.flashMessages{
+    color: #b12704;
+    font-size: 100%;
+}
+#hideMe {
+    -moz-animation: cssAnimation 0s ease-in 5s forwards;
+    /* Firefox */
+    -webkit-animation: cssAnimation 0s ease-in 5s forwards;
+    /* Safari and Chrome */
+    -o-animation: cssAnimation 0s ease-in 5s forwards;
+    /* Opera */
+    animation: cssAnimation 0s ease-in 5s forwards;
+    -webkit-animation-fill-mode: forwards;
+    animation-fill-mode: forwards;
+}
+@keyframes cssAnimation {
+    to {
+        width:0;
+        height:0;
+        overflow:hidden;
+    }
+}
+@-webkit-keyframes cssAnimation {
+    to {
+        width:0;
+        height:0;
+        visibility:hidden;
+    }
+}
+.checked{
+    color: orange
+}
+.arrow{
+    border: solid green;
+    border-width: 0 3px 3px 0;
+    display: inline-block;
+    padding: 3px;
+    align-items: right;
+}
+
+.up {
+    transform: rotate(-135deg);
+    -webkit-transform: rotate(-135deg);
 }

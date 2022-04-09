@@ -68,6 +68,15 @@ class User(UserMixin):
             return None
 
     @staticmethod
+    def get_names(id):
+        rows = app.db.execute("""
+            SELECT firstname, lastname
+            FROM Users
+            WHERE id = :id
+            """, id=id)
+        return rows if rows else None
+
+    @staticmethod
     @login.user_loader
     def get(id):
         rows = app.db.execute("""

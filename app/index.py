@@ -59,7 +59,7 @@ def display_product(product_name):
     for a in avg_rating:
         if avg_rating != [(None,)]:
             print("a in avg rating: " , a)
-            # integer_rating = int(a['rating'])
+            integer_rating = int(a['rating'])
     # print(type(avg_rating))
 
     num_ratings = Rated.num_ratings_for_product(pid)

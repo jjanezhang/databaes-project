@@ -76,7 +76,7 @@ def display_product(product_name):
             purchased_product = ret[1]
             already_rated = Rated.already_rated(uid, pid)
             return render_template('view_product.html', pname=product_name,
-            product=purchased_product, purchased_this_product=purchased_this_product,
+            product=product, purchased_this_product=purchased_this_product,
             sellers_and_quantities=sellers_and_quantities, 
             add_to_cart_form=add_to_cart_form, avg_rating=avg_rating, 
             integer_rating =integer_rating, num_ratings=num_ratings)

@@ -1,18 +1,35 @@
 {% extends "base.html" %}
 
 {% block content %}
+<style>
+    .vl {
+      border-left: 3px solid grey;
+    }
+    .column {
+        padding: 20px;
+    }
+    .row {
+        margin: 10px;
+    }
+</style>
 
 <br>
 
-<h2> {{ user_profile.firstname }} {{ user_profile.lastname }}'s Profile</h2>
-<h3>Account Number: {{ user_profile.id }}</h3>
+<div class="row">
+    <div class="column">
+        <h2> {{ user_profile.firstname }} {{ user_profile.lastname }}</h2>
+    </div>
+    <div class="vl"></div>
+    <div class="column">
+        <p>Account Number: {{ user_profile.id }}</p>
+        {% if user_profile.is_seller %}
+        <p> {{ user_profile.firstname }} {{ user_profile.lastname }} is a seller. You can reach them at {{ user_profile.email }}</p>
 
-{% if user_profile.is_seller %}
-<p> {{ user_profile.firstname }} {{ user_profile.lastname }} is a seller. You can reach them at {{ user_profile.email }}</p>
+        {% else %}
+        <p> {{ user_profile.firstname }} {{ user_profile.lastname }} is not a seller.</p>
 
-{% else %}
-<p> {{ user_profile.firstname }} {{ user_profile.lastname }} is not a seller.</p>
-
-{% endif %}
+        {% endif %}
+    </div>
+</div>
 
 {% endblock %}

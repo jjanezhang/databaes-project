@@ -2,7 +2,28 @@
 
 {% block content %}
 
+<style>
+  .btn-analytics{
+    color:white;
+    background-color: #0096FF;
+    border: 2px solid #0096FF;
+    float:right;
+    padding: 5px 10px;
+    border-radius: 5px;
+  }
+  .btn-analytics:hover{
+    color:#0096FF;
+    border: 2px solid #0096FF;
+    background-color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    text-decoration: none;
+  }
+</style>
+
 <br><br>
+
+<a href="{{ url_for('inventory.index') }}" class="btn-analytics">Back to Inventory Details</a>
 
 {% if current_user.is_authenticated %}
 <h3>Inventory Analytics</h3>

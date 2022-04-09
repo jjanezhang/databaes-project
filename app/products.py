@@ -44,7 +44,6 @@ def upload_files_to_s3(file):
         if file_to_upload:
             file_name = secure_filename(file_to_upload.filename)
             bucket_name = "mini-amazon-databaes"
-            region = "us-east-2"
             res = s3_upload_small_files(file_to_upload, bucket_name, file_name, content_type)
             if res['ResponseMetadata']['HTTPStatusCode']:
                 return True, f"https://{bucket_name}.s3.amazonaws.com/{file_name}"

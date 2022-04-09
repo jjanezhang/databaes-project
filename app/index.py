@@ -2,14 +2,12 @@ from flask import Blueprint, render_template, redirect, url_for, request, flash
 from flask_login import current_user
 from flask_wtf import FlaskForm
 from wtforms import IntegerField, SelectField, SubmitField
-from wtforms.validators import DataRequired, NumberRange, InputRequired
-
-import datetime
+from wtforms.validators import DataRequired, InputRequired, NumberRange
 
 from .models.product import Product
 from .models.purchase import Purchase
-from .models.user import User
 from .models.rated import Rated
+from .models.user import User
 from .ratings import AddRatingForm
 
 bp = Blueprint('index', __name__)
@@ -56,7 +54,6 @@ def display_product(product_name):
     avg_rating = Rated.avg_rating_for_product(pid)
     # print(avg_rating)
     integer_rating =0
-    
     for a in avg_rating:
         if avg_rating != []:
             integer_rating = int(a['rating'])

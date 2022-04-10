@@ -3,7 +3,7 @@ import datetime
 from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask_login import current_user
 from flask_wtf import FlaskForm
-from wtforms import IntegerField, SelectField, SubmitField
+from wtforms import IntegerField, SelectField, SubmitField, HiddenField
 from wtforms.validators import DataRequired, InputRequired, NumberRange
 
 from .models.product import Product
@@ -37,6 +37,7 @@ def get_profile(uid):
                         user_profile=user_profile)
 
 class AddToCartForm(FlaskForm):
+    pid = HiddenField()
     seller = SelectField('Seller', validators=[DataRequired()])
     quantity = IntegerField('Quantity', validators=[InputRequired(), NumberRange(min=0)])
     submit = SubmitField('Add to Cart')
@@ -52,7 +53,7 @@ def display_product(product_name):
 
     purchased_this_product = False
     sellers_and_quantities = Product.get_sellers_and_quantities_for_product(product_name)
-    add_to_cart_form = AddToCartForm()
+    add_to_cart_form = AddToCartForm(pid = pid)
 
     avg_rating = Rated.avg_rating_for_product(pid)
     integer_rating =0
@@ -71,7 +72,7 @@ def display_product(product_name):
         ret = Purchase.get_product_by_uid_pid(uid, pid)
         purchased_this_product = ret[0] # boolean
         # print(sellers_and_quantities)
-        add_to_cart_form.seller.choices = [(val['pid'], val['firstname'] + " " + val['lastname']) for val in sellers_and_quantities]
+        add_to_cart_form.seller.choices = [(val['sid'], val['firstname'] + " " + val['lastname']) for val in sellers_and_quantities]
         if purchased_this_product:
             purchased_product = ret[1]
             already_rated = Rated.already_rated(uid, pid)

@@ -6,6 +6,13 @@
 
 <link rel="stylesheet" href="{{ url_for('static', filename='css/view_product.css') }}">
 
+{% for message in get_flashed_messages() %}
+<div class="alert alert-warning">
+    <button type="button" class="close" data-dismiss="alert">&times;</button>
+    {{ message }}
+</div>
+{% endfor %}
+
 <div class="viewProductColumn">
     <img class="viewProductImage" src="{{ product.image_url }}" />
 </div>
@@ -90,7 +97,8 @@
             </tbody>
         </table>
             {% if current_user.is_authenticated %}
-            <form class="centerContent">
+            <form action="{{ url_for('cart.add_product') }}" method="post" class="centerContent">
+                {{ add_to_cart_form.hidden_tag() }}
                 <div>
                     {{ add_to_cart_form.seller.label }}
                     {{ add_to_cart_form.seller }}

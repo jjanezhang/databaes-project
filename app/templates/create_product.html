@@ -14,7 +14,7 @@
   {% endif %}
 {% endwith %}
 
-<h2>Create a product!</h2>
+<h2>Create a Product</h2>
 <form action="{{ url_for('products.create') }}" method="post" enctype="multipart/form-data">
     {{ create_product_form.hidden_tag() }}
   <p>
@@ -28,6 +28,13 @@
     {{ create_product_form.price.label }}<br/>
     {{ create_product_form.price(size=10) }}<br/>
     {% for error in create_product_form.price.errors %}
+    <span style="color: red;">[{{ error }}]</span>
+    {% endfor %}
+  </p>
+  <p>
+    {{ create_product_form.description.label }}<br/>
+    {{ create_product_form.description }}<br/>
+    {% for error in create_product_form.description.errors %}
     <span style="color: red;">[{{ error }}]</span>
     {% endfor %}
   </p>

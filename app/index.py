@@ -130,4 +130,3 @@ def display_reviews(product_name):
         #     print("u: ", u)
     return render_template("reviews.html", pname=product_name, reviews=reviews,
     usernames=usernames, reviews_and_names=reviews_and_names)
-

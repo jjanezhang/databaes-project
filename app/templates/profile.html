@@ -2,25 +2,26 @@
 
 {% block content %}
 <style>
-    .vl {
-      border-left: 3px solid grey;
+    .profile-vl{
+        border-left: 2px solid grey;
     }
-    .column {
-        padding: 20px;
+    .profile-column {
+        margin: 5px 10px;
+        flex: 50%;
     }
-    .row {
-        margin: 10px;
+    .profile-row {
+        display: flex;
     }
 </style>
 
 <br>
 
-<div class="row">
-    <div class="column">
+<div class="profile-row">
+    <div class="profile-column">
         <h2> {{ user_profile.firstname }} {{ user_profile.lastname }}</h2>
     </div>
-    <div class="vl"></div>
-    <div class="column">
+    <div class="profile-vl"></div>
+    <div class="profile-column">
         <p>Account Number: {{ user_profile.id }}</p>
         {% if user_profile.is_seller %}
         <p> {{ user_profile.firstname }} {{ user_profile.lastname }} is a seller. You can reach them at {{ user_profile.email }}</p>

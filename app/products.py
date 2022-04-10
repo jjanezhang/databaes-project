@@ -14,6 +14,7 @@ bp = Blueprint('products', __name__, url_prefix='/products')
 class CreateProductForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired()])
     price = DecimalField('Price', validators=[InputRequired(), NumberRange(min=0)], places=2)
+    description = StringField('Description', validators=[DataRequired()])
     image = FileField('Image', validators=[FileRequired(), FileAllowed(["png", "jpg", "jpeg"], "This file is not a valid image!",)])
     submit = SubmitField('Create Product')
 

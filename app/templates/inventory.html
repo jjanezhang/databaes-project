@@ -70,6 +70,7 @@
   </p>
   <p>{{ quantity_form.submit() }}</p>
 </form>
+<hr>
 <h2>Add a Product to Your Inventory:</h2>
 <form action="{{ url_for('inventory.add_product') }}" method="post">
     {{ add_product_form.hidden_tag() }}

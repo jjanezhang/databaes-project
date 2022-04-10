@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
+
 <br>
 {% if current_user.is_authenticated %}
 <h3> 
@@ -18,7 +19,16 @@
   Your Recent Purchases:
 </h3>
 
-<table class="table table-hover table-bordered container">
+<table id="table"
+  data-toggle="table"
+  data-filter-control="true"
+  data-show-search-clear-button="true"
+  data-sortable="true"
+  classes="table-sm"
+  data-pagination="true"
+  class="table-responsive"
+  data-search="true"
+>
   <thead class="thead-dark">
     <tr>
       <th scope="col">Order ID</th>
@@ -32,12 +42,12 @@
   <tbody>
     {% for purchase in purchase_history %}
       <tr>
-        <th scope="row">{{purchase.oid}}</th>
-        <td><a href="products/{{purchase.product_name}}"> {{purchase.product_name}} </a></td>
-        <td>{{purchase.quantity}}</td>
-        <td>{{purchase.price}}</td>
-        <td>{{purchase.fulfilled}}</td>
-        <td>{{purchase.time_purchased}}</td>        
+        <th data-field="oid" data-filter-control="input" data-sortable="true" scope="row">{{ purchase.oid }}</th>
+        <td data-field="product_name" data-filter-control="input" data-sortable="true"><a href="products/{{purchase.product_name}}"> {{ purchase.product_name }} </a></td>
+        <td data-field="quantity" data-filter-control="input" data-sortable="true">{{ purchase.quantity }}</td>
+        <td data-field="price" data-filter-control="input" data-sortable="true">${{ purchase.price }}</td>
+        <td data-field="fulfilled" data-filter-control="input" data-sortable="true">{{ purchase.fulfilled }}</td>
+        <td data-field="time_purchased" data-filter-control="input" data-sortable="true">{{ purchase.time_purchased }}</td>        
       </tr>
     {% endfor %}
   </tbody>

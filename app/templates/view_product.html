@@ -6,6 +6,13 @@
 
 <link rel="stylesheet" href="{{ url_for('static', filename='css/view_product.css') }}">
 
+{% for message in get_flashed_messages() %}
+<div class="alert alert-warning">
+    <button type="button" class="close" data-dismiss="alert">&times;</button>
+    {{ message }}
+</div>
+{% endfor %}
+
 <div class="viewProductColumn">
     <img class="viewProductImage" src="{{ product.image_url }}" />
 </div>
@@ -22,8 +29,7 @@
     </div>
     <br />
     <div>
-        Description: Putting a placeholder here for now:) This product is super cool and super
-        good and you should definitely buy it.
+        {{ product.description }}
     </div>
     <br />
     <div>
@@ -55,7 +61,7 @@
         <div class="flashMessages" id="hideMe">
         {% with messages = get_flashed_messages() %}
             {% if messages %}
-                <ul class=flashes>
+                <ul class="flashes">
                 {% for message in messages %}
                     {{ message }}
                 {% endfor %}
@@ -73,7 +79,7 @@
 <div class="viewProductColumn">
     <div class="centerContent">
         <h5>Sellers</h5>
-        <table class='table table-bordered container'>
+        <table class="table table-bordered container">
             <thead>
                 <tr>
                 <th scope="col">Seller</th>
@@ -83,14 +89,15 @@
             <tbody>
                 {% for val in sellers_and_quantities %}
                 <tr>
-                    <td>{{val.firstname}} {{val.lastname}}</th>
+                    <td><a href="{{ url_for('index.get_profile', uid=val.seller_id) }}"> {{val.firstname}} {{val.lastname}} </a></td>
                     <td>{{val.quantity}}</td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
             {% if current_user.is_authenticated %}
-            <form class="centerContent">
+            <form action="{{ url_for('cart.add_product') }}" method="post" class="centerContent">
+                {{ add_to_cart_form.hidden_tag() }}
                 <div>
                     {{ add_to_cart_form.seller.label }}
                     {{ add_to_cart_form.seller }}
@@ -111,8 +118,6 @@
             <p><a href="{{ url_for('users.login') }}">Log in</a> to add this product to your cart!</p>
             {% endif %}
     </div>
-</div>
-</div>
 </div>
 
 {% endblock %} 

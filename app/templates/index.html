@@ -1,6 +1,19 @@
 {% extends "base.html" %}
 
 {% block content %}
+
+<script>
+
+  function currencySort(a, b, rowA, rowB) {  
+      a = +a.substring(1);
+      b = +b.substring(1);
+      if (a > b) return 1;
+      if (a < b) return -1;
+      return 0;
+  }
+  
+</script>
+
 <br>
 {% if current_user.is_authenticated %}
 <h3> 
@@ -18,26 +31,62 @@
   Your Recent Purchases:
 </h3>
 
-<table class="table table-hover table-bordered container">
+<table id="table"
+  data-toggle="table"
+  data-filter-control="true"
+  data-show-search-clear-button="true"
+  data-sortable="true"
+  classes="table-sm"
+  data-pagination="true"
+  class="table-responsive"
+  data-search="true"
+  data-sort-name="time_purchased"
+  data-sort-order="desc"
+>
   <thead class="thead-dark">
     <tr>
-      <th scope="col">Order ID</th>
-      <th scope="col">Product Name</th>
-      <th scope="col">Qty Purchased</th>
-      <th scope="col">Total Price</th>
-      <th scope="col">Fullfillment Status</th>
-      <th scope="col">Time Purchased</th>
+      <th scope="col" 
+          data-field="oid" 
+          data-filter-control="input" 
+          data-sortable="true"
+          >Order ID</th>
+      <th scope="col"
+          data-field="product_name" 
+          data-filter-control="input" 
+          data-sortable="true"
+          >Product Name</th>
+      <th scope="col"
+          data-field="quantity" 
+          data-filter-control="input" 
+          data-sortable="true"
+          >Qty Purchased</th>
+      <th scope="col"
+          data-field="price" 
+          data-filter-control="input" 
+          data-sortable="true"
+          data-sorter="currencySort"
+          >Total Price</th>
+      <th scope="col"
+          data-field="fulfilled" 
+          data-filter-control="input" 
+          data-sortable="true"
+          >Fullfillment Status</th>
+      <th scope="col"
+          data-field="time_purchased" 
+          data-filter-control="input" 
+          data-sortable="true"
+          >Time Purchased</th>
     </tr>
   </thead>
   <tbody>
     {% for purchase in purchase_history %}
       <tr>
-        <th scope="row">{{purchase.oid}}</th>
-        <td><a href="products/{{purchase.product_name}}"> {{purchase.product_name}} </a></td>
-        <td>{{purchase.quantity}}</td>
-        <td>{{purchase.price}}</td>
-        <td>{{purchase.fulfilled}}</td>
-        <td>{{purchase.time_purchased}}</td>        
+        <td>{{ purchase.oid }}</td>
+        <td><a href="products/{{purchase.product_name}}"> {{ purchase.product_name }} </a></td>
+        <td>{{ purchase.quantity }}</td>
+        <td>${{ purchase.price }}</td>
+        <td>{{ purchase.fulfilled }}</td>
+        <td>{{ purchase.time_purchased }}</td>        
       </tr>
     {% endfor %}
   </tbody>

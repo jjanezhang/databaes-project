@@ -15,6 +15,7 @@ CREATE TABLE Products (
     name VARCHAR(255) UNIQUE NOT NULL,
     price DECIMAL(12,2) NOT NULL,
     available BOOLEAN DEFAULT TRUE,
+    description TEXT NOT NULL,
     image_url VARCHAR(1024) NOT NULL
 );
 
@@ -49,3 +50,12 @@ CREATE TABLE Ratings (
     review VARCHAR NOT NULL,
     PRIMARY KEY (uid, pid)
 );
+
+CREATE TABLE Cart (
+    uid INT NOT NULL,
+    pid INT NOT NULL REFERENCES Products(id),
+    sid INT NOT NULL,
+    quantity INT NOT NULL CHECK (quantity > 0),
+    PRIMARY KEY(uid, pid, sid),
+    FOREIGN KEY(sid, pid) REFERENCES Inventory(uid, pid) 
+)

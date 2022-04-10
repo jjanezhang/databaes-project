@@ -3,15 +3,13 @@
 
 <head>
   <title>Mini Amazon</title>
-  <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
-  <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-  <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/example.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+  <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+  <script type="text/javascript" src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.1/bootstrap-table.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.1/bootstrap-table.min.css">
   <style>
-    body {
-        font-family: "Lato", sans-serif;
-    }
-
     .main-head {
         height: 150px;
         background: #FFF;
@@ -100,10 +98,10 @@
         {% block msg %}
         {% if current_user.is_authenticated %}
           <a href="{{ url_for('index.get_profile', uid=current_user.id) }}" class="menu-item">My Profile</a>
+          <a href="{{ url_for('cart.index') }}" class="menu-item">My Cart</a>
           <a href="{{ url_for('products.create') }}" class="menu-item">Create Product</a>
           <a href="{{ url_for('inventory.index') }}" class="menu-item">Inventory</a>
           <a href="{{ url_for('users.manage_balance') }}" class="menu-item">Manage Balance</a>
-          <a href="{{ url_for('inventory_and_order_stats.index') }}" class="menu-item">Inventory and Order Stats</a>
           <a href="{{ url_for('ratings.index') }}" class="menu-item">My Ratings</a>
           <a href="{{ url_for('order_fulfillment.seller') }}" class="menu-item">My Orders (Seller)</a>
           <a href="{{ url_for('users.logout') }}" class="menu-item">Log Out</a>

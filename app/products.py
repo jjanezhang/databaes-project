@@ -14,6 +14,7 @@ bp = Blueprint('products', __name__, url_prefix='/products')
 class CreateProductForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired()])
     price = DecimalField('Price', validators=[InputRequired(), NumberRange(min=0)], places=2)
+    description = StringField('Description', validators=[DataRequired()])
     image = FileField('Image', validators=[FileRequired(), FileAllowed(["png", "jpg", "jpeg"], "This file is not a valid image!",)])
     submit = SubmitField('Create Product')
 
@@ -24,7 +25,7 @@ def create():
         response = upload_files_to_s3(create_product_form.image)
         if response[0]:
             image_url = response[1]
-            if Product.create_product(create_product_form.name.data, round(create_product_form.price.data, 2), True, image_url) == 0:
+            if Product.create_product(create_product_form.name.data, round(create_product_form.price.data, 2), create_product_form.description.data, True, image_url) == 0:
                 flash("Product name already taken!")
             else:
                 flash("Product successfully created!")
@@ -44,7 +45,6 @@ def upload_files_to_s3(file):
         if file_to_upload:
             file_name = secure_filename(file_to_upload.filename)
             bucket_name = "mini-amazon-databaes"
-            region = "us-east-2"
             res = s3_upload_small_files(file_to_upload, bucket_name, file_name, content_type)
             if res['ResponseMetadata']['HTTPStatusCode']:
                 return True, f"https://{bucket_name}.s3.amazonaws.com/{file_name}"

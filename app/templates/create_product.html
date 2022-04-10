@@ -32,6 +32,13 @@
     {% endfor %}
   </p>
   <p>
+    {{ create_product_form.category.label }}<br/>
+    {{ create_product_form.category(size=10) }}<br/>
+    {% for error in create_product_form.category.errors %}
+    <span style="color: red;">[{{ error }}]</span>
+    {% endfor %}
+  </p>
+  <p>
     {{ create_product_form.description.label }}<br/>
     {{ create_product_form.description }}<br/>
     {% for error in create_product_form.description.errors %}

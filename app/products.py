@@ -2,7 +2,7 @@ from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileAllowed, FileField, FileRequired
 from werkzeug.utils import secure_filename
-from wtforms import DecimalField, StringField, SubmitField
+from wtforms import DecimalField, StringField, SubmitField, SelectField
 from wtforms.validators import DataRequired, InputRequired, NumberRange
 import time
 from .utils import s3_upload_small_files
@@ -14,6 +14,7 @@ bp = Blueprint('products', __name__, url_prefix='/products')
 class CreateProductForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired()])
     price = DecimalField('Price', validators=[InputRequired(), NumberRange(min=0)], places=2)
+    category = SelectField('Category', choices = ['Food', 'Clothing', 'Pet Supplies', 'Health & Beauty', 'Home', 'Electronics', 'Entertainment', 'Other'], default=1)
     description = StringField('Description', validators=[DataRequired()])
     image = FileField('Image', validators=[FileRequired(), FileAllowed(["png", "jpg", "jpeg"], "This file is not a valid image!",)])
     submit = SubmitField('Create Product')

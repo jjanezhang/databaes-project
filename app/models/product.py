@@ -54,11 +54,11 @@ WHERE name = :product_name
     @staticmethod
     def get_sellers_and_quantities_for_product(product_name):
         rows = app.db.execute('''
-            SELECT I.pid AS pid, U.firstname AS firstname, U.lastname AS lastname, I.quantity AS quantity
+            SELECT I.pid AS pid, U.id AS id, U.firstname AS firstname, U.lastname AS lastname, I.quantity AS quantity
             FROM Inventory I, Products P, Users U
             WHERE I.pid = P.id AND U.id = I.uid AND I.quantity > 0 AND P.name = :product_name
             ''', product_name=product_name)
-        return [{'pid': row['pid'], 'firstname': row['firstname'], 'lastname': row['lastname'], 'quantity': row['quantity']} for row in rows]
+        return [{'pid': row['pid'], 'seller_id': row['id'], 'firstname': row['firstname'], 'lastname': row['lastname'], 'quantity': row['quantity']} for row in rows]
 
     @staticmethod
     def create_product(name, price, description, available, image_url):

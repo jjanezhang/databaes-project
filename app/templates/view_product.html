@@ -22,8 +22,7 @@
     </div>
     <br />
     <div>
-        Description: Putting a placeholder here for now:) This product is super cool and super
-        good and you should definitely buy it.
+        {{ product.description }}
     </div>
     <br />
     <div>
@@ -34,10 +33,6 @@
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
                     {% for i in range(integer_rating) %}
                         <span class="fa fa-star checked"></span>
-                        <!-- <span class="fa fa-star checked"></span>
-                        <span class="fa fa-star checked"></span>
-                        <span class="fa fa-star"></span>
-                        <span class="fa fa-star"></span> -->
                     {% endfor %}
                     {% for i in range(5-integer_rating) %}
                     <span class="fa fa-star"></span>
@@ -59,7 +54,7 @@
         <div class="flashMessages" id="hideMe">
         {% with messages = get_flashed_messages() %}
             {% if messages %}
-                <ul class=flashes>
+                <ul class="flashes">
                 {% for message in messages %}
                 {{ message }}
                 {% endfor %}
@@ -78,7 +73,7 @@
 <div class="viewProductColumn">
     <div class="centerContent">
         <h5>Sellers</h5>
-        <table class='table table-bordered container'>
+        <table class="table table-bordered container">
             <thead>
                 <tr>
                 <th scope="col">Seller</th>
@@ -88,7 +83,7 @@
             <tbody>
                 {% for val in sellers_and_quantities %}
                 <tr>
-                    <td>{{val.firstname}} {{val.lastname}}</th>
+                    <td><a href="{{ url_for('index.get_profile', uid=val.seller_id) }}"> {{val.firstname}} {{val.lastname}} </a></td>
                     <td>{{val.quantity}}</td>
                 </tr>
                 {% endfor %}

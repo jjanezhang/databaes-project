@@ -19,14 +19,24 @@ class Cart:
     @staticmethod
     def add_item_to_cart(uid, pid, sid, quantity):
         try:
-            result = app.db.execute('''
-                INSERT INTO Cart(uid, pid, sid, quantity)
-                VALUES(:uid, :pid, :sid, :quantity)
-            ''', uid=uid, pid=pid, sid=sid, quantity=quantity)
+             with app.db.engine.begin() as conn:
+                seller_quantity = conn.execute(text('''
+                    SELECT quantity
+                    FROM Inventory
+                    WHERE uid = :sid AND pid = :pid
+                '''), sid=sid, pid=pid)
+                seller_quantity = seller_quantity.fetchone()
+                if len(seller_quantity) > 0 and int(quantity) <= seller_quantity[0]:
+                    result = conn.execute(text('''
+                        INSERT INTO Cart(uid, pid, sid, quantity)
+                        VALUES(:uid, :pid, :sid, :quantity)
+                    '''), uid=uid, pid=pid, sid=sid, quantity=quantity)
+                else:
+                    return 'Choose a lower quantity.'
         except SQLAlchemyError as e:
-            print(str(e))
-            return 0
-        return result
+            print(e)
+            return 'Item already in cart.'
+        return result.rowcount
 
     @staticmethod
     def get_cart(uid):

@@ -12,9 +12,10 @@ def add_product():
     sid = request.form['seller']
     quantity = request.form['quantity']
     if current_user.is_authenticated:
-        if Cart.add_item_to_cart(current_user.id, pid, sid, quantity) == 1:
+        result = Cart.add_item_to_cart(current_user.id, pid, sid, quantity)
+        if result == 1:
             flash('Item successfully added to cart!')
         else:
-            flash('Item already in cart')
+            flash(result)
     return redirect(request.referrer)
     

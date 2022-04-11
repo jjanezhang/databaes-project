@@ -42,17 +42,16 @@
                         <span class="fa fa-star checked"></span>
                     {% endfor %}
                     {% for i in range(5-integer_rating) %}
-                    <span class="fa fa-star"></span>
+                        <span class="fa fa-star"></span>
                     {% endfor %}
 
             <div>Rated by: {{num_ratings}} people</div> 
             </div>
         {% if purchased_this_product %}
-            You purchased this product on <span class="viewProductTimestamp">{{product.time_purchased}}</span>
+            You purchased this product on: <span class="viewProductTimestamp">{{purchase.time_purchased}}</span>
             <br />
         <div class="rateProduct">
             <form action="{{ url_for('index.add_rating', product_name=pname) }}" method="post">
-                <!-- input type="hidden" name="pid" value="{{ product.id }}"/ -->
                 <input class="addRatingButton" placeholder="1-5" 
                 type="number" name="Rating" min="1" max="5"/>
                 <input class="viewProductButton" type="submit" value="Rate" />
@@ -63,7 +62,7 @@
             {% if messages %}
                 <ul class="flashes">
                 {% for message in messages %}
-                {{ message }}
+                    {{ message }}
                 {% endfor %}
                 </ul>
             {% endif %} 
@@ -71,8 +70,7 @@
         </div>
         {% endif %}
         {% if not current_user.is_authenticated %}
-        <p><a href="{{ url_for('users.login') }}">Log in</a> to rate this product!</p>
-        
+            <p><a href="{{ url_for('users.login') }}">Log in</a> to rate this product!</p>
         {% endif %}
     </div>
 </div>

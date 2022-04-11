@@ -1,0 +1,21 @@
+.upvoteButton {
+    background: greenyellow;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    padding: 5px 40px;
+    margin-top: 20px;
+}
+
+.arrow{
+    border: solid green;
+    border-width: 0 3px 3px 0;
+    display: inline-block;
+    padding: 3px;
+    align-items: right;
+}
+
+.up {
+    transform: rotate(-135deg);
+    -webkit-transform: rotate(-135deg);
+}

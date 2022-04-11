@@ -2,19 +2,26 @@ from flask import current_app as app
 import sys
 
 class Rated:   # a rated item
-    def __init__(self, uid, pid, name, rating):
+    def __init__(self, uid, pid, name, rating, review, time_added):
         self.uid = uid
         self.pid = pid
         self.name = name
         self.rating = rating
+        self.review = review
+        self.time_added = time_added
+
     @staticmethod
     # Get all rated items purchased by this user
-    def get_all(uid):
+    def get_all_by_uid(uid):
         rows = app.db.execute('''
-            SELECT R.uid AS uid, R.pid AS pid, P.name AS name, R.rating AS rating
+            SELECT R.uid as uid, R.pid AS pid, P.name AS name, 
+            R.rating AS rating, R.review as review, R.time_added as time_added
             FROM Ratings R, Products P
             WHERE R.pid = P.id AND R.uid = :uid
+            ORDER BY time_added DESC
         ''', uid=uid)
+        for row in rows:
+            print("row: ", row)
         return [Rated(*row) for row in rows]
     
     @staticmethod
@@ -30,7 +37,7 @@ class Rated:   # a rated item
     def get_reviews_and_reviewers_by_pid_uid(pid, uid):
         rows = app.db.execute('''
             SELECT U.firstname as firstname, U.lastname as lastname, 
-            R.rating as rating, R.review as review
+            R.rating as rating, R.review as review, R.uid as uid
             FROM Ratings R, Users U
             WHERE R.pid = :pid AND R.uid = U.id AND U.id = :uid
         ''', pid=pid, uid=uid)
@@ -63,6 +70,7 @@ class Rated:   # a rated item
             return rows
         return []
         
+    @staticmethod
     def num_ratings_for_product(pid):
         rows = app.db.execute('''
             SELECT COUNT(*) as num_ratings
@@ -102,21 +110,14 @@ class Rated:   # a rated item
             WHERE uid = :uid AND pid = :pid
         ''', uid=uid, pid=pid)
         return result
-
+    
     @staticmethod
-    def get_all_by_uid(uid):
-        rows = app.db.execute('''
-            SELECT R.uid AS uid, R.pid AS pid, P.name AS name, R.rating AS rating
-            FROM Ratings R, Products P
-            WHERE R.pid = P.id AND R.uid = :uid
+    # how many upvotes for this review?
+    def num_upvotes(uid):
+        # TODO: Update item's availability based on quantity
+        result = app.db.execute('''
+            SELECT R.upvotes as num_upvotes
+            FROM Ratings R
+            WHERE R.uid = :uid
         ''', uid=uid)
-        
-        rows = app.db.execute('''
-            SELECT *
-            FROM Purchases P, Orders O, Products Pr
-            WHERE O.id = P.oid AND O.uid = :uid AND P.pid = :product_id 
-            AND P.pid = Pr.id AND P.fulfilled=true
-            '''
-            , uid=uid, product_id=product_id)
-        
-        return [Rated(*row) for row in rows]
+        return result

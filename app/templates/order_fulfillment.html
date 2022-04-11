@@ -64,7 +64,6 @@
               <form action="{{ url_for('order_fulfillment.fulfill_purchase') }}" method="post">
                 <input type="hidden" name="oid" value="{{ purchase.oid }}"/>
                 <input type="hidden" name="pid" value="{{ purchase.pid }}"/>
-                <input type="hidden" name="quantity" value="{{ purchase.quantity }}" />
                 <input type="submit" value="Fulfill" />
               </form>
             </div>

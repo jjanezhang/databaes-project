@@ -31,7 +31,7 @@ def seller():
 @bp.route('/seller/fulfill_purchase', methods=['POST'])
 def fulfill_purchase():
     if current_user.is_authenticated:
-        result = Order.fulfill_purchase(request.form['oid'], request.form['pid'], current_user.id, request.form['quantity'])
+        result = Order.fulfill_purchase(request.form['oid'], request.form['pid'], current_user.id)
         if result != 1:
             global error
             error = "Unable to fulfill purchase. You do not have enough items in your inventory."

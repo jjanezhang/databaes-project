@@ -72,7 +72,7 @@ def display_product(product_name):
         ret = Purchase.get_product_by_uid_pid(uid, pid)
         purchased_this_product = ret[0] # boolean
         # print(sellers_and_quantities)
-        add_to_cart_form.seller.choices = [(val['sid'], val['firstname'] + " " + val['lastname']) for val in sellers_and_quantities]
+        add_to_cart_form.seller.choices = [(val['seller_id'], val['firstname'] + " " + val['lastname']) for val in sellers_and_quantities]
         if purchased_this_product:
             purchased_product = ret[1]
             already_rated = Rated.already_rated(uid, pid)

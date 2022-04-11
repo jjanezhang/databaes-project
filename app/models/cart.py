@@ -1,6 +1,6 @@
 from flask import current_app as app
 from sqlalchemy import text
-from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.exc import SQLAlchemyError, IntegrityError
 
 class CartItem:
     def __init__(self, pid, sid, product_name, seller_name, quantity, price):
@@ -115,8 +115,14 @@ class Cart:
                         VALUES(:oid, :pid, :sid, FALSE, NULL, :quantity, :price)
                     '''), oid=oid, pid=item.pid, sid=item.sid, quantity=item.quantity, price=item.price)
                 print("DONE")
-        except SQLAlchemyError as e:
-            print(e)
-            return 0
+        except IntegrityError as e:
+            if 'users_balance_check' in str(e):
+                return "You do not have enough balance to complete this order."
+            elif 'inventory_quantity_check' in str(e):
+                error_pid = e.params['pid']
+                error_product_name = next(item for item in cart if item.pid == error_pid).product_name
+                return "There is no longer enough quantity of " + error_product_name + " to satisfy your purchase."
+            else:
+                return "Unable to complete your purchase"
         return 1
 

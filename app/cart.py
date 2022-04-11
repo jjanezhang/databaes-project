@@ -63,5 +63,9 @@ def remove_product():
 @bp.route('/submit', methods=['POST'])
 def submit():
     if current_user.is_authenticated:
-        Cart.submit(current_user.id)
+        result = Cart.submit(current_user.id)
+        if result != 1:
+            flash(result)
+        else:
+            flash("Order successfully submitted!")
     return redirect(url_for('cart.index'))

@@ -7,16 +7,9 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/view_product.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/reviews.css') }}">
 
-<!-- {% for rn in reviews_and_names %}
-{% if rn['review']=="" %} -->
-<!-- <div class="rateProduct"> -->
-    <!-- <p >{{rn['firstname']}} &#160 {{rn['lastname']}}</p> -->
-    <!-- <p>{{rn['rating']}} </p> -->
-
-    <h3>5 Reviews for this seller </h3>
+    <h3> Reviews for this seller </h3>
 <table class='table table-hover table-bordered container'>
     <thead class="thead-dark">
-        
       <tr>
         <th scope="col"> Reviewer </th>
         <th scope="col"> Review </th>
@@ -24,48 +17,39 @@
       </tr>
     </thead>
     <tbody>
-        {% for rn in reviews_and_names %}
-        {% if rn['review']=="" %}
+      {% for rn in reviews_and_names %}
+        {% if rn['review'] !="" %}
         <tr>
           <th scope="row">{{rn['firstname']}} &#160 {{rn['lastname']}}</th>
         {% if rn['uid'] ==current_user.id %}
-            <td> Review: {{rn['review']}}     
-                <form action="{{ url_for('index.display_reviews', product_name=pname) }}" method="post">
-                <input class=".addReviewButton" placeholder="Type Something .." 
-                type="text" name="reviewText"/>
-                <input class="viewProductButton" type="submit" value="Submit" />
-                </form>
-            </td>
+        <td> Review: {{rn['review']}}     
+          <form action="{{ url_for('index.display_reviews', product_name=pname) }}" method="post">
+          <input class="addRatingButton" placeholder="Type Something .." 
+            type="text" name="review"/>
+          <input class="viewProductButton" type="submit" value="Submit" />
+          </form>
+          <div class="flashMessages" id="hideMe">
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <ul class="flashes">
+                    {% for message in messages %}
+                        {{ message }}
+                    {% endfor %}
+                    </ul>
+                {% endif %} 
+            {% endwith %}
+            </div>
+      </td>
         {% else %}
             <td> Review: {{rn['review']}} </td>
         {% endif %}
           <td>    <form action="{{ url_for('index.display_reviews', product_name=pname) }}" method="post">
-            <input class="upvoteButton" type="submit" value="Upvote" />
-        </form></td>
+            <input class="upvoteButton" type="submit" value="Upvote" /></form>
+          </td>
         </tr>
         {% endif %}
       {% endfor %}
     </tbody>
   </table>
-
-    <!-- <p>Review: {{rn['review']}} </p> -->
-    <!-- <form action="{{ url_for('index.display_reviews', product_name=pname) }}" method="post">
-        <input class="upvoteButton" type="submit" value="Upvote" />
-    </form> -->
-
-    <!-- <form action="{{ url_for('index.display_reviews', product_name=pname) }}" method="post">
-        <input class=".addReviewButton" placeholder="Type Something .." 
-        type="text" name="reviewText"/>
-        <input class="viewProductButton" type="submit" value="Submit" />
-    </form> -->
-<!-- </div> -->
-
-
-<!-- {% else %}
-<p>Failure!</p> 
-{% endif %}
-
-{% endfor %} -->
-<!-- <input type="button" class="arrow up" name="upvote" value="Upvote" > -->
 
 {% endblock %} 

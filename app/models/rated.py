@@ -44,7 +44,7 @@ class Rated:   # a rated item
         return rows if rows else None
     
     @staticmethod
-    # Get all rated items purchased by this user
+    # Already rated this product by this uid?
     def already_rated(uid, pid):
         rows = app.db.execute('''
             SELECT R.uid AS uid, R.pid AS pid, P.name AS name, R.rating AS rating
@@ -55,6 +55,22 @@ class Rated:   # a rated item
         if rowcount>0:
             return True
         return False
+
+    @staticmethod
+    # Already reviewed this product by this uid?
+    def already_reviewed(uid, pid):
+        rows = app.db.execute('''
+            SELECT R.review as review
+            FROM Ratings R, Products P
+            WHERE R.pid = P.id AND R.uid = :uid AND R.pid = :pid
+        ''', uid=uid, pid=pid)
+        rowcount = len(rows)
+        result = [row['review'] for row in rows]
+        # print("ROWSS for already reviewed: ", result)
+        # if rowcount>0:
+        if result[0]=="":
+            return False
+        return True
     
     @staticmethod
     # Get all rated items purchased by this user
@@ -65,7 +81,6 @@ class Rated:   # a rated item
             WHERE R.pid = :pid
         ''', pid=pid)
         rowcount = len(rows)
-        # print("rows: ", rows)
         if rowcount>0:
             return rows
         return []
@@ -81,35 +96,6 @@ class Rated:   # a rated item
         if rowcount>0:
             return rows
         return 0
-
-    @staticmethod
-    # Add a new rating to a product this user purchased 
-    def add_rating(uid, pid, rating, review=""):
-        result = app.db.execute('''
-            INSERT INTO Ratings(uid, pid, rating, review)
-            VALUES(:uid, :pid, :rating, :review)
-            ON CONFLICT (uid, pid) DO NOTHING;
-        ''', uid=uid, pid=pid, rating=rating, review=review)
-        return result
-
-    @staticmethod
-    # Update the rating of an item previously rated
-    def update_rating(uid, pid, rating, review=""):
-        result = app.db.execute('''
-            UPDATE Ratings SET rating = :rating
-            WHERE uid = :uid AND pid = :pid
-        ''', uid=uid, pid=pid, rating=rating)
-        return result
-
-    @staticmethod
-    # Remove a rating from a user's existing ratings
-    def remove_rating(uid, pid):
-        # TODO: Update item's availability based on quantity
-        result = app.db.execute('''
-            DELETE FROM Ratings
-            WHERE uid = :uid AND pid = :pid
-        ''', uid=uid, pid=pid)
-        return result
     
     @staticmethod
     # how many upvotes for this review?
@@ -121,3 +107,61 @@ class Rated:   # a rated item
             WHERE R.uid = :uid
         ''', uid=uid)
         return result
+
+    @staticmethod
+    # Add a new rating to a product this user purchased 
+    def add_rating(uid, pid, rating, review=""):
+        result = app.db.execute('''
+            INSERT INTO Ratings(uid, pid, rating, review, upvotes, time_added)
+            VALUES(:uid, :pid, :rating, :review, :upvotes, LOCALTIMESTAMP(1))
+            ON CONFLICT (uid, pid) DO NOTHING;
+        ''', uid=uid, pid=pid, rating=rating, review=review, upvotes=0)
+        return result
+
+    @staticmethod
+    # Add a new rating to a product this user purchased 
+    def add_review(uid, pid, review):
+        result = app.db.execute('''
+            INSERT INTO Ratings(uid, pid, rating, review, upvotes, time_added)
+            VALUES(:uid, :pid, :rating, :review, :upvotes, LOCALTIMESTAMP(1))
+            ON CONFLICT (uid, pid) DO UPDATE
+            SET review = EXCLUDED.review;
+        ''', uid=uid, pid=pid, rating=0, review=review, upvotes=0)
+        return result
+
+    @staticmethod
+    # Update the rating of an item previously rated
+    def update_rating(uid, pid, rating):
+        result = app.db.execute('''
+            UPDATE Ratings SET rating = :rating
+            WHERE uid = :uid AND pid = :pid
+        ''', uid=uid, pid=pid, rating=rating)
+        return result
+
+    @staticmethod
+    # Update the review of an item previously rated
+    def update_review(uid, pid, review):
+        result = app.db.execute('''
+            UPDATE Ratings SET review = :review
+            WHERE uid = :uid AND pid = :pid
+        ''', uid=uid, pid=pid, review=review)
+        return result
+
+    @staticmethod
+    # Remove a rating (including review) from a user's existing ratings
+    def remove_rating(uid, pid):
+        result = app.db.execute('''
+            DELETE FROM Ratings
+            WHERE uid = :uid AND pid = :pid
+        ''', uid=uid, pid=pid)
+        return result
+    
+    @staticmethod
+    # Remove a review - but not the rating - from a user's existing ratings
+    def remove_review(uid, pid):
+        result = app.db.execute('''
+            UPDATE Ratings SET review = :review
+            WHERE uid = :uid AND pid = :pid
+        ''', uid=uid, pid=pid, review="")
+        return result
+    

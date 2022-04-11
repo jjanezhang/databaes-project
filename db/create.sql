@@ -7,7 +7,7 @@ CREATE TABLE Users (
     password VARCHAR(255) NOT NULL,
     firstname VARCHAR(255) NOT NULL,
     lastname VARCHAR(255) NOT NULL,
-    balance DECIMAL(12,2) NOT NULL
+    balance DECIMAL(12,2) NOT NULL CHECK (balance >= 0)
 );
 
 CREATE TABLE Products (

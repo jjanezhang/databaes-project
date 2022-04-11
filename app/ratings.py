@@ -23,55 +23,36 @@ class AddRatingForm(FlaskForm):
     submit = SubmitField('Add Rating')
 
 def getTemplateVariables():
-    ratings_form = RatingsForm()    # create a new form using which we can add an item to rate
-    add_rating_form = AddRatingForm()
-    #since = datetime.today() - timedelta(days=90) # check up to 90 days behind in time
+    ratings_form = RatingsForm() 
+    # add_rating_form = AddRatingForm()
     since = datetime.datetime(1980, 9, 14, 0, 0, 0)
+
     if current_user.is_authenticated:
-        rated_products = Rated.get_all(current_user.id)
-        ratings_form.pid.choices = [(product.pid, product.name) for product in rated_products]
-        ratings_form.pid.choices.sort()
-
-        all_user_purchases = Purchase.get_all_by_uid_since(current_user.id, since) # get all items purchased by this user
-        all_products = Product.get_all_regardless_of_availability() #
-        purchased_products = filter(lambda product: product.id in [x.pid for x in all_user_purchases], all_products)
-        # ratings_form.pid.choices = [(product.id, product.name) for product in purchased_products]
-
-        add_rating_form.pid.choices = [(product.id, product.name) for product in purchased_products]
-        add_rating_form.pid.choices.sort()
+        rated_products = Rated.get_all_by_uid(current_user.id)
+        print("rated products for this user: ", rated_products)
+        ratings_form.pid.choices = [(product.pid, product.name) for product in rated_products] 
+        # already sorted by time_added, above
+        return (rated_products, ratings_form) 
     else:
         rated_products = None
-    return (rated_products, ratings_form, add_rating_form) 
+        return ([], ratings_form)
 
 @bp.route('/')
 def index():
-    (purchased_products, ratings_form, add_rating_form) = getTemplateVariables()
+    (rated_products, ratings_form) = getTemplateVariables()
     return render_template('ratings.html', 
-                            purchased_products=purchased_products,
-                            ratings_form=ratings_form,
-                            add_rating_form=add_rating_form)
+                            rated_products=rated_products,
+                            ratings_form=ratings_form)
 
 @bp.route('/update_rating', methods=['POST'])
 def update_rating():
-    (purchased_products, ratings_form, add_rating_form) = getTemplateVariables()
-    if current_user.is_authenticated and add_rating_form.validate_on_submit():
+    (rated_products, ratings_form) = getTemplateVariables()
+    if current_user.is_authenticated and ratings_form.validate_on_submit():
         if Rated.update_rating(current_user.id, ratings_form.pid.data, ratings_form.new_rating.data):
             return redirect(url_for('ratings.index'))
     return render_template('ratings.html', 
-                            purchased_products=purchased_products,
-                            ratings_form=ratings_form,
-                            add_rating_form=add_rating_form)
-
-# @bp.route('/add_rating', methods=['POST'])
-# def add_rating():
-#     (purchased_products, ratings_form, add_rating_form) = getTemplateVariables()
-#     if current_user.is_authenticated and add_rating_form.validate_on_submit():
-#         if Rated.add_rating(current_user.id, ratings_form.pid.data, ratings_form.new_rating.data):
-#             return redirect(url_for('ratings.index'))
-#     return render_template('ratings.html', 
-#                             purchased_products=purchased_products,
-#                             ratings_form=ratings_form,
-#                             add_rating_form=add_rating_form)
+                            rated_products=rated_products,
+                            ratings_form=ratings_form)
 
 @bp.route('/remove_rating', methods=['POST'])
 def remove_rating():

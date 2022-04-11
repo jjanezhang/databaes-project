@@ -36,7 +36,7 @@ def index():
 def get_profile(uid):
     user_profile = User.get(uid)
     avg_rating = Seller.avg_rating_for_seller(uid)
-    print("avg rating: ", avg_rating)
+    # print("avg rating: ", avg_rating)
     integer_rating = get_integer_rating(avg_rating)
     ceiling = get_ceiling(avg_rating)
     num_ratings = Seller.num_ratings_for_seller(uid)
@@ -114,8 +114,8 @@ def display_product(product_name):
     """ Displays the product. 'product_name' is also the name of img file
     """
     product = Product.get_product_by_name(product_name)[0]
-    if product ==None:
-        return render_template("fail.html")
+    # if product ==None:
+    #     return render_template("fail.html")
     pid = product.id
 
     purchased_this_product = False
@@ -170,9 +170,8 @@ def add_rating(product_name):
         return redirect(url_for('index.display_product', product_name=product_name))
     # return redirect(url_for('ratings.index'))
 
-@bp.route('/<product_name>/reviews')
+@bp.route('/<product_name>/product-reviews', methods=['GET','POST'])
 def display_reviews(product_name):
-    # return render_template("fail.html")
     product = Product.get_product_by_name(product_name)[0]
     pid = product.id
     reviews = Rated.get_all_reviews_by_pid(pid)
@@ -186,3 +185,17 @@ def display_reviews(product_name):
         reviews_and_names.append(review_and_name)
     return render_template("reviews.html", pname=product_name, reviews=reviews,
     usernames=usernames, reviews_and_names=reviews_and_names)
+
+@bp.route('/<uid>/seller-reviews', methods=['GET','POST'])
+def seller_reviews(uid):
+    reviews = Seller.get_all_reviews_by_sid(uid)
+    usernames = []
+    reviews_and_names = []
+    for review in reviews:
+        print("review: ", review)
+        bid = review['bid']
+        review_and_name = Seller.get_reviewers_by_bid(bid)[0]
+        # print("review+ reviewer: ", review_and_name)
+        reviews_and_names.append(review_and_name)
+    return render_template("seller_reviews.html", uid=uid,
+        reviews_and_names=reviews_and_names)

@@ -16,13 +16,20 @@
     .link{
         color: grey
     }
+    .rlink{
+        color: teal;
+        font-size: 70%;
+    }
+
 </style>
 
 <br>
 
 <div class="profile-row">
     <div class="profile-column">
-        <h2> {{ user_profile.firstname }} {{ user_profile.lastname }}</h2>
+        <h2> {{ user_profile.firstname }} {{ user_profile.lastname }} 
+            <a href="{{ url_for('index.seller_reviews', uid=user_profile.id) }}" class="rlink"> Reviews  
+            </a></h2>
         <p><a class="link" href="{{ url_for('ratings.index') }}">Update my ratings</a></p>
     </div>
     <div class="profile-vl"></div>

@@ -9,7 +9,26 @@ class Seller:   # a rated item
         self.review = review
         self.time_added = time_added    
     
-    
+    @staticmethod
+    def get_all_reviews_by_sid(sid):
+        rows = app.db.execute('''
+            SELECT S.bid as bid
+            FROM Sellers S
+            WHERE S.sid = :sid
+        ''', sid=sid)
+        return rows
+
+    @staticmethod
+    def get_reviewers_by_bid(bid):
+        rows = app.db.execute('''
+            SELECT U.firstname as firstname, U.lastname as lastname, 
+            S.rating as rating, S.review as review, S.bid as bid, 
+            S.upvotes as upvotes
+            FROM Sellers S, Users U
+            WHERE S.bid = :bid AND S.bid = U.id
+        ''', bid=bid)
+        return rows if rows else None
+
     @staticmethod
     # Get all rated items purchased by this user
     def avg_rating_for_seller(sid):

@@ -171,36 +171,78 @@ def display_reviews(product_name):
     usernames = []
     reviews_and_names = []
     num_upvotes_list = []
+    review_dict = {}
+
     for review in reviews:
         uid = review['uid']
         review_and_name = Rated.get_reviews_and_reviewers_by_pid_uid(pid, uid)[0]
-        num_upvotes = Rated.num_upvotes(uid, pid)['num_upvotes']
-        num_upvotes_list.append(num_upvotes)
-        # print("Num upvotes: ", num_upvotes)
-        reviews_and_names.append(review_and_name)
+        # num_upvotes = Rated.num_upvotes(uid, pid)['num_upvotes']
+        # num_upvotes_list.append(num_upvotes)
+        # reviews_and_names.append(review_and_name)
 
+        name = review_and_name['firstname'] + " " + review_and_name['lastname']
+        review = review_and_name['review']
+        upvotes = review_and_name['upvotes']
+        time_added = review_and_name['time_added']
+
+        review_dict[uid]= [upvotes, time_added, name, review, uid]
+    
+    sorted_by_upvotes = sorted(list(review_dict.values()), key=lambda x: x[0], reverse=True)
+    # print("sorted_by_upvotes: ", sorted_by_upvotes )
+    top3 = sorted_by_upvotes[0:3]
+    bottom3 = sorted_by_upvotes[3:]
+
+    sorted_by_time = sorted(bottom3, key=lambda x: x[1], reverse=True)
+    # print("top3: ", top3)
+    final_list = top3 + sorted_by_time
+
+    reviews_and_names = final_list  # top3 by number of upvotes, then by time
+
+    upvote_receiver_uid=None
+    reviewer_uid=None
     if request.method == 'POST':
+        print("request method is post")
         if current_user.is_authenticated:
-            # print(request.form.get('upvote'))
             uid = current_user.id
-            if request.form.get('upvote')!=None:
-                current_upvotes = Rated.get_current_upvotes(uid, pid)['current_upvotes']
-                result = Rated.add_upvote(uid, pid, current_upvotes)
-                flash('Review upvoted!')
-                return redirect(url_for('index.display_reviews', product_name=product_name))
+            upvote_receiver_uid = request.form.get('receiver_uid')
+            if request.form.get('upvote')!=None: # an upvote request
+                upvote_receiver_uid = int(upvote_receiver_uid)
+                if Rated.already_upvoted(upvote_receiver_uid, pid, current_user.id): # check if already upvoted
+                    # flash('Already upvoted this review!')
+                    msg = 'Already upvoted this review!'
+                    return render_template("reviews2.html", pname=product_name,
+                        reviews_and_names=reviews_and_names, upvote_receiver_uid=upvote_receiver_uid, 
+                        reviewer_uid=reviewer_uid, msg=msg)
+                # else add the upvote to upvote_receiver_uid
+                current_upvotes = Rated.get_current_upvotes(upvote_receiver_uid, pid)['current_upvotes']
+                result = Rated.add_upvote(upvote_receiver_uid, pid, current_upvotes) # last upvoted by current user id (uid)
+                result2 = Rated.record_upvote(upvote_receiver_uid, pid,current_user.id)
+                msg2 = 'Review upvoted!'
+                return render_template("reviews2.html", pname=product_name,
+                        reviews_and_names=reviews_and_names, upvote_receiver_uid=upvote_receiver_uid, 
+                        reviewer_uid=reviewer_uid, msg2=msg2)
+
             already_reviewed = Rated.already_reviewed(uid, pid)
+            reviewer_uid=current_user.id
             if already_reviewed:
-                flash('Already reviewed this product!')
-                return redirect(url_for('index.display_reviews', product_name=product_name))
+                msg3 = 'Already reviewed this product!'
+                return render_template("reviews2.html", pname=product_name,
+                        reviews_and_names=reviews_and_names, upvote_receiver_uid=upvote_receiver_uid, 
+                        reviewer_uid=reviewer_uid, msg3=msg3)
             else:
                 review = request.form.get('review')
-                # print("review from Form was: ", review)
                 result = Rated.add_review(uid, pid, review)
-                flash('Review added successfully!')
-                return redirect(url_for('index.display_reviews', product_name=product_name))
+                # flash('Review added successfully!')
+                msg4='Review added successfully!'
+                return render_template("reviews2.html", pname=product_name,
+                        reviews_and_names=reviews_and_names, upvote_receiver_uid=upvote_receiver_uid, 
+                        reviewer_uid=reviewer_uid, msg4=msg4)
 
-    return render_template("reviews.html", pname=product_name,
-        reviews_and_names=reviews_and_names, num_upvotes_list=num_upvotes_list)
+    # return render_template("reviews.html", pname=product_name,
+    #     reviews_and_names=reviews_and_names, num_upvotes_list=num_upvotes_list)
+    return render_template("reviews2.html", pname=product_name,
+        reviews_and_names=reviews_and_names, upvote_receiver_uid=
+        upvote_receiver_uid,reviewer_uid=reviewer_uid)
 
 
 @bp.route('/<uid>/seller-reviews', methods=['GET','POST'])

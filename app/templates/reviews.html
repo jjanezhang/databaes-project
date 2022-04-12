@@ -18,6 +18,7 @@
     </thead>
     <tbody>
       {% for rn in reviews_and_names %}
+      {% set num_upvotes= num_upvotes_list[loop.index-1] %}
         {% if rn['review'] !="" %}
         <tr>
           <th scope="row">{{rn['firstname']}} &#160 {{rn['lastname']}}</th>
@@ -43,9 +44,15 @@
         {% else %}
             <td> Review: {{rn['review']}} </td>
         {% endif %}
-          <td>    <form action="{{ url_for('index.display_reviews', product_name=pname) }}" method="post">
-            <input class="upvoteButton" type="submit" value="Upvote" /></form>
+        {% if rn['uid'] != current_user.id %}
+          <td> Upvotes: {{num_upvotes}} 
+            <form action="{{ url_for('index.display_reviews', product_name=pname) }}" method="post">
+            <input class="upvoteButton" type="submit" name="upvote" value="Upvote" />
+          </form>
           </td>
+          {% else %}
+          <td> Upvotes: {{num_upvotes}}  </td>
+        {% endif %}
         </tr>
         {% endif %}
       {% endfor %}

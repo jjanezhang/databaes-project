@@ -99,14 +99,13 @@ class Rated:   # a rated item
     
     @staticmethod
     # how many upvotes for this review?
-    def num_upvotes(uid):
-        # TODO: Update item's availability based on quantity
+    def num_upvotes(uid, pid):
         result = app.db.execute('''
             SELECT R.upvotes as num_upvotes
             FROM Ratings R
-            WHERE R.uid = :uid
-        ''', uid=uid)
-        return result
+            WHERE R.uid = :uid AND R.pid = :pid
+        ''', uid=uid, pid=pid)
+        return [r for r in result][0]
 
     @staticmethod
     # Add a new rating to a product this user purchased 
@@ -128,6 +127,27 @@ class Rated:   # a rated item
             SET review = EXCLUDED.review;
         ''', uid=uid, pid=pid, rating=0, review=review, upvotes=0)
         return result
+
+    @staticmethod
+    # Add an upvote to a review 
+    def add_upvote(uid, pid, current_upvotes):
+        result = app.db.execute('''
+            INSERT INTO Ratings(uid, pid, rating, review, upvotes, time_added)
+            VALUES(:uid, :pid, :rating, :review, :upvotes, LOCALTIMESTAMP(1))
+            ON CONFLICT (uid, pid) DO UPDATE
+            SET upvotes = :new_upvotes;
+        ''', uid=uid, pid=pid, rating=0, review="", upvotes=0, new_upvotes=current_upvotes+1)
+        return result
+
+    @staticmethod
+    # Add an upvote to a review 
+    def get_current_upvotes(uid, pid):
+        result = app.db.execute('''
+            SELECT R.upvotes as current_upvotes
+            FROM Ratings R
+            WHERE R.uid = :uid AND R.pid = :pid
+        ''', uid=uid, pid=pid)
+        return [r for r in result][0]
 
     @staticmethod
     # Update the rating of an item previously rated

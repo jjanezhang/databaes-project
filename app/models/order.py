@@ -16,6 +16,29 @@ class Order:
         self.buyer = buyer if buyer else None
 
     @staticmethod
+    def get_all_orders_for_buyer(uid):
+        rows = app.db.execute('''
+            SELECT O.id AS oid, O.uid as uid, O.time_placed AS time_placed, P.pid AS pid, 
+            P.fulfilled AS fulfilled, P.time_fulfilled AS time_fulfilled, 
+            P.quantity AS quantity, P.price AS price, Pr.name AS product_name
+            FROM Orders O, Purchases P, Products Pr
+            WHERE O.id = P.oid AND O.uid = :uid AND Pr.id = P.pid
+            ORDER BY O.time_placed DESC
+        ''', uid=uid)
+        result = {}
+        for row in rows:
+            if row.oid in result:
+                result[row.oid].purchases.append(Purchase(row.oid, row.pid, uid, row.fulfilled, row.time_fulfilled, row.quantity, row.price, row.product_name, row.time_placed))
+            else:
+                result[row.oid] = Order(row.oid, row.uid, row.time_placed)
+                result[row.oid].purchases.append(Purchase(row.oid, row.pid, uid, row.fulfilled, row.time_fulfilled, row.quantity, row.price, row.product_name, row.time_placed))
+
+        for key in result:
+            result[key].buyer = User.get(result[key].uid)
+
+        return list(result.values())
+
+    @staticmethod
     # Get all orders for a seller
     def get_all_orders_for_seller(uid):
         rows = app.db.execute('''

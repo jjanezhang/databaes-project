@@ -52,14 +52,14 @@ class User(UserMixin):
     def register(email, password, firstname, lastname):
         try:
             rows = app.db.execute("""
-                INSERT INTO Users(email, password, firstname, lastname, balance, rating)
-                VALUES(:email, :password, :firstname, :lastname, :balance, :rating)
+                INSERT INTO Users(email, password, firstname, lastname, balance)
+                VALUES(:email, :password, :firstname, :lastname, :balance)
                 RETURNING id
                 """,
                                   email=email,
                                   password=generate_password_hash(password),
                                   firstname=firstname, lastname=lastname, 
-                                  balance=0, rating=0)
+                                  balance=0)
             id = rows[0][0]
             return User.get(id)
         except Exception as e:

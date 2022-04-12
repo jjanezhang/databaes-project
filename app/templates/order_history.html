@@ -1,0 +1,164 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/order_fulfillment.css') }}">
+
+{% if current_user.is_authenticated %}
+<h3>
+    Order History
+</h3>
+<div>(Click on an Order ID to see more details)</div>
+
+<table id="table"
+  data-toggle="table"
+  data-filter-control="true"
+  data-show-search-clear-button="true"
+  data-sortable="true"
+  classes="table-sm"
+  data-pagination="true"
+  class="table-responsive"
+  data-search="true"
+  data-sort-name="time_purchased"
+  data-sort-order="desc"
+>
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col" 
+          data-field="oid" 
+          data-filter-control="input" 
+          data-sortable="true"
+          >Order ID</th>
+      <th scope="col"
+          data-field="total_price" 
+          data-filter-control="input" 
+          data-sortable="true"
+          data-sorter="currencySort"
+          >Total Price</th>
+      <th scope="col"
+          data-field="num_items" 
+          data-filter-control="input" 
+          data-sortable="true"
+          ># of Items</th>
+      <th scope="col"
+          data-field="fulfilled" 
+          data-filter-control="input" 
+          data-sortable="false"
+          >Fulfillment Status</th>
+      <th scope="col"
+          data-field="time_purchased" 
+          data-filter-control="input" 
+          data-sortable="true"
+          >Time Purchased</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for order in orderInfo %}
+      <tr>
+        <td>
+            <a href="buyer/{{order.order.oid}}">
+                {{ order.order.oid }}
+            </a>
+        </td>
+        <td> ${{ order.orderStats.total_price }} </a></td>
+        <td>{{ order.orderStats.total_items }}</td>
+        <td>
+            {% if order.orderStats.is_fulfilled %}
+            <span class="entry-fulfilled">
+              fulfilled
+            </span>
+            {% else %}
+            <span class="entry-unfulfilled">
+              unfulfilled
+            </span>
+            {% endif %}
+        </td>
+        <td>{{ order.order.time_placed }}</td>        
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<h3>
+  Browse Your Purchases:
+</h3>
+
+<table id="table"
+  data-toggle="table"
+  data-filter-control="true"
+  data-show-search-clear-button="true"
+  data-sortable="true"
+  classes="table-sm"
+  data-pagination="true"
+  class="table-responsive"
+  data-search="true"
+  data-sort-name="time_purchased"
+  data-sort-order="desc"
+>
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col" 
+          data-field="oid" 
+          data-filter-control="input" 
+          data-sortable="true"
+          >Order ID</th>
+      <th scope="col"
+          data-field="product_name" 
+          data-filter-control="input" 
+          data-sortable="true"
+          >Product Name</th>
+      <th scope="col"
+          data-field="quantity" 
+          data-filter-control="input" 
+          data-sortable="true"
+          >Qty Purchased</th>
+      <th scope="col"
+          data-field="price" 
+          data-filter-control="input" 
+          data-sortable="true"
+          data-sorter="currencySort"
+          >Total Price</th>
+      <th scope="col"
+          data-field="fulfilled" 
+          data-filter-control="input" 
+          data-sortable="true"
+          >Fullfillment Status</th>
+      <th scope="col"
+          data-field="time_purchased" 
+          data-filter-control="input" 
+          data-sortable="true"
+          >Time Purchased</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for purchase in purchases %}
+      <tr>
+        <td>
+            <a href="buyer/{{purchase.oid}}">
+                {{ purchase.oid }}
+            </a>
+        </td>
+        <td><a href="../products/{{purchase.product_name}}"> {{ purchase.product_name }} </a></td>
+        <td>{{ purchase.quantity }}</td>
+        <td>${{ purchase.price }}</td>
+        <td>
+                {% if purchase.fulfilled %}
+                <span class="entry-fulfilled">
+                  fulfilled
+                </span>
+                {% else %}
+                <span class="entry-unfulfilled">
+                  unfulfilled
+                </span>
+                {% endif %}
+        </td>
+        <td>{{ purchase.time_purchased }}</td>        
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p><a href="{{ url_for('users.login') }}">Log in</a> to see your order history</p>
+{% endif %}
+
+{% endblock %}

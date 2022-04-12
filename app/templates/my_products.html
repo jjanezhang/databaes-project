@@ -48,6 +48,10 @@
             data-sortable="true"
             data-sorter="currencySort"
             >Price</th>
+        <th data-field="category" 
+            data-filter-control="input" 
+            data-sortable="true"
+            >Category</th>
       </tr>
     </thead>
     <tbody>
@@ -95,6 +99,13 @@
     {% endfor %}
   </p>
   <p>
+    {{ update_product_form.category.label }}<br/>
+    {{ update_product_form.category }}<br/>
+    {% for error in update_product_form.category.errors %}
+    <span style="color: red;">[{{ error }}]</span>
+    {% endfor %}
+  </p>
+  <p>
     {{ update_product_form.image.label }}<br/>
     {{ update_product_form.image }}<br/>
     {% for error in update_product_form.image.errors %}
@@ -125,6 +136,13 @@
     {{ create_product_form.description.label }}<br/>
     {{ create_product_form.description }}<br/>
     {% for error in create_product_form.description.errors %}
+    <span style="color: red;">[{{ error }}]</span>
+    {% endfor %}
+  </p>
+  <p>
+    {{ create_product_form.category.label }}<br/>
+    {{ create_product_form.category }}<br/>
+    {% for error in create_product_form.category.errors %}
     <span style="color: red;">[{{ error }}]</span>
     {% endfor %}
   </p>

@@ -3,10 +3,11 @@ from flask import current_app as app
 from sqlalchemy.exc import SQLAlchemyError
 
 class Product:
-    def __init__(self, id, name, price, description, available, image_url, created_by):
+    def __init__(self, id, name, price, category, description, available, image_url, created_by):
         self.id = id
         self.name = name
         self.price = price
+        self.category = category
         self.description = description
         self.available = available
         self.image_url = image_url
@@ -15,7 +16,7 @@ class Product:
     @staticmethod
     def get(id):
         rows = app.db.execute('''
-SELECT id, name, price, description, available, image_url, created_by
+SELECT id, name, price, category, description, available, image_url, created_by
 FROM Products
 WHERE id = :id
 ''',
@@ -25,7 +26,7 @@ WHERE id = :id
     @staticmethod
     def get_all(available=True):
         rows = app.db.execute('''
-SELECT id, name, price, description, available, image_url, created_by
+SELECT id, name, price, category, description, available, image_url, created_by
 FROM Products
 WHERE available = :available
 ''',
@@ -35,7 +36,7 @@ WHERE available = :available
     @staticmethod
     def get_all_regardless_of_availability():
         rows = app.db.execute('''
-            SELECT id, name, price, description, available, image_url, created_by
+            SELECT id, name, price, category, description, available, image_url, created_by
             FROM Products
             ''')
         return [Product(*row) for row in rows]
@@ -43,7 +44,7 @@ WHERE available = :available
     @staticmethod
     def get_product_by_name(product_name):
         rows = app.db.execute('''
-SELECT id, name, price, description, available, image_url, created_by
+SELECT id, name, price, category, description, available, image_url, created_by
 FROM Products
 WHERE name = :product_name
 ''',
@@ -62,12 +63,12 @@ WHERE name = :product_name
         return [{'pid': row['pid'], 'seller_id': row['id'], 'firstname': row['firstname'], 'lastname': row['lastname'], 'quantity': row['quantity']} for row in rows]
 
     @staticmethod
-    def create_product(name, price, description, available, image_url, created_by):
+    def create_product(name, price, category, description, available, image_url, created_by):
         try: 
             app.db.execute('''
-            INSERT INTO Products(name, price, description, available, image_url, created_by)
-            VALUES(:name, :price, :description, :available, :image_url, :created_by)
-            ''', name=name, price=price, description=description, available=available, image_url=image_url, created_by=created_by)
+            INSERT INTO Products(name, price, category, description, available, image_url, created_by)
+            VALUES(:name, :price, :category, :description, :available, :image_url, :created_by)
+            ''', name=name, price=price, category=category, description=description, available=available, image_url=image_url, created_by=created_by)
         except SQLAlchemyError:
             return 0
         return result
@@ -75,7 +76,7 @@ WHERE name = :product_name
     @staticmethod
     def get_all_products_from_user(uid):
         rows = app.db.execute('''
-            SELECT id, name, price, description, available, image_url, created_by
+            SELECT id, name, price, category, description, available, image_url, created_by
             FROM Products
             WHERE created_by = :uid
             ORDER BY id

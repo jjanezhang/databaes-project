@@ -32,6 +32,7 @@ class UpdateProductForm(FlaskForm):
     pid = SelectField('Product ID', validators=[DataRequired()])
     name = StringField('New Name (Optional)')
     price = DecimalField('New Price (Optional)', validators=[Optional(), NumberRange(min=0)], places=2)
+    category = SelectField('New Category (Optional)', choices = ['Food', 'Clothing', 'Pet Supplies', 'Health & Beauty', 'Home', 'Electronics', 'Entertainment', 'Other'], default=1)
     description = StringField('New Description (Optional)')
     image = FileField('New Image (Optional)', validators=[FileAllowed(["png", "jpg", "jpeg"], "This file is not a valid image!",)])
     submit = SubmitField('Update Product')
@@ -73,6 +74,8 @@ def update():
             currProduct.name = update_product_form.name.data
         if update_product_form.price.data:
             currProduct.price = update_product_form.price.data
+        if update_product_form.category.data:
+            currProduct.category = update_product_form.category.data    
         if update_product_form.description.data:
             currProduct.description = update_product_form.description.data
         if update_product_form.image.has_file():
@@ -86,7 +89,7 @@ def update():
                     create_product_form=create_product_form, 
                     update_product_form=update_product_form)
         update_result = Product.update_product(update_product_form.pid.data,
-            currProduct.name, currProduct.price, currProduct.description,
+            currProduct.name, currProduct.price, currProduct.category, currProduct.description,
             True, currProduct.image_url)
         if update_result == 1:
             return redirect(url_for('products.index'))

@@ -58,7 +58,7 @@ CREATE TABLE Inventory (
 CREATE TABLE Ratings (
     uid INT NOT NULL REFERENCES Users(id),
     pid INT NOT NULL REFERENCES Products(id),
-    rating INT NOT NULL CHECK(rating BETWEEN 1 AND 5),
+    rating INT NOT NULL CHECK(rating BETWEEN 0 AND 5),
     review VARCHAR NOT NULL,
     upvotes INT NOT NUll CHECK (upvotes >= 0),
     time_added timestamp without time zone DEFAULT NULL,

@@ -178,14 +178,38 @@ def display_reviews(product_name):
     reviews = Rated.get_all_reviews_by_pid(pid)
     usernames = []
     reviews_and_names = []
+    num_upvotes_list = []
     for review in reviews:
-        print("review: ", review)
         uid = review['uid']
         review_and_name = Rated.get_reviews_and_reviewers_by_pid_uid(pid, uid)[0]
-        # print("review+ reviewer: ", review_and_name)
+        num_upvotes = Rated.num_upvotes(uid, pid)['num_upvotes']
+        num_upvotes_list.append(num_upvotes)
+        # print("Num upvotes: ", num_upvotes)
         reviews_and_names.append(review_and_name)
-    return render_template("reviews.html", pname=product_name, reviews=reviews,
-    usernames=usernames, reviews_and_names=reviews_and_names)
+
+    if request.method == 'POST':
+        if current_user.is_authenticated:
+            # print(request.form.get('upvote'))
+            uid = current_user.id
+            if request.form.get('upvote')!=None:
+                current_upvotes = Rated.get_current_upvotes(uid, pid)['current_upvotes']
+                result = Rated.add_upvote(uid, pid, current_upvotes)
+                flash('Review upvoted!')
+                return redirect(url_for('index.display_reviews', product_name=product_name))
+            already_reviewed = Rated.already_reviewed(uid, pid)
+            if already_reviewed:
+                flash('Already reviewed this product!')
+                return redirect(url_for('index.display_reviews', product_name=product_name))
+            else:
+                review = request.form.get('review')
+                # print("review from Form was: ", review)
+                result = Rated.add_review(uid, pid, review)
+                flash('Review added successfully!')
+                return redirect(url_for('index.display_reviews', product_name=product_name))
+
+    return render_template("reviews.html", pname=product_name,
+        reviews_and_names=reviews_and_names, num_upvotes_list=num_upvotes_list)
+
 
 @bp.route('/<uid>/seller-reviews', methods=['GET','POST'])
 def seller_reviews(uid):
@@ -198,5 +222,19 @@ def seller_reviews(uid):
         review_and_name = Seller.get_reviewers_by_bid(bid)[0]
         # print("review+ reviewer: ", review_and_name)
         reviews_and_names.append(review_and_name)
+
+    if request.method == 'POST':
+        if current_user.is_authenticated:
+            already_rated = Rated.already_rated(uid, pid)
+            if already_rated: #Rated.add_rating(current_user.id, product_id, rating)
+                flash('Already rated this product!')
+                return redirect(url_for('index.display_product', product_name=product_name))
+            else:
+                rating = request.form.get('Rating')
+                result = Rated.add_rating(uid, pid, rating)
+                flash('Rating added successfully!')
+                return redirect(url_for('index.seller_reviews', uid=uid,
+                    reviews_and_names=reviews_and_names))
+
     return render_template("seller_reviews.html", uid=uid,
         reviews_and_names=reviews_and_names)

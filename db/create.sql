@@ -71,5 +71,5 @@ CREATE TABLE Cart (
     sid INT NOT NULL,
     quantity INT NOT NULL CHECK (quantity > 0),
     PRIMARY KEY(uid, pid, sid),
-    FOREIGN KEY(sid, pid) REFERENCES Inventory(uid, pid) 
+    FOREIGN KEY(sid, pid) REFERENCES Inventory(uid, pid) ON DELETE CASCADE
 )

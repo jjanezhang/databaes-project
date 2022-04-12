@@ -2,27 +2,25 @@ from flask import current_app as app
 import sys
 
 class Rated:   # a rated item
-    def __init__(self, uid, pid, name, rating, review, time_added):
+    def __init__(self, uid, pid, name):
         self.uid = uid
         self.pid = pid
         self.name = name
-        self.rating = rating
-        self.review = review
-        self.time_added = time_added
 
     @staticmethod
     # Get all rated items purchased by this user
     def get_all_by_uid(uid):
         rows = app.db.execute('''
-            SELECT R.uid as uid, R.pid AS pid, P.name AS name, 
-            R.rating AS rating, R.review as review, R.time_added as time_added
+            SELECT R.uid as uid, R.pid AS pid, P.name AS name,
+            R.rating as rating
             FROM Ratings R, Products P
             WHERE R.pid = P.id AND R.uid = :uid
             ORDER BY time_added DESC
         ''', uid=uid)
         for row in rows:
             print("row: ", row)
-        return [Rated(*row) for row in rows]
+        # return [Rated(*row) for row in rows]
+        return rows
     
     @staticmethod
     def get_all_reviews_by_pid(pid):
@@ -30,6 +28,7 @@ class Rated:   # a rated item
             SELECT R.review as review, R.uid as uid, R.rating as rating
             FROM Ratings R
             WHERE R.pid = :pid
+            ORDER BY R.time_added DESC
         ''', pid=pid)
         return rows
     
@@ -37,9 +36,11 @@ class Rated:   # a rated item
     def get_reviews_and_reviewers_by_pid_uid(pid, uid):
         rows = app.db.execute('''
             SELECT U.firstname as firstname, U.lastname as lastname, 
-            R.rating as rating, R.review as review, R.uid as uid
+            R.rating as rating, R.review as review, R.upvotes as upvotes,
+            R.time_added as time_added
             FROM Ratings R, Users U
             WHERE R.pid = :pid AND R.uid = U.id AND U.id = :uid
+            ORDER BY R.time_added DESC
         ''', pid=pid, uid=uid)
         return rows if rows else None
     
@@ -124,7 +125,7 @@ class Rated:   # a rated item
             INSERT INTO Ratings(uid, pid, rating, review, upvotes, time_added)
             VALUES(:uid, :pid, :rating, :review, :upvotes, LOCALTIMESTAMP(1))
             ON CONFLICT (uid, pid) DO UPDATE
-            SET review = EXCLUDED.review;
+            SET rating = Ratings.rating, review=EXCLUDED.review;
         ''', uid=uid, pid=pid, rating=0, review=review, upvotes=0)
         return result
 
@@ -132,11 +133,24 @@ class Rated:   # a rated item
     # Add an upvote to a review 
     def add_upvote(uid, pid, current_upvotes):
         result = app.db.execute('''
-            INSERT INTO Ratings(uid, pid, rating, review, upvotes, time_added)
-            VALUES(:uid, :pid, :rating, :review, :upvotes, LOCALTIMESTAMP(1))
+            INSERT INTO Ratings(uid, pid, rating, review, 
+            upvotes, time_added)
+            VALUES(:uid, :pid, :rating, :review, 
+            :upvotes, LOCALTIMESTAMP(1))
             ON CONFLICT (uid, pid) DO UPDATE
             SET upvotes = :new_upvotes;
-        ''', uid=uid, pid=pid, rating=0, review="", upvotes=0, new_upvotes=current_upvotes+1)
+        ''', uid=uid, pid=pid, rating=0, review="", 
+        upvotes=0, new_upvotes=current_upvotes+1)
+        return result
+    
+    @staticmethod
+    # Record this upvote
+    def record_upvote(upvote_receiver_uid, pid, current_user_id):
+        result = app.db.execute('''
+            INSERT INTO Upvotes(rid, pid, cid)
+            VALUES(:rid, :pid, :cid)
+            ON CONFLICT (rid, pid, cid) DO NOTHING;
+        ''', rid=upvote_receiver_uid, pid=pid, cid=current_user_id)
         return result
 
     @staticmethod
@@ -148,6 +162,37 @@ class Rated:   # a rated item
             WHERE R.uid = :uid AND R.pid = :pid
         ''', uid=uid, pid=pid)
         return [r for r in result][0]
+
+    # @staticmethod
+    # # Add an upvote to a review 
+    # def already_upvoted(uid, pid, current_user_id):
+    #     result = app.db.execute('''
+    #         SELECT R.last_upvoted_by as last_upvoted_by
+    #         FROM Ratings R
+    #         WHERE R.uid = :uid AND R.pid = :pid
+    #     ''', uid=uid, pid=pid)
+
+    #     last_upvoter = [r for r in result][0]['last_upvoted_by']
+    #     if last_upvoter == current_user_id:
+    #         return True
+    #     return False
+
+    @staticmethod
+    # Check 
+    def already_upvoted(reviewer_id, pid, upvoter_id): # upvoter = current user =cid
+        result = app.db.execute('''
+            SELECT U.rid
+            FROM Upvotes U
+            WHERE U.rid = :rid AND U.pid = :pid AND U.cid = :cid
+        ''', rid=reviewer_id, pid=pid, cid=upvoter_id)
+
+        print("result: ", result)
+        return result !=[]
+        # last_upvoter = [r for r in result][0]['last_upvoted_by']
+        # if last_upvoter == current_user_id:
+        #     return True
+        # return False
+        return True
 
     @staticmethod
     # Update the rating of an item previously rated

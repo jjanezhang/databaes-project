@@ -63,6 +63,13 @@ CREATE TABLE Ratings (
     PRIMARY KEY (uid, pid)
 );
 
+CREATE TABLE Upvotes (
+    rid INT NOT NULL REFERENCES Users(id),
+    pid INT NOT NULL REFERENCES Products(id),
+    cid INT NOT NULL REFERENCES Users(id),
+    PRIMARY KEY (rid, pid, cid)
+);
+
 CREATE TABLE Cart (
     uid INT NOT NULL,
     pid INT NOT NULL REFERENCES Products(id),

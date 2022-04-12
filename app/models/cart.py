@@ -1,7 +1,6 @@
-from datetime import datetime, timezone
 from flask import current_app as app
 from sqlalchemy import text
-from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.exc import SQLAlchemyError, IntegrityError
 
 class CartItem:
     def __init__(self, pid, sid, product_name, seller_name, quantity, price):
@@ -80,4 +79,50 @@ class Cart:
         except SQLAlchemyError as e:
             return 'Unable to update cart.'
         return result.rowcount
+
+    @staticmethod
+    # Submit a user's cart and create a new order
+    def submit(uid):
+        try:
+             with app.db.engine.begin() as conn:
+                cart = Cart.get_cart(uid)
+                totalPrice = totalPrice = sum(map(lambda x: x.quantity * x.price, cart))
+                conn.execute(text('''
+                    UPDATE Users SET balance = balance - :totalPrice
+                    WHERE id = :uid
+                '''), totalPrice=totalPrice, uid=uid)
+                conn.execute(text('''
+                    DELETE FROM Cart WHERE uid = :uid
+                '''), uid=uid)
+                conn.execute(text('''
+                    INSERT INTO Orders(uid)
+                    VALUES(:uid)
+                '''), uid=uid)
+                newOrder = conn.execute(text('''
+                    SELECT max(id)
+                    FROM Orders
+                    WHERE uid = :uid
+                '''), uid=uid)
+                oid = newOrder.fetchone()[0]
+                for item in cart:
+                    conn.execute(text('''
+                        UPDATE Inventory
+                        SET quantity = quantity - :quantity
+                        WHERE uid = :sid AND pid = :pid
+                    '''), quantity=item.quantity, sid=item.sid, pid=item.pid)
+                    conn.execute(text('''
+                        INSERT INTO Purchases(oid, pid, sid, fulfilled, time_fulfilled, quantity, price)
+                        VALUES(:oid, :pid, :sid, FALSE, NULL, :quantity, :price)
+                    '''), oid=oid, pid=item.pid, sid=item.sid, quantity=item.quantity, price=item.price)
+                print("DONE")
+        except IntegrityError as e:
+            if 'users_balance_check' in str(e):
+                return "You do not have enough balance to complete this order."
+            elif 'inventory_quantity_check' in str(e):
+                error_pid = e.params['pid']
+                error_product_name = next(item for item in cart if item.pid == error_pid).product_name
+                return "There is no longer enough quantity of " + error_product_name + " to satisfy your purchase."
+            else:
+                return "Unable to complete your purchase"
+        return 1
 

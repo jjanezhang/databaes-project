@@ -40,26 +40,14 @@ class Order:
         return list(result.values())
 
     @staticmethod
-    # Fulfill a purchase as part of order 'oid' for product 'pid' sold by seller 'sid' with quantity 'quantity'.
-    # Returns 1 if the purchase is fulfilled, else 0.
-    def fulfill_purchase(oid, pid, sid, quantity):
-        value = None
+    # Fulfill a purchase as part of order 'oid' for product 'pid' sold by seller 'sid'
+    def fulfill_purchase(oid, pid, sid):
         current_timestamp = datetime.now(timezone.utc)
-        try:
-            with app.db.engine.begin() as conn:
-                value = conn.execute(text('''
-                    UPDATE Inventory SET quantity = quantity - :order_quantity
-                    WHERE uid = :sid AND pid = :pid
-                '''), order_quantity=quantity, sid=sid, pid=pid)
-                if value.rowcount > 0:
-                    conn.execute(text('''
-                        UPDATE Purchases SET fulfilled = TRUE, time_fulfilled = :current_timestamp
-                        WHERE oid = :oid AND pid = :pid AND sid = :sid
-                    '''), current_timestamp=current_timestamp, oid=oid, pid=pid, sid=sid)
-        except SQLAlchemyError as e:
-            return str(e)
-        finally:
-            return value.rowcount if value else 0
+        result = app.db.execute('''
+            UPDATE Purchases SET fulfilled = TRUE, time_fulfilled = :current_timestamp
+            WHERE oid = :oid AND pid = :pid AND sid = :sid
+        ''', current_timestamp=current_timestamp, oid=oid, pid=pid, sid=sid)
+        return result
 
     @staticmethod
     # Get a specific order for a buyer

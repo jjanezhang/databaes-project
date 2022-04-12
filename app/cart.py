@@ -16,6 +16,9 @@ class QuantityForm(FlaskForm):
     new_quantity = IntegerField('Quantity', validators=[InputRequired(), NumberRange(min=1)])
     submit = SubmitField('Update Quantity')
 
+class SubmitCartForm(FlaskForm):
+    submit = SubmitField('Submit Order')
+
 @bp.route('/', methods=['GET', 'POST'])
 def index():
     if current_user.is_authenticated:
@@ -24,6 +27,7 @@ def index():
         quantity_form = QuantityForm()
         quantity_form.pid.choices = [(item.pid, item.product_name) for item in cart]
         quantity_form.sid.choices = [(item.sid, item.seller_name) for item in cart]
+        submit_cart_form = SubmitCartForm()
         if quantity_form.validate_on_submit():
             update = Cart.update_item_quantity(current_user.id, quantity_form.pid.data, quantity_form.sid.data, quantity_form.new_quantity.data)
             if update == 1:
@@ -34,7 +38,8 @@ def index():
         cart = None
         totalPrice = 0
         quantity_form = None
-    return render_template('cart.html', cart=cart, totalPrice=totalPrice, quantity_form=quantity_form)
+        submit_cart_form = None
+    return render_template('cart.html', cart=cart, totalPrice=totalPrice, quantity_form=quantity_form, submit_cart_form=submit_cart_form)
 
 @bp.route('/add_product', methods=['POST'])
 def add_product():
@@ -53,4 +58,14 @@ def add_product():
 def remove_product():
     if current_user.is_authenticated:
         Cart.remove_item_from_cart(current_user.id, request.form['pid'], request.form['sid'])
+    return redirect(url_for('cart.index'))
+
+@bp.route('/submit', methods=['POST'])
+def submit():
+    if current_user.is_authenticated:
+        result = Cart.submit(current_user.id)
+        if result != 1:
+            flash(result)
+        else:
+            flash("Order successfully submitted!")
     return redirect(url_for('cart.index'))

@@ -7,7 +7,17 @@ CREATE TABLE Users (
     password VARCHAR(255) NOT NULL,
     firstname VARCHAR(255) NOT NULL,
     lastname VARCHAR(255) NOT NULL,
-    balance DECIMAL(12,2) NOT NULL
+    balance DECIMAL(12,2) NOT NULL CHECK (balance >= 0)
+);
+
+CREATE TABLE Sellers (
+    sid INT NOT NULL REFERENCES Users(id),
+    bid INT NOT NULL REFERENCES Users(id),
+    rating INT NOT NULL CHECK(rating BETWEEN 0 AND 5),
+    review VARCHAR NOT NULL,
+    upvotes INT NOT NUll CHECK (upvotes >= 0),
+    time_added timestamp without time zone DEFAULT NULL,
+    PRIMARY KEY (sid, bid)
 );
 
 CREATE TABLE Products (
@@ -49,6 +59,8 @@ CREATE TABLE Ratings (
     pid INT NOT NULL REFERENCES Products(id),
     rating INT NOT NULL CHECK(rating BETWEEN 1 AND 5),
     review VARCHAR NOT NULL,
+    upvotes INT NOT NUll CHECK (upvotes >= 0),
+    time_added timestamp without time zone DEFAULT NULL,
     PRIMARY KEY (uid, pid)
 );
 

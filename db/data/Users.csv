@@ -2,3 +2,4 @@
 1,icecream@tastes.bad,pbkdf2:sha256:260000$1GvmeoAkcWb89TyU$5f711eafb243c1c1a884715dd9bd6d185f29ccd3dab59ad19cc201a7260091cb,Joey,Shmoey,20
 2,a@b.com,pbkdf2:sha256:260000$rYRR5myrgUxzdyln$48465a1e60fbd3ad2df5c79ebb0a03753a1cde0f4366cdb24563fe54cbc35f6e,a,b,200
 3,hello@world.com,pbkdf2:sha256:260000$2T4Fz4CodU9cDBqi$c01044b6d85762cde61d836906f9648920298bca224a343417c6b59df4243332,Hello,World,1000
+4,samia.zaman@duke.edu,pbkdf2:sha256:260000$kND1iuox04e2G6Xa$ab8cad763a783c9e07224fa97b8eb7c8e05dcbeff200eecc2c390d3e3a55bdc5,Samia,Zaman,10000

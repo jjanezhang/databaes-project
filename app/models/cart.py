@@ -114,7 +114,6 @@ class Cart:
                         INSERT INTO Purchases(oid, pid, sid, fulfilled, time_fulfilled, quantity, price)
                         VALUES(:oid, :pid, :sid, FALSE, NULL, :quantity, :price)
                     '''), oid=oid, pid=item.pid, sid=item.sid, quantity=item.quantity, price=item.price)
-                print("DONE")
         except IntegrityError as e:
             if 'users_balance_check' in str(e):
                 return "You do not have enough balance to complete this order."

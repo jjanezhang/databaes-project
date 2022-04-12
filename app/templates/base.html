@@ -99,7 +99,7 @@
         {% if current_user.is_authenticated %}
           <a href="{{ url_for('index.get_profile', uid=current_user.id) }}" class="menu-item">My Profile</a>
           <a href="{{ url_for('cart.index') }}" class="menu-item">My Cart</a>
-          <a href="{{ url_for('products.create') }}" class="menu-item">Create Product</a>
+          <a href="{{ url_for('products.index') }}" class="menu-item">My Products</a>
           <a href="{{ url_for('inventory.index') }}" class="menu-item">Inventory</a>
           <a href="{{ url_for('users.manage_balance') }}" class="menu-item">Manage Balance</a>
           <a href="{{ url_for('ratings.index') }}" class="menu-item">My Ratings</a>

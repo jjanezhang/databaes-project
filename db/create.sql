@@ -26,7 +26,8 @@ CREATE TABLE Products (
     price DECIMAL(12,2) NOT NULL,
     available BOOLEAN DEFAULT TRUE,
     description TEXT NOT NULL,
-    image_url VARCHAR(1024) NOT NULL
+    image_url VARCHAR(1024) NOT NULL,
+    created_by INT NOT NULL REFERENCES Users(id)
 );
 
 CREATE TABLE Orders (

@@ -77,9 +77,10 @@ class Rated:   # a rated item
             FROM Ratings R
             WHERE R.pid = :pid
         ''', pid=pid)
-        if len(rows) > 0:
-            return rows
-        return []
+
+        if rows[0]['rating']==None:
+            return 0
+        return float(rows[0]['rating'])
 
     @staticmethod
     def num_ratings_for_product(pid):
@@ -88,9 +89,12 @@ class Rated:   # a rated item
             FROM Ratings R
             WHERE R.pid = :pid
         ''', pid=pid)
-        if len(rows) > 0:
-            return rows
-        return 0
+
+        # print("num ratings is: ",rows[0]['num_ratings'] )
+        if rows[0]['num_ratings']==None:
+            return 0
+        return int(rows[0]['num_ratings'])
+
 
     @staticmethod
     # how many upvotes for this review?

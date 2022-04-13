@@ -115,8 +115,6 @@ def display_product(product_name):
     """ Displays the product. 'product_name' is also the name of img file
     """
     product = Product.get_product_by_name(product_name)[0]
-    # if product ==None:
-    #     return render_template("fail.html")
     pid = product.id
 
     purchased_this_product = False
@@ -126,10 +124,11 @@ def display_product(product_name):
     # print("sellers and quanitites: ", sellers_and_quantities)
 
     avg_rating = Rated.avg_rating_for_product(pid)
-    integer_rating = get_integer_rating(avg_rating)
+    integer_rating = int(avg_rating)
+    # integer_rating = get_integer_rating(avg_rating)
 
     num_ratings = Rated.num_ratings_for_product(pid)
-    num_ratings = format_num_ratings(num_ratings)
+    # num_ratings = format_num_ratings(num_ratings)
 
     if current_user.is_authenticated:
         uid = current_user.id

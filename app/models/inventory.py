@@ -51,7 +51,7 @@ class Inventory:
     # Get items which have been sold the most by this seller after start_time
     def get_most_popular_items(uid, start_time=None):
         if not start_time:
-            start_time = datetime(1980, 9, 14, 0, 0, 0)
+            start_time = datetime(1970, 1, 1, 0, 0, 0)
         result = app.db.execute('''
             WITH TopPids AS (
                 SELECT P.pid AS pid, sum(quantity) AS quantity

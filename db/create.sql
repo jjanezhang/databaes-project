@@ -71,7 +71,7 @@ CREATE TABLE Upvotes (
 CREATE TABLE Cart (
     uid INT NOT NULL REFERENCES Users(id),
     pid INT NOT NULL REFERENCES Products(id),
-    sid INT NOT NULL REFERENCES Sellers(id),
+    sid INT NOT NULL REFERENCES Users(id),
     quantity INT NOT NULL CHECK (quantity > 0),
     PRIMARY KEY(uid, pid, sid),
     FOREIGN KEY(sid, pid) REFERENCES Inventory(uid, pid) ON DELETE CASCADE

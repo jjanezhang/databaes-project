@@ -33,6 +33,7 @@
     <tr>
       <th scope="col">Product ID</th>
       <th scope="col">Product Name</th>
+      <th scope="col">Seller</th>
       <th scope="col">Quantity</th>
       <th scope="col">Status</th>
       <th scope="col">Price</th>
@@ -42,7 +43,8 @@
     {% for purchase in order.purchases %}
     <tr>
       <th scope="row">{{purchase.pid}}</th>
-      <td>{{purchase.product_name}}</td>
+      <td><a href="../../products/{{purchase.product_name}}">{{purchase.product_name}}</a></td>
+      <td><a href="../../profile/{{purchase.sid}}">{{purchase.seller_name}}</a></td>
       <td>{{purchase.quantity}}</td>
       <td class="{{ 'entry-fulfilled' if purchase.fulfilled else 'entry-unfulfilled' }}">
         {% if purchase.fulfilled %}

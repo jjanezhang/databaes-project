@@ -8,8 +8,8 @@
 
 {% for message in get_flashed_messages() %}
 <div class="alert alert-warning">
-    <button type="button" class="close" data-dismiss="alert">&times;</button>
-    {{ message }}
+  <button type="button" class="close" data-dismiss="alert">&times;</button>
+  {{ message }}
 </div>
 {% endfor %}
 
@@ -26,19 +26,19 @@
   </thead>
   <tbody>
     {% for item in cart%}
-      <tr>
-        <td>{{item.product_name}}</td>
-        <td>{{item.seller_name}}</td>
-        <td>{{item.quantity}}</td>
-        <td>{{item.price}}</td>
-        <td>
-            <form action="{{ url_for('cart.remove_product') }}" method="post">
-                <input type="hidden" name="pid" value="{{ item.pid }}"/>
-                <input type="hidden" name="sid" value="{{ item.sid }}"/>
-                <input type="submit" value="Remove" />
-              </form>
-        </td>
-      </tr>
+    <tr>
+      <td>{{item.product_name}}</td>
+      <td>{{item.seller_name}}</td>
+      <td>{{item.quantity}}</td>
+      <td>{{item.price}}</td>
+      <td>
+        <form action="{{ url_for('cart.remove_product') }}" method="post">
+          <input type="hidden" name="pid" value="{{ item.pid }}" />
+          <input type="hidden" name="sid" value="{{ item.sid }}" />
+          <input type="submit" value="Remove" />
+        </form>
+      </td>
+    </tr>
     {% endfor %}
   </tbody>
 </table>
@@ -52,24 +52,24 @@
 
 <h2>Update the Quantity of a Product:</h2>
 <form action="{{ url_for('cart.index') }}" method="post">
-    {{ quantity_form.hidden_tag() }}
+  {{ quantity_form.hidden_tag() }}
   <p>
-    {{ quantity_form.pid.label }}<br/>
-    {{ quantity_form.pid }}<br/>
+    {{ quantity_form.pid.label }}<br />
+    {{ quantity_form.pid }}<br />
     {% for error in quantity_form.pid.errors %}
     <span style="color: red;">[{{ error }}]</span>
     {% endfor %}
   </p>
   <p>
-    {{ quantity_form.sid.label }}<br/>
-    {{ quantity_form.sid }}<br/>
+    {{ quantity_form.sid.label }}<br />
+    {{ quantity_form.sid }}<br />
     {% for error in quantity_form.sid.errors %}
     <span style="color: red;">[{{ error }}]</span>
     {% endfor %}
   </p>
   <p>
-    {{ quantity_form.new_quantity.label }}<br/>
-    {{ quantity_form.new_quantity(size=10) }}<br/>
+    {{ quantity_form.new_quantity.label }}<br />
+    {{ quantity_form.new_quantity(size=10) }}<br />
     {% for error in quantity_form.new_quantity.errors %}
     <span style="color: red;">[{{ error }}]</span>
     {% endfor %}

@@ -2,7 +2,8 @@ from flask import current_app as app
 
 
 class Purchase:
-    def __init__(self, oid, pid, sid, fulfilled, time_fulfilled, quantity, price, product_name, time_purchased, seller_name):
+    def __init__(self, oid, pid, sid, fulfilled, time_fulfilled, quantity,
+                 price, product_name, time_purchased, seller_name):
         self.oid = oid
         self.pid = pid
         self.sid = sid
@@ -25,16 +26,11 @@ class Purchase:
             WHERE O.id = P.oid AND O.uid = :uid AND P.pid = Pr.id AND U.id = P.sid
             AND O.time_placed >= :since
             ORDER BY O.time_placed DESC
-            '''
-        , uid=uid, since=since)
+            ''', uid=uid, since=since)
         return [Purchase(*row) for row in rows]
 
     @staticmethod
     def get_product_by_uid_pid(uid, product_id):
-        '''returns true if user with uid has purchased product with pid'''
-            #         SELECT P.oid AS oid, P.pid AS pid, P.sid AS sid, P.fulfilled AS fulfilled,
-            # P.time_fulfilled AS time_fulfilled, P.quantity AS quantity,
-            # P.price AS price, Pr.name AS product_name, O.time_placed AS time_purchased
         rows = app.db.execute('''
             SELECT P.oid AS oid, P.pid AS pid, P.sid AS sid, P.fulfilled AS fulfilled,
             P.time_fulfilled AS time_fulfilled, P.quantity AS quantity,
@@ -43,18 +39,15 @@ class Purchase:
             FROM Purchases P, Orders O, Products Pr, Users U
             WHERE O.id = P.oid AND O.uid = :uid AND P.pid = :product_id AND U.id = P.sid
             AND P.pid = Pr.id AND P.fulfilled=true
-            '''
-            , uid=uid, product_id=product_id)
+            ''', uid=uid, product_id=product_id)
 
         rowcount = len(rows)
-        if rowcount>0:
+        if rowcount > 0:
             ret = [True]
             purchase = [Purchase(*row) for row in rows]
-            ret +=purchase
+            ret += purchase
             return ret
 
         else:
             ret = [False]
             return ret
-        
-        # return [Purchase(*row) for row in rows]

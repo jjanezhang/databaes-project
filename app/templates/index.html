@@ -4,23 +4,23 @@
 
 <script>
 
-  function currencySort(a, b, rowA, rowB) {  
-      a = +a.substring(1);
-      b = +b.substring(1);
-      if (a > b) return 1;
-      if (a < b) return -1;
-      return 0;
+  function currencySort(a, b, rowA, rowB) {
+    a = +a.substring(1);
+    b = +b.substring(1);
+    if (a > b) return 1;
+    if (a < b) return -1;
+    return 0;
   }
-  
+
 </script>
 
 <br>
 {% if current_user.is_authenticated %}
-<h3> 
+<h3>
   <div style="color: black; text-align: left; margin-bottom: 20px; 
     text-transform: capitalize; font-weight: bolder; font-style: bold; ">
-    Welcome back, {{current_user.firstname}} 
-  </div> 
+    Welcome back, {{current_user.firstname}}
+  </div>
 </h3>
 {% endif %}
 

@@ -2,57 +2,36 @@
 
 <script>
 
-  function currencySort(a, b, rowA, rowB) {  
-      a = +a.substring(1);
-      b = +b.substring(1);
-      if (a > b) return 1;
-      if (a < b) return -1;
-      return 0;
+  function currencySort(a, b, rowA, rowB) {
+    a = +a.substring(1);
+    b = +b.substring(1);
+    if (a > b) return 1;
+    if (a < b) return -1;
+    return 0;
   }
 
 </script>
 
 <body>
   <h3>Products For Sale:</h3>
-  <table id="table"
-    data-toggle="table"
-    data-filter-control="true"
-    data-show-search-clear-button="true"
-    data-sortable="true"
-    classes="table-sm"
-    data-pagination="true"
-    class="table-responsive"
-    data-search="true"
-    >
+  <table id="table" data-toggle="table" data-filter-control="true" data-show-search-clear-button="true"
+    data-sortable="true" classes="table-sm" data-pagination="true" class="table-responsive" data-search="true">
     <thead class="thead-dark">
       <tr>
-        <th data-field="id" 
-            data-filter-control="input" 
-            data-sortable="true"
-            >Product ID</th>
-        <th data-field="name"
-            data-filter-control="input" 
-            data-sortable="true"
-            >Product Name</th>
-        <th data-field="price" 
-            data-filter-control="input" 
-            data-sortable="true"
-            data-sorter="currencySort"
-            >Price</th>
-        <th data-field="category" 
-            data-filter-control="input" 
-            data-sortable="true"
-            >Category</th>
+        <th data-field="id" data-filter-control="input" data-sortable="true">Product ID</th>
+        <th data-field="name" data-filter-control="input" data-sortable="true">Product Name</th>
+        <th data-field="price" data-filter-control="input" data-sortable="true" data-sorter="currencySort">Price</th>
+        <th data-field="category" data-filter-control="input" data-sortable="true">Category</th>
       </tr>
     </thead>
     <tbody>
       {% for product in avail_products %}
-        <tr>
-          <td>{{ product.id }}</td>
-          <td><a href="products/{{product.name}}"> {{ product.name }} </a></td>
-          <td>${{ product.price }}</td>
-          <td>{{ product.category }}</td>
-        </tr>
+      <tr>
+        <td>{{ product.id }}</td>
+        <td><a href="products/{{product.name}}"> {{ product.name }} </a></td>
+        <td>${{ product.price }}</td>
+        <td>{{ product.category }}</td>
+      </tr>
       {% endfor %}
     </tbody>
   </table>

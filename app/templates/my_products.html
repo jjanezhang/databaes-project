@@ -7,102 +7,75 @@
 {% if current_user.is_authenticated %}
 
 {% for message in get_flashed_messages() %}
-  <div class="alert alert-warning">
-      <button type="button" class="close" data-dismiss="alert">&times;</button>
-      {{ message }}
-  </div>
+<div class="alert alert-warning">
+  <button type="button" class="close" data-dismiss="alert">&times;</button>
+  {{ message }}
+</div>
 {% endfor %}
 
 <h2>My Products</h2>
-<table id="table"
-    data-toggle="table"
-    data-filter-control="true"
-    data-show-search-clear-button="true"
-    data-sortable="true"
-    classes="table-sm"
-    data-pagination="true"
-    class="table-responsive"
-    data-search="true"
-    >
+<table id="table" data-toggle="table" data-filter-control="true" data-show-search-clear-button="true"
+  data-sortable="true" classes="table-sm" data-pagination="true" class="table-responsive" data-search="true">
 
-    <thead class="thead-dark">
-      <tr>
-        <th data-field="id" 
-            data-filter-control="input" 
-            data-sortable="true"
-            >Product ID</th>
-        <th data-field="name"
-            data-filter-control="input" 
-            data-sortable="true"
-            >Product Name</th>
-        <th data-field="description" 
-            data-filter-control="input" 
-            data-sortable="true"
-            >Description</th>
-        <th data-field="image" 
-            data-filter-control="input" 
-            data-sortable="false"
-            >Image</th>
-        <th data-field="price" 
-            data-filter-control="input" 
-            data-sortable="true"
-            data-sorter="currencySort"
-            >Price</th>
-        <th data-field="category" 
-            data-filter-control="input" 
-            data-sortable="true"
-            >Category</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for product in myProducts %}
-        <tr>
-          <td>{{ product.id }}</td>
-          <td><a href="{{product.name}}"> {{ product.name }} </a></td>
-          <td>{{ product.description }}</td>
-          <td><img src="{{ product.image_url }}" style="max-width: 40%;"></td>
-          <td>${{ product.price }}</td>
-        </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+  <thead class="thead-dark">
+    <tr>
+      <th data-field="id" data-filter-control="input" data-sortable="true">Product ID</th>
+      <th data-field="name" data-filter-control="input" data-sortable="true">Product Name</th>
+      <th data-field="description" data-filter-control="input" data-sortable="true">Description</th>
+      <th data-field="image" data-filter-control="input" data-sortable="false">Image</th>
+      <th data-field="price" data-filter-control="input" data-sortable="true" data-sorter="currencySort">Price</th>
+      <th data-field="category" data-filter-control="input" data-sortable="true">Category</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for product in myProducts %}
+    <tr>
+      <td>{{ product.id }}</td>
+      <td><a href="{{product.name}}"> {{ product.name }} </a></td>
+      <td>{{ product.description }}</td>
+      <td><img src="{{ product.image_url }}" style="max-width: 40%;"></td>
+      <td>${{ product.price }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
 
 <hr>
 
 <h2>Create a Product</h2>
 <form action="{{ url_for('products.create') }}" method="post" enctype="multipart/form-data">
-    {{ create_product_form.hidden_tag() }}
+  {{ create_product_form.hidden_tag() }}
   <p>
-    {{ create_product_form.name.label }}<br/>
-    {{ create_product_form.name }}<br/>
+    {{ create_product_form.name.label }}<br />
+    {{ create_product_form.name }}<br />
     {% for error in create_product_form.name.errors %}
     <span style="color: red;">[{{ error }}]</span>
     {% endfor %}
   </p>
   <p>
-    {{ create_product_form.price.label }}<br/>
-    {{ create_product_form.price(size=10) }}<br/>
+    {{ create_product_form.price.label }}<br />
+    {{ create_product_form.price(size=10) }}<br />
     {% for error in create_product_form.price.errors %}
     <span style="color: red;">[{{ error }}]</span>
     {% endfor %}
   </p>
   <p>
-    {{ create_product_form.description.label }}<br/>
-    {{ create_product_form.description }}<br/>
+    {{ create_product_form.description.label }}<br />
+    {{ create_product_form.description }}<br />
     {% for error in create_product_form.description.errors %}
     <span style="color: red;">[{{ error }}]</span>
     {% endfor %}
   </p>
   <p>
-    {{ create_product_form.category.label }}<br/>
-    {{ create_product_form.category }}<br/>
+    {{ create_product_form.category.label }}<br />
+    {{ create_product_form.category }}<br />
     {% for error in create_product_form.category.errors %}
     <span style="color: red;">[{{ error }}]</span>
     {% endfor %}
   </p>
   <p>
-    {{ create_product_form.image.label }}<br/>
-    {{ create_product_form.image }}<br/>
+    {{ create_product_form.image.label }}<br />
+    {{ create_product_form.image }}<br />
     {% for error in create_product_form.image.errors %}
     <span style="color: red;">[{{ error }}]</span>
     {% endfor %}
@@ -117,45 +90,45 @@
 
 <h2>Update a Product</h2>
 <form action="{{ url_for('products.update') }}" method="post" enctype="multipart/form-data">
-    {{ update_product_form.hidden_tag() }}
+  {{ update_product_form.hidden_tag() }}
   <p>
-      {{ update_product_form.pid.label }}<br/>
-      {{ update_product_form.pid }}<br/>
-      {% for error in update_product_form.pid.errors %}
-      <span style="color: red;">[{{ error }}]</span>
-      {% endfor %}
+    {{ update_product_form.pid.label }}<br />
+    {{ update_product_form.pid }}<br />
+    {% for error in update_product_form.pid.errors %}
+    <span style="color: red;">[{{ error }}]</span>
+    {% endfor %}
   </p>
   <p>
-    {{ update_product_form.name.label }}<br/>
-    {{ update_product_form.name }}<br/>
+    {{ update_product_form.name.label }}<br />
+    {{ update_product_form.name }}<br />
     {% for error in update_product_form.name.errors %}
     <span style="color: red;">[{{ error }}]</span>
     {% endfor %}
   </p>
   <p>
-    {{ update_product_form.price.label }}<br/>
-    {{ update_product_form.price(size=10) }}<br/>
+    {{ update_product_form.price.label }}<br />
+    {{ update_product_form.price(size=10) }}<br />
     {% for error in update_product_form.price.errors %}
     <span style="color: red;">[{{ error }}]</span>
     {% endfor %}
   </p>
   <p>
-    {{ update_product_form.description.label }}<br/>
-    {{ update_product_form.description }}<br/>
+    {{ update_product_form.description.label }}<br />
+    {{ update_product_form.description }}<br />
     {% for error in update_product_form.description.errors %}
     <span style="color: red;">[{{ error }}]</span>
     {% endfor %}
   </p>
   <p>
-    {{ update_product_form.category.label }}<br/>
-    {{ update_product_form.category }}<br/>
+    {{ update_product_form.category.label }}<br />
+    {{ update_product_form.category }}<br />
     {% for error in update_product_form.category.errors %}
     <span style="color: red;">[{{ error }}]</span>
     {% endfor %}
   </p>
   <p>
-    {{ update_product_form.image.label }}<br/>
-    {{ update_product_form.image }}<br/>
+    {{ update_product_form.image.label }}<br />
+    {{ update_product_form.image }}<br />
     {% for error in update_product_form.image.errors %}
     <span style="color: red;">[{{ error }}]</span>
     {% endfor %}

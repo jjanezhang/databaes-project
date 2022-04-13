@@ -2,6 +2,7 @@ from unittest import result
 from flask import current_app as app
 from sqlalchemy.exc import SQLAlchemyError
 
+
 class Product:
     def __init__(self, id, name, price, category, description, available, image_url, created_by):
         self.id = id
@@ -16,21 +17,19 @@ class Product:
     @staticmethod
     def get(id):
         rows = app.db.execute('''
-SELECT id, name, price, category, description, available, image_url, created_by
-FROM Products
-WHERE id = :id
-''',
-                              id=id)
+            SELECT id, name, price, category, description, available, image_url, created_by
+            FROM Products
+            WHERE id = :id
+            ''', id=id)
         return Product(*(rows[0])) if rows is not None else None
 
     @staticmethod
     def get_all(available=True):
         rows = app.db.execute('''
-SELECT id, name, price, category, description, available, image_url, created_by
-FROM Products
-WHERE available = :available
-''',
-                              available=available)
+            SELECT id, name, price, category, description, available, image_url, created_by
+            FROM Products
+            WHERE available = :available
+            ''', available=available)
         return [Product(*row) for row in rows]
 
     @staticmethod
@@ -44,12 +43,11 @@ WHERE available = :available
     @staticmethod
     def get_product_by_name(product_name):
         rows = app.db.execute('''
-SELECT id, name, price, category, description, available, image_url, created_by
-FROM Products
-WHERE name = :product_name
-''',
-                              product_name=product_name)
-        if len(rows) ==0:
+            SELECT id, name, price, category, description, available, image_url, created_by
+            FROM Products
+            WHERE name = :product_name
+            ''', product_name=product_name)
+        if len(rows) == 0:
             return [None]
         return [Product(*row) for row in rows]
 
@@ -64,15 +62,15 @@ WHERE name = :product_name
 
     @staticmethod
     def create_product(name, price, category, description, available, image_url, created_by):
-        try: 
+        try:
             app.db.execute('''
-            INSERT INTO Products(name, price, category, description, available, image_url, created_by)
-            VALUES(:name, :price, :category, :description, :available, :image_url, :created_by)
-            ''', name=name, price=price, category=category, description=description, available=available, image_url=image_url, created_by=created_by)
+                INSERT INTO Products(name, price, category, description, available, image_url, created_by)
+                VALUES(:name, :price, :category, :description, :available, :image_url, :created_by)
+                ''', name=name, price=price, category=category, description=description, available=available, image_url=image_url, created_by=created_by)
         except SQLAlchemyError:
             return 0
         return result
-    
+
     @staticmethod
     def get_all_products_from_user(uid):
         rows = app.db.execute('''
@@ -86,7 +84,7 @@ WHERE name = :product_name
 
     @staticmethod
     def update_product(pid, name, price, description, available, image_url):
-        try: 
+        try:
             result = app.db.execute('''
                 UPDATE Products
                 SET name = :name, price = :price, description = :description,
@@ -94,5 +92,5 @@ WHERE name = :product_name
                 WHERE id = :pid
             ''', pid=pid, name=name, price=price, description=description, available=available, image_url=image_url)
         except SQLAlchemyError as e:
-            return "Product name already taken."
+            return f"Error: {e}, product name already taken."
         return result

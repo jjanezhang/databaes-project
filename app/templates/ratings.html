@@ -17,37 +17,37 @@
     </tr>
   </thead>
   <tbody>
-    {% for product in rated_products%}    
-      <tr>
-        <th scope="row">{{product.pid}}</th>
-        
-        <td>{{product.name}} </td>
-        <td>{{product.rating}}</td>
-        <td>{{product.review}}</td>
-        <td>
-          <form action="{{ url_for('ratings.remove_rating') }}" method="post">
-            <input type="hidden" name="pid" value="{{ product.pid }}"/>
-            <input type="submit" value="Remove" />
-          </form>
-        </td>
-      </tr>
+    {% for product in rated_products%}
+    <tr>
+      <th scope="row">{{product.pid}}</th>
+
+      <td>{{product.name}} </td>
+      <td>{{product.rating}}</td>
+      <td>{{product.review}}</td>
+      <td>
+        <form action="{{ url_for('ratings.remove_rating') }}" method="post">
+          <input type="hidden" name="pid" value="{{ product.pid }}" />
+          <input type="submit" value="Remove" />
+        </form>
+      </td>
+    </tr>
     {% endfor %}
   </tbody>
 </table>
 <hr>
 <h2>Update the Rating of a Product:</h2>
 <form action="{{ url_for('ratings.update_rating') }}" method="post">
-    {{ ratings_form.hidden_tag() }}
+  {{ ratings_form.hidden_tag() }}
   <p>
-    {{ ratings_form.pid.label }}<br/>
-    {{ ratings_form.pid }}<br/>
+    {{ ratings_form.pid.label }}<br />
+    {{ ratings_form.pid }}<br />
     {% for error in ratings_form.pid.errors %}
     <span style="color: red;">[{{ error }}]</span>
     {% endfor %}
   </p>
   <p>
-    {{ ratings_form.new_rating.label }}<br/> 
-    {{ ratings_form.new_rating(size=10) }}<br/>
+    {{ ratings_form.new_rating.label }}<br />
+    {{ ratings_form.new_rating(size=10) }}<br />
     {% for error in ratings_form.new_rating.errors %}
     <span style="color: red;">[{{ error }}]</span>
     {% endfor %}

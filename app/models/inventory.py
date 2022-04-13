@@ -1,6 +1,7 @@
 from datetime import datetime
 from flask import current_app as app
 
+
 class Inventory:
     def __init__(self, uid, pid, name, quantity):
         self.uid = uid
@@ -45,7 +46,7 @@ class Inventory:
             WHERE uid = :uid AND pid = :pid
         ''', uid=uid, pid=pid)
         return result
-    
+
     @staticmethod
     # Get items which have been sold the most by this seller after start_time
     def get_most_popular_items(uid, start_time=None):

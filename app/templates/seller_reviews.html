@@ -1,4 +1,3 @@
-
 {% extends "base.html" %}
 
 {% block content %}
@@ -6,40 +5,41 @@
 
 <link rel="stylesheet" href="{{ url_for('static', filename='css/view_product.css') }}">
 
-    <h3>Reviews for this product </h3>
+<h3>Reviews for this product </h3>
 <table class='table table-hover table-bordered container'>
-    <thead class="thead-dark">
-        
-      <tr>
-        <th scope="col"> Reviewer </th>
-        <th scope="col"> Review </th>
-        <th scope="col"> Was this review helpful? </th>
-      </tr>
-    </thead>
-    <tbody>
-        {% for rn in reviews_and_names %}
-        {% if rn['review']=="" %}
-        <tr>
-          <th scope="row">{{rn['firstname']}} &#160 {{rn['lastname']}}</th>
-        {% if rn['bid'] ==current_user.id %}
-            <td> Review: {{rn['review']}}     
-                <form action="{{ url_for('index.get_profile', uid=uid) }}" method="post">
-                <input class=".addReviewButton" placeholder="Type Something .." 
-                type="text" name="reviewText"/>
-                <input class="viewProductButton" type="submit" value="Submit" />
-                </form>
-            </td>
-        {% else %}
-            <td> Review: {{rn['review']}} </td>
-        {% endif %}
-          <td>    <form action="{{ url_for('index.get_profile', uid=uid) }}" method="post">
-            <input class="upvoteButton" type="submit" value="Upvote" />
-            <br>Upvotes: {{rn['upvotes']}} <br>
-        </form></td>
-        </tr>
-        {% endif %}
-      {% endfor %}
-    </tbody>
-  </table>
+  <thead class="thead-dark">
 
-{% endblock %} 
+    <tr>
+      <th scope="col"> Reviewer </th>
+      <th scope="col"> Review </th>
+      <th scope="col"> Was this review helpful? </th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for rn in reviews_and_names %}
+    {% if rn['review']=="" %}
+    <tr>
+      <th scope="row">{{rn['firstname']}} &#160 {{rn['lastname']}}</th>
+      {% if rn['bid'] ==current_user.id %}
+      <td> Review: {{rn['review']}}
+        <form action="{{ url_for('index.get_profile', uid=uid) }}" method="post">
+          <input class=".addReviewButton" placeholder="Type Something .." type="text" name="reviewText" />
+          <input class="viewProductButton" type="submit" value="Submit" />
+        </form>
+      </td>
+      {% else %}
+      <td> Review: {{rn['review']}} </td>
+      {% endif %}
+      <td>
+        <form action="{{ url_for('index.get_profile', uid=uid) }}" method="post">
+          <input class="upvoteButton" type="submit" value="Upvote" />
+          <br>Upvotes: {{rn['upvotes']}} <br>
+        </form>
+      </td>
+    </tr>
+    {% endif %}
+    {% endfor %}
+  </tbody>
+</table>
+
+{% endblock %}

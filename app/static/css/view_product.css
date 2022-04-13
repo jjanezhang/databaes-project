@@ -8,7 +8,7 @@
     text-align: center;
 }
 
-.reviewsLink{
+.reviewsLink {
     color: teal;
     font-size: 18px;
     text-decoration: none;
@@ -24,6 +24,7 @@
     padding: 5px 30px;
     margin-top: 0px;
 }
+
 .viewProductButton {
     background: #ffd814;
     border: none;
@@ -56,10 +57,11 @@
     color: #007185;
 }
 
-.flashMessages{
+.flashMessages {
     color: #b12704;
     font-size: 100%;
 }
+
 #hideMe {
     -moz-animation: cssAnimation 0s ease-in 5s forwards;
     /* Firefox */
@@ -71,21 +73,24 @@
     -webkit-animation-fill-mode: forwards;
     animation-fill-mode: forwards;
 }
+
 @keyframes cssAnimation {
     to {
-        width:0;
-        height:0;
-        overflow:hidden;
+        width: 0;
+        height: 0;
+        overflow: hidden;
     }
 }
+
 @-webkit-keyframes cssAnimation {
     to {
-        width:0;
-        height:0;
-        visibility:hidden;
+        width: 0;
+        height: 0;
+        visibility: hidden;
     }
 }
-.checked{
+
+.checked {
     color: orange
 }
 

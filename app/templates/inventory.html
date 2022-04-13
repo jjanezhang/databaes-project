@@ -42,7 +42,7 @@
     {% for product in inventory %}
     <tr>
       <td>{{ product.pid }}</td>
-      <td><a href="{{product.name}}"> {{ product.name }} </a></td>
+      <td><a href="../products/{{product.name}}"> {{ product.name }} </a></td>
       <td>{{ product.quantity }}</td>
       <td>
         <form action="{{ url_for('inventory.remove_product') }}" method="post">

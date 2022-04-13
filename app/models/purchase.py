@@ -51,3 +51,15 @@ class Purchase:
         else:
             ret = [False]
             return ret
+        
+    @staticmethod
+    # TODO: AND P.fulfilled=true ?????
+    def check_purchased_by_uid_pid(uid, pid):
+        rows = app.db.execute('''
+            SELECT P.oid AS oid
+            FROM Purchases P, Orders O
+            WHERE O.id = P.oid AND P.pid = :pid AND O.uid = :uid 
+            ''', uid=uid, pid=pid)
+
+        print("is this product purchased? ", [r for r in rows])
+        return True

@@ -12,14 +12,11 @@ class Rated:   # a rated item
     def get_all_by_uid(uid):
         rows = app.db.execute('''
             SELECT R.uid as uid, R.pid AS pid, P.name AS name,
-            R.rating as rating
+            R.rating as rating, R.review AS review
             FROM Ratings R, Products P
             WHERE R.pid = P.id AND R.uid = :uid
             ORDER BY time_added DESC
         ''', uid=uid)
-        for row in rows:
-            print("row: ", row)
-        # return [Rated(*row) for row in rows]
         return rows
 
     @staticmethod
@@ -33,6 +30,7 @@ class Rated:   # a rated item
         return rows
 
     @staticmethod
+    # TODO: Actually need all people who purchased this product
     def get_reviews_and_reviewers_by_pid_uid(pid, uid):
         rows = app.db.execute('''
             SELECT U.firstname as firstname, U.lastname as lastname, 
@@ -63,11 +61,20 @@ class Rated:   # a rated item
             WHERE R.pid = P.id AND R.uid = :uid AND R.pid = :pid
         ''', uid=uid, pid=pid)
         result = [row['review'] for row in rows]
-        # print("ROWSS for already reviewed: ", result)
-        # if rowcount>0:
-        if result[0] == "":
+        print("ROWSS for already reviewed: ", result)
+        if result == []:
             return False
         return True
+
+    @staticmethod
+    def ratings_for_all_products():
+        rows = app.db.execute('''
+            SELECT id, ROUND(AVG(rating),1) AS average_rating, count(rating) AS num_ratings
+            FROM Products LEFT JOIN Ratings ON id = pid
+            GROUP BY id
+        ''')
+        return [{'avg_rating': row['average_rating'] if row['average_rating'] else 0, 
+                'num_ratings': row['num_ratings'] if row['num_ratings'] else 0} for row in rows]
 
     @staticmethod
     # Get all rated items purchased by this user
@@ -77,9 +84,10 @@ class Rated:   # a rated item
             FROM Ratings R
             WHERE R.pid = :pid
         ''', pid=pid)
-        if len(rows) > 0:
-            return rows
-        return []
+
+        if rows[0]['rating']==None:
+            return 0
+        return float(rows[0]['rating'])
 
     @staticmethod
     def num_ratings_for_product(pid):
@@ -88,9 +96,12 @@ class Rated:   # a rated item
             FROM Ratings R
             WHERE R.pid = :pid
         ''', pid=pid)
-        if len(rows) > 0:
-            return rows
-        return 0
+
+        # print("num ratings is: ",rows[0]['num_ratings'] )
+        if rows[0]['num_ratings']==None:
+            return 0
+        return int(rows[0]['num_ratings'])
+
 
     @staticmethod
     # how many upvotes for this review?
@@ -164,8 +175,8 @@ class Rated:   # a rated item
             WHERE U.rid = :rid AND U.pid = :pid AND U.cid = :cid
         ''', rid=reviewer_id, pid=pid, cid=upvoter_id)
 
-        print("result: ", result)
-        return result != []
+        # print("result: ", result)
+        return result !=[]
 
     @staticmethod
     # Update the rating of an item previously rated

@@ -1,0 +1,23 @@
+
+    {% if purchased_this_product %}
+    <td scope="row">{{rn[2]}}</td>
+    <td> Review: {{rn[3]}}
+      <form action="{{ url_for('index.display_reviews', product_name=pname) }}" method="post">
+        <input class="addRatingButton" placeholder="Type Something .." type="text" name="review" />
+        <input class="viewProductButton" type="submit" value="Submit" />
+        </form>
+        {% if current_user.id == reviewer_uid %}
+            <div class="flashMessages" id="hideMe"> 
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <ul class="flashes">
+                {% for message in messages %}
+                    {{ message }}
+                {% endfor %}
+                </ul>
+            {% endif %} 
+            {% endwith %}
+            </div>
+        {% endif %}
+    </td>
+    {% endif %}

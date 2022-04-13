@@ -26,7 +26,6 @@ def getTemplateVariables():
     ratings_form = RatingsForm()
     if current_user.is_authenticated:
         rated_products = Rated.get_all_by_uid(current_user.id)
-        print("rated products for this user: ", rated_products)
         ratings_form.pid.choices = [(product.pid, product.name) for product in rated_products] 
         # already sorted by time_added, above
         return (rated_products, ratings_form) 

@@ -22,7 +22,6 @@ CREATE TABLE Products (
     name VARCHAR(255) UNIQUE NOT NULL,
     price DECIMAL(12,2) NOT NULL,
     category VARCHAR(255) NOT NULL,
-    available BOOLEAN DEFAULT TRUE,
     description TEXT NOT NULL,
     image_url VARCHAR(1024) NOT NULL,
     created_by INT NOT NULL REFERENCES Users(id)
@@ -72,7 +71,7 @@ CREATE TABLE Upvotes (
 CREATE TABLE Cart (
     uid INT NOT NULL REFERENCES Users(id),
     pid INT NOT NULL REFERENCES Products(id),
-    sid INT NOT NULL REFERENCES Sellers(id),
+    sid INT NOT NULL REFERENCES Users(id),
     quantity INT NOT NULL CHECK (quantity > 0),
     PRIMARY KEY(uid, pid, sid),
     FOREIGN KEY(sid, pid) REFERENCES Inventory(uid, pid) ON DELETE CASCADE

@@ -55,14 +55,12 @@ def gen_products(num_products):
                 print(f'{pid}', end=' ', flush=True)
             name = fake.sentence(nb_words=4)[:-1]
             price = f'{str(fake.random_int(max=500))}.{fake.random_int(max=99):02}'
-            available = 'true'
             available_pids.append(pid)
             category = fake.random_element(elements=product_categories)
             description = fake.sentence()
             image_url = fake.random_element(elements=image_placeholders)
             created_by = fake.random_int(min=0, max=num_users - 1)
-            writer.writerow([pid, name, price, category,
-                            available, description, image_url, created_by])
+            writer.writerow([pid, name, price, category, description, image_url, created_by])
         print(f'{num_products} generated; {len(available_pids)} available')
     return available_pids
 

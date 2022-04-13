@@ -35,7 +35,7 @@ class UpdateProductForm(FlaskForm):
     pid = SelectField('Product ID', validators=[DataRequired()])
     name = StringField('New Name (Optional)')
     price = DecimalField('New Price (Optional)', validators=[Optional(), NumberRange(min=0)], places=2)
-    category = SelectField('New Category (Optional)', choices=['Food', 'Clothing', 'Pet Supplies', 'Health & Beauty', 'Home', 'Electronics', 'Entertainment', 'Other'], default=1)
+    category = SelectField('New Category (Optional)', choices=['', 'Food', 'Clothing', 'Pet Supplies', 'Health & Beauty', 'Home', 'Electronics', 'Entertainment', 'Other'], default=1)
     description = StringField('New Description (Optional)')
     image = FileField('New Image (Optional)', validators=[FileAllowed(["png", "jpg", "jpeg"], "This file is not a valid image!",)])
     submit = SubmitField('Update Product')

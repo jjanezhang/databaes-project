@@ -126,5 +126,6 @@ class Cart:
                     item for item in cart if item.pid == error_pid).product_name
                 return f"There is no longer enough quantity of {error_product_name} to satisfy your purchase."
             else:
+                print(e)
                 return "Unable to complete your purchase"
         return 1

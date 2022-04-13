@@ -91,7 +91,7 @@ class Product:
                 SET name = :name, price = :price, category = :category,
                 description = :description, image_url = :image_url
                 WHERE id = :pid
-            ''', pid=pid, name=name, price=price, description=description, image_url=image_url)
+            ''', pid=pid, name=name, price=price, description=description, image_url=image_url, category=category)
         except SQLAlchemyError as e:
             return f"Error: {e}, product name already taken."
         return result

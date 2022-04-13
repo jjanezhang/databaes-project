@@ -28,7 +28,7 @@ def getTemplateVariables():
     quantity_form = QuantityForm()
     add_product_form = AddProductForm()
     if current_user.is_authenticated:
-        all_products = Product.get_all_regardless_of_availability()
+        all_products = Product.get_all()
         inventory = Inventory.get_all(current_user.id)
         quantity_form.pid.choices = [
             (product.pid, product.name) for product in inventory]

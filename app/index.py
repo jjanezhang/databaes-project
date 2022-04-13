@@ -19,7 +19,7 @@ bp = Blueprint('index', __name__)
 @bp.route('/')
 def index():
     # get all available products and their info for sale:
-    products = Product.get_all(True)
+    products = Product.get_all()
     ratingsData = Rated.ratings_for_all_products()
 
     avg_ratings = list(map(lambda x: x['avg_rating'], ratingsData))

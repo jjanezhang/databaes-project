@@ -2,6 +2,7 @@ from flask import current_app as app
 from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError, IntegrityError
 
+
 class CartItem:
     def __init__(self, pid, sid, product_name, seller_name, quantity, price):
         self.pid = pid
@@ -11,11 +12,12 @@ class CartItem:
         self.quantity = quantity
         self.price = price
 
+
 class Cart:
     @staticmethod
     def add_item_to_cart(uid, pid, sid, quantity):
         try:
-             with app.db.engine.begin() as conn:
+            with app.db.engine.begin() as conn:
                 seller_quantity = conn.execute(text('''
                     SELECT quantity
                     FROM Inventory
@@ -43,8 +45,9 @@ class Cart:
         ''', uid=uid)
         result = []
         for row in rows:
-            result.append(CartItem(row['pid'], row['sid'], row['name'], row['firstname'] + ' ' + row['lastname'], 
-                row['quantity'], row['price']))
+            result.append(CartItem(row['pid'], row['sid'], row['name'],
+                                   row['firstname'] + ' ' + row['lastname'],
+                                   row['quantity'], row['price']))
         return result
 
     @staticmethod
@@ -60,7 +63,7 @@ class Cart:
         if(new_quantity <= 0):
             return 'Choose a quantity > 0.'
         try:
-             with app.db.engine.begin() as conn:
+            with app.db.engine.begin() as conn:
                 seller_quantity = conn.execute(text('''
                     SELECT quantity
                     FROM Inventory
@@ -84,9 +87,9 @@ class Cart:
     # Submit a user's cart and create a new order
     def submit(uid):
         try:
-             with app.db.engine.begin() as conn:
+            with app.db.engine.begin() as conn:
                 cart = Cart.get_cart(uid)
-                totalPrice = totalPrice = sum(map(lambda x: x.quantity * x.price, cart))
+                totalPrice = sum(map(lambda x: x.quantity * x.price, cart))
                 conn.execute(text('''
                     UPDATE Users SET balance = balance - :totalPrice
                     WHERE id = :uid
@@ -119,9 +122,9 @@ class Cart:
                 return "You do not have enough balance to complete this order."
             elif 'inventory_quantity_check' in str(e):
                 error_pid = e.params['pid']
-                error_product_name = next(item for item in cart if item.pid == error_pid).product_name
-                return "There is no longer enough quantity of " + error_product_name + " to satisfy your purchase."
+                error_product_name = next(
+                    item for item in cart if item.pid == error_pid).product_name
+                return f"There is no longer enough quantity of {error_product_name} to satisfy your purchase."
             else:
                 return "Unable to complete your purchase"
         return 1
-

@@ -1,5 +1,5 @@
 from flask import current_app as app
-import sys
+
 
 class Seller:   # a rated item
     def __init__(self, uid, bid, rating, review, time_added):
@@ -7,8 +7,8 @@ class Seller:   # a rated item
         self.bid = bid
         self.rating = rating
         self.review = review
-        self.time_added = time_added    
-    
+        self.time_added = time_added
+
     @staticmethod
     def get_all_reviews_by_sid(sid):
         rows = app.db.execute('''
@@ -37,26 +37,22 @@ class Seller:   # a rated item
             FROM Sellers S
             WHERE S.sid = :sid
         ''', sid=sid)
-        rowcount = len(rows)
-        if rowcount>0:
+        if len(rows) > 0:
             return rows
-        return []    
- 
+        return []
+
     @staticmethod
-    # Was this seller already rated by this buyer? sid=seller_id, bid=buyer_id
     def already_rated(sid, bid):
         rows = app.db.execute('''
             SELECT S.rating AS rating
             FROM Sellers S
             WHERE S.sid = :sid AND S.bid = :bid
         ''', sid=sid, bid=bid)
-        rowcount = len(rows)
-        if rowcount>0:
+        if len(rows) > 0:
             return True
         return False
 
     @staticmethod
-    # Was this seller already rated by this buyer? sid=seller_id, bid=buyer_id
     def add_rating(sid, bid, rating, review="", upvotes=0):
         result = app.db.execute('''
             INSERT INTO Sellers(sid, bid, rating, review, upvotes, time_added)
@@ -72,7 +68,6 @@ class Seller:   # a rated item
             FROM Sellers S
             WHERE S.sid = :sid
         ''', sid=sid)
-        rowcount = len(rows)
-        if rowcount>0:
+        if len(rows) > 0:
             return rows
         return 0

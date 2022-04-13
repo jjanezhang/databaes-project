@@ -1,5 +1,5 @@
 from flask import current_app as app
-import sys
+
 
 class Rated:   # a rated item
     def __init__(self, uid, pid, name):
@@ -21,7 +21,7 @@ class Rated:   # a rated item
             print("row: ", row)
         # return [Rated(*row) for row in rows]
         return rows
-    
+
     @staticmethod
     def get_all_reviews_by_pid(pid):
         rows = app.db.execute('''
@@ -31,7 +31,7 @@ class Rated:   # a rated item
             ORDER BY R.time_added DESC
         ''', pid=pid)
         return rows
-    
+
     @staticmethod
     def get_reviews_and_reviewers_by_pid_uid(pid, uid):
         rows = app.db.execute('''
@@ -43,7 +43,7 @@ class Rated:   # a rated item
             ORDER BY R.time_added DESC
         ''', pid=pid, uid=uid)
         return rows if rows else None
-    
+
     @staticmethod
     # Already rated this product by this uid?
     def already_rated(uid, pid):
@@ -52,10 +52,7 @@ class Rated:   # a rated item
             FROM Ratings R, Products P
             WHERE R.pid = P.id AND R.uid = :uid AND R.pid = :pid
         ''', uid=uid, pid=pid)
-        rowcount = len(rows)
-        if rowcount>0:
-            return True
-        return False
+        return len(rows) > 0
 
     @staticmethod
     # Already reviewed this product by this uid?
@@ -65,14 +62,13 @@ class Rated:   # a rated item
             FROM Ratings R, Products P
             WHERE R.pid = P.id AND R.uid = :uid AND R.pid = :pid
         ''', uid=uid, pid=pid)
-        rowcount = len(rows)
         result = [row['review'] for row in rows]
         # print("ROWSS for already reviewed: ", result)
         # if rowcount>0:
-        if result[0]=="":
+        if result[0] == "":
             return False
         return True
-    
+
     @staticmethod
     # Get all rated items purchased by this user
     def avg_rating_for_product(pid):
@@ -81,11 +77,10 @@ class Rated:   # a rated item
             FROM Ratings R
             WHERE R.pid = :pid
         ''', pid=pid)
-        rowcount = len(rows)
-        if rowcount>0:
+        if len(rows) > 0:
             return rows
         return []
-        
+
     @staticmethod
     def num_ratings_for_product(pid):
         rows = app.db.execute('''
@@ -93,11 +88,10 @@ class Rated:   # a rated item
             FROM Ratings R
             WHERE R.pid = :pid
         ''', pid=pid)
-        rowcount = len(rows)
-        if rowcount>0:
+        if len(rows) > 0:
             return rows
         return 0
-    
+
     @staticmethod
     # how many upvotes for this review?
     def num_upvotes(uid, pid):
@@ -109,7 +103,7 @@ class Rated:   # a rated item
         return [r for r in result][0]
 
     @staticmethod
-    # Add a new rating to a product this user purchased 
+    # Add a new rating to a product this user purchased
     def add_rating(uid, pid, rating, review=""):
         result = app.db.execute('''
             INSERT INTO Ratings(uid, pid, rating, review, upvotes, time_added)
@@ -119,7 +113,7 @@ class Rated:   # a rated item
         return result
 
     @staticmethod
-    # Add a new rating to a product this user purchased 
+    # Add a new rating to a product this user purchased
     def add_review(uid, pid, review):
         result = app.db.execute('''
             INSERT INTO Ratings(uid, pid, rating, review, upvotes, time_added)
@@ -130,7 +124,7 @@ class Rated:   # a rated item
         return result
 
     @staticmethod
-    # Add an upvote to a review 
+    # Add an upvote to a review
     def add_upvote(uid, pid, current_upvotes):
         result = app.db.execute('''
             INSERT INTO Ratings(uid, pid, rating, review, 
@@ -139,10 +133,9 @@ class Rated:   # a rated item
             :upvotes, LOCALTIMESTAMP(1))
             ON CONFLICT (uid, pid) DO UPDATE
             SET upvotes = :new_upvotes;
-        ''', uid=uid, pid=pid, rating=0, review="", 
-        upvotes=0, new_upvotes=current_upvotes+1)
+        ''', uid=uid, pid=pid, rating=0, review="", upvotes=0, new_upvotes=current_upvotes+1)
         return result
-    
+
     @staticmethod
     # Record this upvote
     def record_upvote(upvote_receiver_uid, pid, current_user_id):
@@ -154,7 +147,7 @@ class Rated:   # a rated item
         return result
 
     @staticmethod
-    # Add an upvote to a review 
+    # Add an upvote to a review
     def get_current_upvotes(uid, pid):
         result = app.db.execute('''
             SELECT R.upvotes as current_upvotes
@@ -163,23 +156,8 @@ class Rated:   # a rated item
         ''', uid=uid, pid=pid)
         return [r for r in result][0]
 
-    # @staticmethod
-    # # Add an upvote to a review 
-    # def already_upvoted(uid, pid, current_user_id):
-    #     result = app.db.execute('''
-    #         SELECT R.last_upvoted_by as last_upvoted_by
-    #         FROM Ratings R
-    #         WHERE R.uid = :uid AND R.pid = :pid
-    #     ''', uid=uid, pid=pid)
-
-    #     last_upvoter = [r for r in result][0]['last_upvoted_by']
-    #     if last_upvoter == current_user_id:
-    #         return True
-    #     return False
-
     @staticmethod
-    # Check 
-    def already_upvoted(reviewer_id, pid, upvoter_id): # upvoter = current user =cid
+    def already_upvoted(reviewer_id, pid, upvoter_id):
         result = app.db.execute('''
             SELECT U.rid
             FROM Upvotes U
@@ -215,7 +193,7 @@ class Rated:   # a rated item
             WHERE uid = :uid AND pid = :pid
         ''', uid=uid, pid=pid)
         return result
-    
+
     @staticmethod
     # Remove a review - but not the rating - from a user's existing ratings
     def remove_review(uid, pid):
@@ -224,4 +202,3 @@ class Rated:   # a rated item
             WHERE uid = :uid AND pid = :pid
         ''', uid=uid, pid=pid, review="")
         return result
-    

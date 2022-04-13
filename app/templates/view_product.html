@@ -21,10 +21,9 @@
     <h3 class="viewProductName">{{ product.name }}</h3>
     <hr />
     <div>
-        Price: 
+        Price:
         <span class="viewProductPrice">
-            ${{product.price}} 
-            {% set pid = product.id %}
+            ${{product.price}}
             <a href="{{ url_for('index.display_reviews', product_name=pname) }}" class="reviewsLink"> Reviews </a>
         </span>
     </div>
@@ -36,42 +35,42 @@
     <div>
         <div>
             Average Rating: {% for a in avg_rating %}
-                {{a['rating']}}
+            {{a['rating']}}
             {% endfor %}
-            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-                    {% for i in range(integer_rating) %}
-                        <span class="fa fa-star checked"></span>
-                    {% endfor %}
-                    {% for i in range(5-integer_rating) %}
-                        <span class="fa fa-star"></span>
-                    {% endfor %}
+            <link rel="stylesheet"
+                href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+            {% for i in range(integer_rating) %}
+            <span class="fa fa-star checked"></span>
+            {% endfor %}
+            {% for i in range(5-integer_rating) %}
+            <span class="fa fa-star"></span>
+            {% endfor %}
 
-            <div>Rated by: {{num_ratings}} people</div> 
-            </div>
+            <div>Rated by: {{num_ratings}} people</div>
+        </div>
         {% if purchased_this_product %}
-            You purchased this product on: <span class="viewProductTimestamp">{{purchase.time_purchased}}</span>
-            <br />
+        You purchased this product on: <span class="viewProductTimestamp">{{purchase.time_purchased}}</span>
+        <br />
         <div class="rateProduct">
             <form action="{{ url_for('index.add_rating', product_name=pname) }}" method="post">
-                <input class="addRatingButton" placeholder="1-5" 
-                type="number" name="Rating" min="1" max="5"/>
+                <input class="addRatingButton" placeholder="1-5" type="number" name="Rating" min="1" max="5" />
                 <input class="viewProductButton" type="submit" value="Rate" />
             </form>
         </div>
         <div class="flashMessages" id="hideMe">
-        {% with messages = get_flashed_messages() %}
+            {% with messages = get_flashed_messages() %}
             {% if messages %}
-                <ul class="flashes">
+            <ul class="flashes">
                 {% for message in messages %}
-                    {{ message }}
+                {{ message }}
                 {% endfor %}
-                </ul>
-            {% endif %} 
-        {% endwith %}
+            </ul>
+            {% endif %}
+            {% endwith %}
         </div>
         {% endif %}
         {% if not current_user.is_authenticated %}
-            <p><a href="{{ url_for('users.login') }}">Log in</a> to rate this product!</p>
+        <p><a href="{{ url_for('users.login') }}">Log in</a> to rate this product!</p>
         {% endif %}
     </div>
 </div>
@@ -82,42 +81,43 @@
         <table class="table table-bordered container">
             <thead>
                 <tr>
-                <th scope="col">Seller</th>
-                <th scope="col">Quantity Available</th>
+                    <th scope="col">Seller</th>
+                    <th scope="col">Quantity Available</th>
                 </tr>
             </thead>
             <tbody>
                 {% for val in sellers_and_quantities %}
                 <tr>
-                    <td><a href="{{ url_for('index.get_profile', uid=val.seller_id) }}"> {{val.firstname}} {{val.lastname}} </a></td>
+                    <td><a href="{{ url_for('index.get_profile', uid=val.seller_id) }}"> {{val.firstname}}
+                            {{val.lastname}} </a></td>
                     <td>{{val.quantity}}</td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
-            {% if current_user.is_authenticated %}
-            <form action="{{ url_for('cart.add_product') }}" method="post" class="centerContent">
-                {{ add_to_cart_form.hidden_tag() }}
-                <div>
-                    {{ add_to_cart_form.seller.label }}
-                    {{ add_to_cart_form.seller }}
-                    {{ add_to_cart_form.quantity.label }}
-                    {{ add_to_cart_form.quantity(size=10) }}
-                </div>
-                <span>
-                    {% for error in add_to_cart_form.seller.errors %}
-                        <span style="color: red;">[{{ error }}]</span>
-                    {% endfor %}
-                    {% for error in add_to_cart_form.quantity.errors %}
-                        <span style="color: red;">[{{ error }}]</span>
-                    {% endfor %}
-                </span>
-                <p> {{ add_to_cart_form.submit(class_="viewProductButton") }}</p>
-            </form>
-            {% else %}
-            <p><a href="{{ url_for('users.login') }}">Log in</a> to add this product to your cart!</p>
-            {% endif %}
+        {% if current_user.is_authenticated %}
+        <form action="{{ url_for('cart.add_product') }}" method="post" class="centerContent">
+            {{ add_to_cart_form.hidden_tag() }}
+            <div>
+                {{ add_to_cart_form.seller.label }}
+                {{ add_to_cart_form.seller }}
+                {{ add_to_cart_form.quantity.label }}
+                {{ add_to_cart_form.quantity(size=10) }}
+            </div>
+            <span>
+                {% for error in add_to_cart_form.seller.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+                {% for error in add_to_cart_form.quantity.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+            </span>
+            <p> {{ add_to_cart_form.submit(class_="viewProductButton") }}</p>
+        </form>
+        {% else %}
+        <p><a href="{{ url_for('users.login') }}">Log in</a> to add this product to your cart!</p>
+        {% endif %}
     </div>
 </div>
 
-{% endblock %} 
+{% endblock %}

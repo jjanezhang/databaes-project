@@ -189,11 +189,11 @@ def get_reviews_and_names(product_name):
         uid = review['uid']
         review_and_name = Rated.get_reviews_and_reviewers_by_pid_uid(pid, uid)[0]
 
-        name = review_and_name['firstname'] + " " + review_and_name['lastname']
-        review = review_and_name['review']
-        upvotes = review_and_name['upvotes']
-        time_added = review_and_name['time_added']
-        review_dict[uid] = [upvotes, time_added, name, review, uid]
+        upvotes = review_and_name['upvotes'] # rn[0]
+        time_added = review_and_name['time_added'] # rn[1]
+        name = review_and_name['firstname'] + " " + review_and_name['lastname'] # rn[2]
+        review = review_and_name['review'] # rn[3]
+        review_dict[uid] = [upvotes, time_added, name, review, uid] # uid = rn[4]
 
         review_dict[uid]= [upvotes, time_added, name, review, uid]
     
@@ -210,8 +210,9 @@ def get_reviews_and_names(product_name):
 def display_reviews(product_name):
     pid =  Product.get_pid(product_name)
     reviewer_uid = current_user.id
+    purchased_this_product = Purchase.check_purchased_by_uid_pid(current_user.id, pid)
     if request.method == 'POST':
-        print("request method is post")
+        # print("request method is post")
         if current_user.is_authenticated:
             uid = current_user.id
             upvote_receiver_uid = request.form.get('receiver_uid')
@@ -221,9 +222,14 @@ def display_reviews(product_name):
                     flash('Already upvoted this review!')
                     # msg = 'Already upvoted this review!'
                     reviews_and_names = get_reviews_and_names(product_name)
+                    all_uids = [ rn[4] for rn in reviews_and_names]
+                    already_reviewed = False
+                    if current_user.id in all_uids:
+                        already_reviewed = True
                     return render_template("reviews2.html", pname=product_name,
-                                           reviews_and_names=reviews_and_names, upvote_receiver_uid=upvote_receiver_uid,
-                                           reviewer_uid=reviewer_uid)
+                        reviews_and_names=reviews_and_names, upvote_receiver_uid=upvote_receiver_uid,
+                        reviewer_uid=reviewer_uid, purchased_this_product=purchased_this_product,
+                        already_reviewed=already_reviewed)
                 # else add the upvote to upvote_receiver_uid
                 current_upvotes = Rated.get_current_upvotes(upvote_receiver_uid, pid)['current_upvotes']
                 # last upvoted by current user id (uid)
@@ -232,9 +238,14 @@ def display_reviews(product_name):
                 flash('Review upvoted!')
                 # msg2 = 'Review upvoted!'
                 reviews_and_names = get_reviews_and_names(product_name)
+                all_uids = [ rn[4] for rn in reviews_and_names]
+                already_reviewed = False
+                if current_user.id in all_uids:
+                    already_reviewed = True
                 return render_template("reviews2.html", pname=product_name,
                                        reviews_and_names=reviews_and_names, upvote_receiver_uid=upvote_receiver_uid,
-                                       reviewer_uid=reviewer_uid)
+                                       reviewer_uid=reviewer_uid, purchased_this_product=purchased_this_product,
+                                       already_reviewed=already_reviewed)
 
             already_reviewed = Rated.already_reviewed(uid, pid)
             reviewer_uid = current_user.id
@@ -242,22 +253,37 @@ def display_reviews(product_name):
                 flash('Already reviewed this product!')
                 # msg3 = 'Already reviewed this product!'
                 reviews_and_names = get_reviews_and_names(product_name)
+                all_uids = [ rn[4] for rn in reviews_and_names]
+                already_reviewed = False
+                if current_user.id in all_uids:
+                    already_reviewed = True
                 return render_template("reviews2.html", pname=product_name,
                                        reviews_and_names=reviews_and_names, upvote_receiver_uid=upvote_receiver_uid,
-                                       reviewer_uid=reviewer_uid)
+                                       reviewer_uid=reviewer_uid, purchased_this_product=purchased_this_product,
+                                       already_reviewed=already_reviewed)
             else:
                 review = request.form.get('review')
                 result = Rated.add_review(uid, pid, review)
                 flash('Review added successfully!')
-                # msg4 = 'Review added successfully!'
                 reviews_and_names = get_reviews_and_names(product_name)
+                all_uids = [ rn[4] for rn in reviews_and_names]
+                already_reviewed = False
+                if current_user.id in all_uids:
+                    already_reviewed = True
                 return render_template("reviews2.html", pname=product_name,
                                        reviews_and_names=reviews_and_names, upvote_receiver_uid=upvote_receiver_uid,
-                                       reviewer_uid=reviewer_uid)
+                                       reviewer_uid=reviewer_uid, purchased_this_product=purchased_this_product,
+                                       already_reviewed=already_reviewed)
     else:
         reviews_and_names = get_reviews_and_names(product_name)
+        all_uids = [ rn[4] for rn in reviews_and_names]
+        already_reviewed = False
+        if current_user.id in all_uids:
+            already_reviewed = True
         return render_template("reviews2.html", pname=product_name,
-                           reviews_and_names=reviews_and_names, upvote_receiver_uid=None, reviewer_uid=None)
+                           reviews_and_names=reviews_and_names, upvote_receiver_uid=None, 
+                           reviewer_uid=None, purchased_this_product=purchased_this_product,
+                           already_reviewed=already_reviewed)
 
 
 

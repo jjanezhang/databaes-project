@@ -33,6 +33,7 @@ class Rated:   # a rated item
         return rows
 
     @staticmethod
+    # TODO: Actually need all people who purchased this product
     def get_reviews_and_reviewers_by_pid_uid(pid, uid):
         rows = app.db.execute('''
             SELECT U.firstname as firstname, U.lastname as lastname, 
@@ -63,9 +64,8 @@ class Rated:   # a rated item
             WHERE R.pid = P.id AND R.uid = :uid AND R.pid = :pid
         ''', uid=uid, pid=pid)
         result = [row['review'] for row in rows]
-        # print("ROWSS for already reviewed: ", result)
-        # if rowcount>0:
-        if result[0] == "":
+        print("ROWSS for already reviewed: ", result)
+        if result == []:
             return False
         return True
 

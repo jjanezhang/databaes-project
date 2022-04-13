@@ -26,22 +26,24 @@
 
 {% if current_user.is_authenticated %}
 <a href="{{ url_for('inventory_and_order_stats.index') }}" class="btn-analytics">See Inventory Analytics</a>
-<h2>Products in Inventory:</h2>
-<table class="table table-hover table-bordered container">
+<h2>Products in Inventory</h2>
+<table id="table" data-toggle="table" data-filter-control="true" data-show-search-clear-button="true"
+  data-sortable="true" classes="table-sm" data-pagination="true" class="table-responsive" data-search="true">
+
   <thead class="thead-dark">
     <tr>
-      <th scope="col">Product ID</th>
-      <th scope="col">Product Name</th>
-      <th scope="col">Quantity</th>
-      <th scope="col">Remove from Inventory?</th>
+      <th data-field="id" data-filter-control="input" data-sortable="true">Product ID</th>
+      <th data-field="name" data-filter-control="input" data-sortable="true">Product Name</th>
+      <th data-field="quantity" data-filter-control="input" data-sortable="true">Quantity</th>
+      <th data-field="remove" data-filter-control="input" data-sortable="false">Remove from Inventory?</th>
     </tr>
   </thead>
   <tbody>
-    {% for product in inventory%}
+    {% for product in inventory %}
     <tr>
-      <th scope="row">{{product.pid}}</th>
-      <td>{{product.name}}</td>
-      <td>{{product.quantity}}</td>
+      <td>{{ product.pid }}</td>
+      <td><a href="{{product.name}}"> {{ product.name }} </a></td>
+      <td>{{ product.quantity }}</td>
       <td>
         <form action="{{ url_for('inventory.remove_product') }}" method="post">
           <input type="hidden" name="pid" value="{{ product.pid }}" />
@@ -51,6 +53,7 @@
     </tr>
     {% endfor %}
   </tbody>
+</table>
 </table>
 <hr>
 <h2>Update the Quantity of a Product:</h2>

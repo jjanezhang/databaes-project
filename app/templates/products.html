@@ -1,5 +1,5 @@
 {% block content %}
-
+<link rel="stylesheet" href="{{ url_for('static', filename='css/view_product.css') }}">
 <script>
 
   function currencySort(a, b, rowA, rowB) {
@@ -26,9 +26,26 @@
     </thead>
     <tbody>
       {% for product in avail_products %}
+      {% set avg_rating = avg_ratings[loop.index-1] %}
+      {% set num_rating = num_ratings[loop.index-1] %}
+      {% set integer_rating = integer_ratings[loop.index-1] %}
       <tr>
         <td>{{ product.id }}</td>
-        <td><a href="products/{{product.name}}"> {{ product.name }} </a></td>
+        <td>
+          <a href="products/{{product.name}}"> {{ product.name }} <img class="centerImg" src="{{ product.image_url }}" 
+            width="30" height="30" /> </a>
+          <div>Average rating: {{avg_rating}} 
+            <link rel="stylesheet"
+                href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+            {% for i in range(integer_rating) %}
+            <span class="fa fa-star checked"></span>
+            {% endfor %}
+            {% for i in range(5-integer_rating) %}
+            <span class="fa fa-star"></span>
+            {% endfor %}
+           </div>
+          <div>Rated by: {{num_rating}} customers</div> 
+        </td>
         <td>${{ product.price }}</td>
         <td>{{ product.category }}</td>
       </tr>

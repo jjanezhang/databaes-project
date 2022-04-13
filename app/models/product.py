@@ -95,14 +95,16 @@ class Product:
         return [Product(*row) for row in rows]
 
     @staticmethod
-    def update_product(pid, name, price, description, available, image_url):
+    def update_product(pid, name, price, category, description, available, image_url):
         try:
             result = app.db.execute('''
                 UPDATE Products
-                SET name = :name, price = :price, description = :description,
-                available = :available, image_url = :image_url
+                SET name = :name, price = :price, category = :category,
+                description = :description, available = :available, 
+                image_url = :image_url
                 WHERE id = :pid
-            ''', pid=pid, name=name, price=price, description=description, available=available, image_url=image_url)
+            ''', pid=pid, name=name, price=price, description=description, 
+            available=available, image_url=image_url)
         except SQLAlchemyError as e:
             return f"Error: {e}, product name already taken."
         return result

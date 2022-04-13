@@ -21,8 +21,13 @@ source env/bin/activate
 ```
 
 3. Start Postgres
+MacOS:
 ```
 brew services start postgresql
+```
+Linux:
+```
+sudo service postgresql start
 ```
 
 4. Open`.flaskenv`and change the variables `DB_USER` and `DB_PASSWORD` to your own Postgres credentials. Then run the following command:

@@ -186,13 +186,8 @@ class Rated:   # a rated item
             WHERE U.rid = :rid AND U.pid = :pid AND U.cid = :cid
         ''', rid=reviewer_id, pid=pid, cid=upvoter_id)
 
-        print("result: ", result)
+        # print("result: ", result)
         return result !=[]
-        # last_upvoter = [r for r in result][0]['last_upvoted_by']
-        # if last_upvoter == current_user_id:
-        #     return True
-        # return False
-        return True
 
     @staticmethod
     # Update the rating of an item previously rated

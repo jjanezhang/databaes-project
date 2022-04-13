@@ -24,6 +24,7 @@
         Price: 
         <span class="viewProductPrice">
             ${{product.price}} 
+            {% set pid = product.id %}
             <a href="{{ url_for('index.display_reviews', product_name=pname) }}" class="reviewsLink"> Reviews </a>
         </span>
     </div>

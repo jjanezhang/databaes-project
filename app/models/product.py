@@ -44,14 +44,25 @@ WHERE available = :available
     @staticmethod
     def get_product_by_name(product_name):
         rows = app.db.execute('''
-SELECT id, name, price, category, description, available, image_url, created_by
-FROM Products
-WHERE name = :product_name
-''',
-                              product_name=product_name)
+            SELECT id, name, price, category, description, available, image_url, created_by
+            FROM Products
+            WHERE name = :product_name
+            ''', product_name=product_name)
         if len(rows) ==0:
             return [None]
         return [Product(*row) for row in rows]
+
+    @staticmethod
+    def get_pid(product_name):
+        rows = app.db.execute('''
+            SELECT id
+            FROM Products
+            WHERE name = :product_name
+            ''', product_name=product_name)
+        ans = rows[0]['id']
+        print("rows of pid: ", ans)
+        return int(ans)
+        
 
     @staticmethod
     def get_sellers_and_quantities_for_product(product_name):

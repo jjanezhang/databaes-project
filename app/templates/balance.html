@@ -6,9 +6,10 @@
 
 Current Balance: {{current_user.balance}}
 
+<hr>
+
 <form action="" method="post">
     {{ form.hidden_tag() }}
-    <br/>
     <h2>Withdraw from Balance</h2>
     {% for message in get_flashed_messages() %}
     <div class="alert alert-warning">

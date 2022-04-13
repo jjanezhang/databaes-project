@@ -27,16 +27,15 @@
 
 <div class="profile-row">
     <div class="profile-column">
-        <h2> {{ user_profile.firstname }} {{ user_profile.lastname }} 
-            <a href="{{ url_for('index.seller_reviews', uid=user_profile.id) }}" class="rlink"> Reviews  
-            </a></h2>
-        <p><a class="link" href="{{ url_for('ratings.index') }}">Update my ratings</a></p>
+        <h2> {{ user_profile.firstname }} {{ user_profile.lastname }} </h2>
+        <p>Account Number: {{ user_profile.id }}</p>
     </div>
     <div class="profile-vl"></div>
     <div class="profile-column">
-        <p>Account Number: {{ user_profile.id }}</p>
+        
         {% if user_profile.is_seller %}
         <p> {{ user_profile.firstname }} {{ user_profile.lastname }} is a seller. You can reach them at {{ user_profile.email }}</p>
+        <h3><a href="{{ url_for('index.seller_reviews', uid=user_profile.id) }}" class="rlink"> {{user_profile.firstname}} {{user_profile.lastname}}'s Seller Reviews </a></h3>
         <div >
             {% if integer_rating ==0 and ceiling==0: %}
                 This seller has not been rated yet

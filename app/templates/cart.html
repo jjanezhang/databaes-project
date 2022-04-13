@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<br><br>
+<br>
 
 {% if current_user.is_authenticated %}
 
@@ -47,7 +47,8 @@
   {{ submit_cart_form.hidden_tag() }}
   {{ submit_cart_form.submit() }}
 </form>
-<br />
+
+<hr>
 
 <h2>Update the Quantity of a Product:</h2>
 <form action="{{ url_for('cart.index') }}" method="post">

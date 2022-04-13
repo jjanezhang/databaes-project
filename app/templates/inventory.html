@@ -21,7 +21,7 @@
   }
 </style>
 
-<br><br>
+<br>
 
 {% if current_user.is_authenticated %}
 <a href="{{ url_for('inventory_and_order_stats.index') }}" class="btn-analytics">See Inventory Analytics</a>
@@ -51,6 +51,7 @@
     {% endfor %}
   </tbody>
 </table>
+<hr>
 <h2>Update the Quantity of a Product:</h2>
 <form action="{{ url_for('inventory.update_quantity') }}" method="post">
     {{ quantity_form.hidden_tag() }}
@@ -93,5 +94,7 @@
 {% else %}
 <p><a href="{{ url_for('users.login') }}">Log in</a> to see your inventory!</p>
 {% endif %}
+
+<br>
 
 {% endblock %}

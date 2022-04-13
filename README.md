@@ -21,6 +21,7 @@ source env/bin/activate
 ```
 
 3. Start Postgres
+
 MacOS:
 ```
 brew services start postgresql

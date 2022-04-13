@@ -22,7 +22,6 @@ CREATE TABLE Products (
     name VARCHAR(255) UNIQUE NOT NULL,
     price DECIMAL(12,2) NOT NULL,
     category VARCHAR(255) NOT NULL,
-    available BOOLEAN DEFAULT TRUE,
     description TEXT NOT NULL,
     image_url VARCHAR(1024) NOT NULL,
     created_by INT NOT NULL REFERENCES Users(id)

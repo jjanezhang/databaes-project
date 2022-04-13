@@ -57,7 +57,7 @@ def create():
         response = upload_files_to_s3(create_product_form.image)
         if response[0]:
             image_url = response[1]
-            if Product.create_product(create_product_form.name.data, round(create_product_form.price.data, 2), create_product_form.description.data, True, image_url, current_user.id) == 0:
+            if Product.create_product(create_product_form.name.data, round(create_product_form.price.data, 2), create_product_form.description.data, image_url, current_user.id) == 0:
                 flash("Product name already taken!")
             else:
                 flash("Product successfully created!")
@@ -95,8 +95,7 @@ def update():
                     create_product_form=create_product_form, 
                     update_product_form=update_product_form)
         update_result = Product.update_product(update_product_form.pid.data,
-            currProduct.name, currProduct.price, currProduct.category, currProduct.description,
-            True, currProduct.image_url)
+            currProduct.name, currProduct.price, currProduct.category, currProduct.description, currProduct.image_url)
         if update_result == 1:
             return redirect(url_for('products.index'))
         else:

@@ -20,16 +20,13 @@ bp = Blueprint('index', __name__)
 def index():
     # get all available products and their info for sale:
     products = Product.get_all(True)
+    ratingsData = Rated.ratings_for_all_products()
 
-
-    pids = [product.id for product in products]
-    avg_ratings = [Rated.avg_rating_for_product(pid) for pid in pids]
+    avg_ratings = list(map(lambda x: x['avg_rating'], ratingsData))
     integer_ratings = [int(avg_rating) for avg_rating in avg_ratings]
-    num_ratings = [Rated.num_ratings_for_product(pid) for pid in pids]
-    # render the page by adding information to the index.html file
+    num_ratings = list(map(lambda x: x['num_ratings'], ratingsData))
 
-    # return render_template('index.html',
-    #                        avail_products=products)
+    # render the page by adding information to the index.html file
     return render_template('index.html',
                            avail_products=products,integer_ratings=integer_ratings,
                            avg_ratings=avg_ratings, num_ratings=num_ratings)
@@ -107,8 +104,6 @@ def get_ceiling(avg_rating):
     for a in avg_rating:
         if avg_rating != [(None,)]:
             ceiling = math.ceil(a['rating'] - int(a['rating']))
-    print(ceiling)
-    print("type: ", type(ceiling))
     return int(ceiling)
 
 

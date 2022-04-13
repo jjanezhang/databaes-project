@@ -1,4 +1,3 @@
-
 {% extends "base.html" %}
 
 {% block content %}
@@ -7,68 +6,67 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/view_product.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/reviews.css') }}">
 
-    <h3> Reviews for this seller </h3>
+<h3> Reviews for this seller </h3>
 
 <table class='table table-hover table-bordered container'>
-    <thead class="thead-dark">
-      <tr>
-        <th scope="col"> Reviewer </th>
-        <th scope="col"> Review </th>
-        <th scope="col"> Was this review helpful? </th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for rn in reviews_and_names %}
-      {% set num_upvotes= rn[0] %}
-      <tr>
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col"> Reviewer </th>
+      <th scope="col"> Review </th>
+      <th scope="col"> Was this review helpful? </th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for rn in reviews_and_names %}
+    {% set num_upvotes= rn[0] %}
+    <tr>
       {% if rn[4] ==current_user.id or rn[3] !="" %}
       <td scope="row">{{rn[2]}}</td>
       {% if rn[4] ==current_user.id %}
-        <td> Review: {{rn[3]}}     
-          <form action="{{ url_for('index.display_reviews', product_name=pname) }}" method="post">
-          <input class="addRatingButton" placeholder="Type Something .." 
-            type="text" name="review"/>
+      <td> Review: {{rn[3]}}
+        <form action="{{ url_for('index.display_reviews', product_name=pname) }}" method="post">
+          <input class="addRatingButton" placeholder="Type Something .." type="text" name="review" />
           <input class="viewProductButton" type="submit" value="Submit" />
-          </form>
-          {% if rn[4] == reviewer_uid %}
-          <div class="flashMessages">
-            {% if msg3 %}
-                {{msg3}}
-            {% elif msg4 %}
-                {{msg4}}
-            {% endif %}
-            </div>
+        </form>
+        {% if rn[4] == reviewer_uid %}
+        <div class="flashMessages">
+          {% if msg3 %}
+          {{msg3}}
+          {% elif msg4 %}
+          {{msg4}}
           {% endif %}
+        </div>
+        {% endif %}
       </td>
       {% else %}
-        {% if rn[3] !="" %}
-          <td> Review: {{rn[3]}} </td>
-        {% endif %}
+      {% if rn[3] !="" %}
+      <td> Review: {{rn[3]}} </td>
+      {% endif %}
       {% endif %}
       {% endif %}
       {% if rn[4] != current_user.id %}
-        {% set receiver = rn[4] %}
-          <td> Upvotes: {{num_upvotes}} 
-            <form action="{{ url_for('index.display_reviews', product_name=pname) }}" method="post">
-            <input class="upvoteButton" type="submit" name="upvote" value="Upvote" />
-            <input type="hidden" name="receiver_uid" value={{receiver}} />
-          </form>
-          {% if rn[4]==upvote_receiver_uid %}
-            <div class="flashMessages">
-            {% if msg %}
-              {{msg}}
-            {% elif msg2 %}
-              {{msg2}}
-            {% endif %}
-            </div>
+      {% set receiver = rn[4] %}
+      <td> Upvotes: {{num_upvotes}}
+        <form action="{{ url_for('index.display_reviews', product_name=pname) }}" method="post">
+          <input class="upvoteButton" type="submit" name="upvote" value="Upvote" />
+          <input type="hidden" name="receiver_uid" value={{receiver}} />
+        </form>
+        {% if rn[4]==upvote_receiver_uid %}
+        <div class="flashMessages">
+          {% if msg %}
+          {{msg}}
+          {% elif msg2 %}
+          {{msg2}}
           {% endif %}
-          </td>
+        </div>
+        {% endif %}
+      </td>
       {% else %}
-          <td> Upvotes: {{num_upvotes}}  </td>
+      <td> Upvotes: {{num_upvotes}} </td>
       {% endif %}
-        </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
 
-{% endblock %} 
+{% endblock %}

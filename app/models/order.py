@@ -1,10 +1,8 @@
 from datetime import datetime, timezone
 from flask import current_app as app
-from sqlalchemy import text
-from sqlalchemy.exc import SQLAlchemyError
-
 from app.models.purchase import Purchase
 from app.models.user import User
+
 
 class Order:
     def __init__(self, oid, uid, time_placed, purchases=[], buyer=None):
@@ -29,10 +27,12 @@ class Order:
         result = {}
         for row in rows:
             if row.oid in result:
-                result[row.oid].purchases.append(Purchase(row.oid, row.pid, uid, row.fulfilled, row.time_fulfilled, row.quantity, row.price, row.product_name, row.time_placed, row.seller_name))
+                result[row.oid].purchases.append(Purchase(row.oid, row.pid, uid, row.fulfilled, row.time_fulfilled,
+                                                 row.quantity, row.price, row.product_name, row.time_placed, row.seller_name))
             else:
                 result[row.oid] = Order(row.oid, row.uid, row.time_placed)
-                result[row.oid].purchases.append(Purchase(row.oid, row.pid, uid, row.fulfilled, row.time_fulfilled, row.quantity, row.price, row.product_name, row.time_placed, row.seller_name))
+                result[row.oid].purchases.append(Purchase(row.oid, row.pid, uid, row.fulfilled, row.time_fulfilled,
+                                                 row.quantity, row.price, row.product_name, row.time_placed, row.seller_name))
 
         for key in result:
             result[key].buyer = User.get(result[key].uid)
@@ -57,10 +57,12 @@ class Order:
         result = {}
         for row in rows:
             if row.oid in result:
-                result[row.oid].purchases.append(Purchase(row.oid, row.pid, uid, row.fulfilled, row.time_fulfilled, row.quantity, row.price, row.product_name, row.time_placed, seller_name))
+                result[row.oid].purchases.append(Purchase(
+                    row.oid, row.pid, uid, row.fulfilled, row.time_fulfilled, row.quantity, row.price, row.product_name, row.time_placed, seller_name))
             else:
                 result[row.oid] = Order(row.oid, row.uid, row.time_placed)
-                result[row.oid].purchases.append(Purchase(row.oid, row.pid, uid, row.fulfilled, row.time_fulfilled, row.quantity, row.price, row.product_name, row.time_placed, seller_name))
+                result[row.oid].purchases.append(Purchase(
+                    row.oid, row.pid, uid, row.fulfilled, row.time_fulfilled, row.quantity, row.price, row.product_name, row.time_placed, seller_name))
 
         for key in result:
             result[key].buyer = User.get(result[key].uid)
@@ -92,7 +94,8 @@ class Order:
         if len(rows) > 0:
             result = Order(rows[0].oid, uid, rows[0].time_placed)
             for row in rows:
-                result.purchases.append(Purchase(row.oid, row.pid, row.sid, row.fulfilled, row.time_fulfilled, row.quantity, row.price, row.product_name, row.time_placed, row.seller_name))
+                result.purchases.append(Purchase(row.oid, row.pid, row.sid, row.fulfilled, row.time_fulfilled,
+                                        row.quantity, row.price, row.product_name, row.time_placed, row.seller_name))
             user = User.get(uid)
             result.buyer = user
             return result

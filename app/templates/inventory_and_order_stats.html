@@ -3,16 +3,17 @@
 {% block content %}
 
 <style>
-  .btn-analytics{
-    color:white;
+  .btn-analytics {
+    color: white;
     background-color: #0096FF;
     border: 2px solid #0096FF;
-    float:right;
+    float: right;
     padding: 5px 10px;
     border-radius: 5px;
   }
-  .btn-analytics:hover{
-    color:#0096FF;
+
+  .btn-analytics:hover {
+    color: #0096FF;
     border: 2px solid #0096FF;
     background-color: white;
     padding: 5px 10px;
@@ -35,80 +36,80 @@
 <br />
 <h3>5 Fewest Items in Inventory</h3>
 <table class='table table-hover table-bordered container'>
-    <thead class="thead-dark">
-      <tr>
-        <th scope="col">Product ID</th>
-        <th scope="col">Product Name</th>
-        <th scope="col">Quantity in Inventory</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for item in inventory_low_items %}
-        <tr>
-          <th scope="row">{{item.pid}}</th>
-          <td>{{item.name}}</td>
-          <td>{{item.quantity}}</td>
-        </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">Product ID</th>
+      <th scope="col">Product Name</th>
+      <th scope="col">Quantity in Inventory</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for item in inventory_low_items %}
+    <tr>
+      <th scope="row">{{item.pid}}</th>
+      <td>{{item.name}}</td>
+      <td>{{item.quantity}}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
 <h3>Top 5 Popular Items of All Time</h3>
 <table class='table table-hover table-bordered container'>
-    <thead class="thead-dark">
-      <tr>
-        <th scope="col">Product ID</th>
-        <th scope="col">Product Name</th>
-        <th scope="col">Quantity Sold</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for item in most_popular_all_time %}
-        <tr>
-          <th scope="row">{{item.pid}}</th>
-          <td>{{item.name}}</td>
-          <td>{{item.quantity_sold}}</td>
-        </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">Product ID</th>
+      <th scope="col">Product Name</th>
+      <th scope="col">Quantity Sold</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for item in most_popular_all_time %}
+    <tr>
+      <th scope="row">{{item.pid}}</th>
+      <td>{{item.name}}</td>
+      <td>{{item.quantity_sold}}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
 <h3>Top 5 Popular Items of Last Month</h3>
 <table class='table table-hover table-bordered container'>
-    <thead class="thead-dark">
-      <tr>
-        <th scope="col">Product ID</th>
-        <th scope="col">Product Name</th>
-        <th scope="col">Quantity Sold</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for item in most_popular_last_month %}
-        <tr>
-          <th scope="row">{{item.pid}}</th>
-          <td>{{item.name}}</td>
-          <td>{{item.quantity_sold}}</td>
-        </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">Product ID</th>
+      <th scope="col">Product Name</th>
+      <th scope="col">Quantity Sold</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for item in most_popular_last_month %}
+    <tr>
+      <th scope="row">{{item.pid}}</th>
+      <td>{{item.name}}</td>
+      <td>{{item.quantity_sold}}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
 <h3>Top 5 Popular Items of Last Week</h3>
 <table class='table table-hover table-bordered container'>
-    <thead class="thead-dark">
-      <tr>
-        <th scope="col">Product ID</th>
-        <th scope="col">Product Name</th>
-        <th scope="col">Quantity Sold</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for item in most_popular_last_week %}
-        <tr>
-          <th scope="row">{{item.pid}}</th>
-          <td>{{item.name}}</td>
-          <td>{{item.quantity_sold}}</td>
-        </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">Product ID</th>
+      <th scope="col">Product Name</th>
+      <th scope="col">Quantity Sold</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for item in most_popular_last_week %}
+    <tr>
+      <th scope="row">{{item.pid}}</th>
+      <td>{{item.name}}</td>
+      <td>{{item.quantity_sold}}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
 
 {% else %}
 <p><a href="{{ url_for('users.login') }}">Log in</a> to see your inventory stats!</p>

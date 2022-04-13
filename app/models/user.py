@@ -1,4 +1,3 @@
-from audioop import add
 from flask_login import UserMixin
 from flask import current_app as app
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -58,7 +57,7 @@ class User(UserMixin):
                 """,
                                   email=email,
                                   password=generate_password_hash(password),
-                                  firstname=firstname, lastname=lastname, 
+                                  firstname=firstname, lastname=lastname,
                                   balance=0)
             id = rows[0][0]
             return User.get(id)
@@ -85,7 +84,7 @@ class User(UserMixin):
             FROM Users
             WHERE id = :id
             """, id=id)
-        return User(*(rows[0])) if rows else None        
+        return User(*(rows[0])) if rows else None
 
     def update_balance(self, withdraw_amt, add_amt):
         try:
@@ -95,11 +94,10 @@ class User(UserMixin):
 UPDATE Users SET balance = {float(self.balance) + add_amt - withdraw_amt} 
 WHERE id = {self.id}
 RETURNING balance
-""")        
+""")
             self.balance = float(new_balance[0][0])
             return new_balance
 
         except Exception as e:
             print(str(e))
             return None
-

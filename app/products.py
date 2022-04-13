@@ -13,6 +13,7 @@ from .models.product import Product
 
 bp = Blueprint('products', __name__, url_prefix='/products')
 
+
 def getSharedData():
     myProducts = Product.get_all_products_from_user(current_user.id)
     create_product_form = CreateProductForm()
@@ -20,30 +21,34 @@ def getSharedData():
     update_product_form.pid.choices = list(map(lambda x: (x.id, x.id), myProducts))
     return (myProducts, create_product_form, update_product_form)
 
+
 class CreateProductForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired()])
     price = DecimalField('Price', validators=[InputRequired(), NumberRange(min=0)], places=2)
-    category = SelectField('Category', choices = ['Food', 'Clothing', 'Pet Supplies', 'Health & Beauty', 'Home', 'Electronics', 'Entertainment', 'Other'], default=1)
+    category = SelectField('Category', choices=['Food', 'Clothing', 'Pet Supplies', 'Health & Beauty', 'Home', 'Electronics', 'Entertainment', 'Other'], default=1)
     description = StringField('Description', validators=[DataRequired()])
     image = FileField('Image', validators=[FileRequired(), FileAllowed(["png", "jpg", "jpeg"], "This file is not a valid image!",)])
     submit = SubmitField('Create Product')
+
 
 class UpdateProductForm(FlaskForm):
     pid = SelectField('Product ID', validators=[DataRequired()])
     name = StringField('New Name (Optional)')
     price = DecimalField('New Price (Optional)', validators=[Optional(), NumberRange(min=0)], places=2)
-    category = SelectField('New Category (Optional)', choices = ['Food', 'Clothing', 'Pet Supplies', 'Health & Beauty', 'Home', 'Electronics', 'Entertainment', 'Other'], default=1)
+    category = SelectField('New Category (Optional)', choices=['Food', 'Clothing', 'Pet Supplies', 'Health & Beauty', 'Home', 'Electronics', 'Entertainment', 'Other'], default=1)
     description = StringField('New Description (Optional)')
     image = FileField('New Image (Optional)', validators=[FileAllowed(["png", "jpg", "jpeg"], "This file is not a valid image!",)])
     submit = SubmitField('Update Product')
 
+
 @bp.route('/')
 def index():
     (myProducts, create_product_form, update_product_form) = getSharedData()
-    return render_template('my_products.html', 
-        myProducts=myProducts, 
-        create_product_form=create_product_form, 
+    return render_template('my_products.html',
+        myProducts=myProducts,
+        create_product_form=create_product_form,
         update_product_form=update_product_form)
+
 
 @bp.route('/create', methods=['POST'])
 def create():
@@ -59,10 +64,11 @@ def create():
                 return redirect(url_for('products.index'))
         else:
             flash("File upload unsuccessful")
-    return render_template('my_products.html', 
-        myProducts=myProducts, 
+    return render_template('my_products.html',
+        myProducts=myProducts,
         create_product_form=create_product_form, 
         update_product_form=update_product_form)
+
 
 @bp.route('/update', methods=['POST'])
 def update():
@@ -100,13 +106,12 @@ def update():
         create_product_form=create_product_form, 
         update_product_form=update_product_form)
 
+
 def upload_files_to_s3(file):
         file_to_upload = file.data
         content_type = file_to_upload.mimetype
-        # if empty files
         if file_to_upload.filename == '':
-            flash(f' *** No files Selected', 'danger')
- 
+            flash(' *** No files Selected', 'danger')
         if file_to_upload:
             file_name = secure_filename(file_to_upload.filename)
             bucket_name = "mini-amazon-databaes"

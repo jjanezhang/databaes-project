@@ -8,7 +8,7 @@ Team Name: Databaes
 
 Link to Github Repository: https://github.com/jjanezhang/databaes-project
 
-## How to run
+## How to Run Mini Amazon
 
 1. Change directory to databaes-project
 ```

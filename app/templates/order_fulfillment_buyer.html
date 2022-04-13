@@ -13,8 +13,8 @@
   Total price was ${{ orderStats.total_price }}
 </div>
 <div>
-    {{ orderStats.fulfilled_items }} out of {{ orderStats.total_items }} items
-    have been fulfilled.
+  {{ orderStats.fulfilled_items }} out of {{ orderStats.total_items }} items
+  have been fulfilled.
 </div>
 <div>
   Order status:
@@ -29,33 +29,33 @@
   {% endif %}
 </div>
 <table class='table table-hover table-bordered container'>
-    <thead class="thead-dark">
-      <tr>
-        <th scope="col">Product ID</th>
-        <th scope="col">Product Name</th>
-        <th scope="col">Quantity</th>
-        <th scope="col">Status</th>
-        <th scope="col">Price</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for purchase in order.purchases %}
-        <tr>
-          <th scope="row">{{purchase.pid}}</th>
-          <td>{{purchase.product_name}}</td>
-          <td>{{purchase.quantity}}</td>
-          <td class="{{ 'entry-fulfilled' if purchase.fulfilled else 'entry-unfulfilled' }}">
-            {% if purchase.fulfilled %}
-            <div>Fulfilled on {{ purchase.time_fulfilled }}!</div>
-            {% else %}
-            <div> Not fulfilled yet </div>
-            {% endif %}
-          </td>
-          <td>${{ purchase.price }}</td>
-        </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">Product ID</th>
+      <th scope="col">Product Name</th>
+      <th scope="col">Quantity</th>
+      <th scope="col">Status</th>
+      <th scope="col">Price</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for purchase in order.purchases %}
+    <tr>
+      <th scope="row">{{purchase.pid}}</th>
+      <td>{{purchase.product_name}}</td>
+      <td>{{purchase.quantity}}</td>
+      <td class="{{ 'entry-fulfilled' if purchase.fulfilled else 'entry-unfulfilled' }}">
+        {% if purchase.fulfilled %}
+        <div>Fulfilled on {{ purchase.time_fulfilled }}!</div>
+        {% else %}
+        <div> Not fulfilled yet </div>
+        {% endif %}
+      </td>
+      <td>${{ purchase.price }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
 {% else %}
 <h4> Order was not found... </h4>
 {% endif %}

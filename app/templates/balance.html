@@ -18,21 +18,21 @@ Current Balance: {{current_user.balance}}
     </div>
     {% endfor %}
     <p>
-        {{form.withdraw_amt.label}} <br/>
-        {{form.withdraw_amt(size=32)}} <br/>
+        {{form.withdraw_amt.label}} <br />
+        {{form.withdraw_amt(size=32)}} <br />
         {% for error in form.withdraw_amt.errors %}
         <span style="color: red;">[{{ error }}]</span>
         {% endfor %}
     </p>
     <p>
-        {{form.add_amt.label}} <br/>
-        {{form.add_amt(size=32)}} <br/>
+        {{form.add_amt.label}} <br />
+        {{form.add_amt(size=32)}} <br />
         {% for error in form.add_amt.errors %}
         <span style="color: red;">[{{ error }}]</span>
         {% endfor %}
     </p>
     <p>{{ form.submit(class_="btn btn-black") }}</p>
-    
+
 </form>
-    
+
 {% endblock %}

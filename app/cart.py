@@ -10,14 +10,17 @@ from .models.cart import Cart
 
 bp = Blueprint('cart', __name__, url_prefix='/cart')
 
+
 class QuantityForm(FlaskForm):
     pid = SelectField('Product Name', validators=[DataRequired()])
     sid = SelectField('Seller Name', validators=[DataRequired()])
     new_quantity = IntegerField('Quantity', validators=[InputRequired(), NumberRange(min=1)])
     submit = SubmitField('Update Quantity')
 
+
 class SubmitCartForm(FlaskForm):
     submit = SubmitField('Submit Order')
+
 
 @bp.route('/', methods=['GET', 'POST'])
 def index():
@@ -41,6 +44,7 @@ def index():
         submit_cart_form = None
     return render_template('cart.html', cart=cart, totalPrice=totalPrice, quantity_form=quantity_form, submit_cart_form=submit_cart_form)
 
+
 @bp.route('/add_product', methods=['POST'])
 def add_product():
     pid = request.form['pid']
@@ -54,11 +58,13 @@ def add_product():
             flash(result)
     return redirect(request.referrer)
 
+
 @bp.route('/remove_product', methods=['POST'])
 def remove_product():
     if current_user.is_authenticated:
         Cart.remove_item_from_cart(current_user.id, request.form['pid'], request.form['sid'])
     return redirect(url_for('cart.index'))
+
 
 @bp.route('/submit', methods=['POST'])
 def submit():

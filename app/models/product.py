@@ -59,7 +59,7 @@ class Product:
             WHERE name = :product_name
             ''', product_name=product_name)
         ans = rows[0]['id']
-        print("rows of pid: ", ans)
+        # print("rows of pid: ", ans)
         return int(ans)
         
 

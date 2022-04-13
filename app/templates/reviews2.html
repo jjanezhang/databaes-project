@@ -29,7 +29,7 @@
           <input class="viewProductButton" type="submit" value="Submit" />
           </form>
           {% if rn[4] == reviewer_uid %}
-          <div class="flashMessages">
+          <div class="flashMessages" id="hideMe"> 
             {% with messages = get_flashed_messages() %}
             {% if messages %}
                 <ul class="flashes">
@@ -59,7 +59,7 @@
             <input type="hidden" name="receiver_uid" value={{receiver}} />
           </form>
           {% if rn[4]==upvote_receiver_uid %}
-            <div class="flashMessages">
+            <div class="flashMessages" id="hideMe">
             {% with messages = get_flashed_messages() %}
             {% if messages %}
                 <ul class="flashes">

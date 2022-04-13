@@ -1,5 +1,6 @@
 {% block content %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/view_product.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <script>
 
   function currencySort(a, b, rowA, rowB) {
@@ -35,8 +36,6 @@
           <a href="products/{{product.name}}"> {{ product.name }} <img class="centerImg" src="{{ product.image_url }}" 
             width="30" height="30" /> </a>
           <div>Average rating: {{avg_rating}} 
-            <link rel="stylesheet"
-                href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
             {% for i in range(integer_rating) %}
             <span class="fa fa-star checked"></span>
             {% endfor %}

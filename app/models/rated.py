@@ -17,9 +17,6 @@ class Rated:   # a rated item
             WHERE R.pid = P.id AND R.uid = :uid
             ORDER BY time_added DESC
         ''', uid=uid)
-        for row in rows:
-            print("row: ", row)
-        # return [Rated(*row) for row in rows]
         return rows
 
     @staticmethod
@@ -68,6 +65,16 @@ class Rated:   # a rated item
         if result == []:
             return False
         return True
+
+    @staticmethod
+    def ratings_for_all_products():
+        rows = app.db.execute('''
+            SELECT id, ROUND(AVG(rating),1) AS average_rating, count(rating) AS num_ratings
+            FROM Products LEFT JOIN Ratings ON id = pid
+            GROUP BY id
+        ''')
+        return [{'avg_rating': row['average_rating'] if row['average_rating'] else 0, 
+                'num_ratings': row['num_ratings'] if row['num_ratings'] else 0} for row in rows]
 
     @staticmethod
     # Get all rated items purchased by this user

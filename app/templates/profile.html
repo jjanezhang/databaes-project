@@ -38,7 +38,7 @@
 
         {% if user_profile.is_seller %}
         <p> {{ user_profile.firstname }} {{ user_profile.lastname }} is a seller. You can reach them at {{
-            user_profile.email }}</p>
+            user_profile.email }}. Their address is {{ user_profile.address }}.</p>
         <h3><a href="{{ url_for('index.seller_reviews', uid=user_profile.id) }}" class="rlink">
                 {{user_profile.firstname}} {{user_profile.lastname}}'s Seller Reviews </a></h3>
         <div>

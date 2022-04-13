@@ -23,7 +23,8 @@
 <h2>Orders:</h2>
 {% for order in orderInfo %}
 <h3>Order from:
-  {{ order.order.buyer.firstname }} {{ order.order.buyer.lastname }}
+  {{ order.order.buyer.firstname }} {{ order.order.buyer.lastname }}. 
+  Their address is {{ order.order.buyer.address }}
 </h3>
 <div>
   Time: {{ order.order.time_placed }}

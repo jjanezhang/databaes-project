@@ -174,37 +174,37 @@ def add_rating(product_name):
         flash('Invalid rating')
         return redirect(url_for('index.display_product', product_name=product_name))
 
-
-@bp.route('/<product_name>/product-reviews', methods=['GET', 'POST'])
-def display_reviews(product_name):
+def get_reviews_and_names(product_name):
     product = Product.get_product_by_name(product_name)[0]
     pid = product.id
     reviews = Rated.get_all_reviews_by_pid(pid)
-    reviews_and_names = []
     review_dict = {}
 
     for review in reviews:
         uid = review['uid']
-        review_and_name = Rated.get_reviews_and_reviewers_by_pid_uid(pid, uid)[
-            0]
+        review_and_name = Rated.get_reviews_and_reviewers_by_pid_uid(pid, uid)[0]
+
         name = review_and_name['firstname'] + " " + review_and_name['lastname']
         review = review_and_name['review']
         upvotes = review_and_name['upvotes']
         time_added = review_and_name['time_added']
         review_dict[uid] = [upvotes, time_added, name, review, uid]
 
-    sorted_by_upvotes = sorted(
-        list(review_dict.values()), key=lambda x: x[0], reverse=True)
+        review_dict[uid]= [upvotes, time_added, name, review, uid]
+    
+    sorted_by_upvotes = sorted(list(review_dict.values()), key=lambda x: x[0], reverse=True)
     top3 = sorted_by_upvotes[0:3]
-    bottom3 = sorted_by_upvotes[3:]
+    remaining = sorted_by_upvotes[3:]
 
-    sorted_by_time = sorted(bottom3, key=lambda x: x[1], reverse=True)
-    final_list = top3 + sorted_by_time
+    remaining_sorted_by_time = sorted(remaining, key=lambda x: x[1], reverse=True)
+    final_list = top3 + remaining_sorted_by_time
 
-    reviews_and_names = final_list  # top3 by number of upvotes, then by time
+    return final_list  # top3 by number of upvotes, then by time
 
-    upvote_receiver_uid = None
-    reviewer_uid = None
+@bp.route('/<product_name>/product-reviews', methods=['GET', 'POST'])
+def display_reviews(product_name):
+    pid =  Product.get_pid(product_name)
+    reviewer_uid = current_user.id
     if request.method == 'POST':
         print("request method is post")
         if current_user.is_authenticated:
@@ -212,43 +212,48 @@ def display_reviews(product_name):
             upvote_receiver_uid = request.form.get('receiver_uid')
             if request.form.get('upvote') != None:  # an upvote request
                 upvote_receiver_uid = int(upvote_receiver_uid)
-                # check if already upvoted
-                if Rated.already_upvoted(upvote_receiver_uid, pid, current_user.id):
-                    # flash('Already upvoted this review!')
-                    msg = 'Already upvoted this review!'
+                if Rated.already_upvoted(upvote_receiver_uid, pid, current_user.id):# check if already upvoted
+                    flash('Already upvoted this review!')
+                    # msg = 'Already upvoted this review!'
+                    reviews_and_names = get_reviews_and_names(product_name)
                     return render_template("reviews2.html", pname=product_name,
                                            reviews_and_names=reviews_and_names, upvote_receiver_uid=upvote_receiver_uid,
-                                           reviewer_uid=reviewer_uid, msg=msg)
+                                           reviewer_uid=reviewer_uid)
                 # else add the upvote to upvote_receiver_uid
-                current_upvotes = Rated.get_current_upvotes(
-                    upvote_receiver_uid, pid)['current_upvotes']
+                current_upvotes = Rated.get_current_upvotes(upvote_receiver_uid, pid)['current_upvotes']
                 # last upvoted by current user id (uid)
-                result = Rated.add_upvote(
-                    upvote_receiver_uid, pid, current_upvotes)
-                result2 = Rated.record_upvote(
-                    upvote_receiver_uid, pid, current_user.id)
-                msg2 = 'Review upvoted!'
+                result = Rated.add_upvote(upvote_receiver_uid, pid, current_upvotes)
+                result2 = Rated.record_upvote(upvote_receiver_uid, pid, current_user.id)
+                flash('Review upvoted!')
+                # msg2 = 'Review upvoted!'
+                reviews_and_names = get_reviews_and_names(product_name)
                 return render_template("reviews2.html", pname=product_name,
                                        reviews_and_names=reviews_and_names, upvote_receiver_uid=upvote_receiver_uid,
-                                       reviewer_uid=reviewer_uid, msg2=msg2)
+                                       reviewer_uid=reviewer_uid)
 
             already_reviewed = Rated.already_reviewed(uid, pid)
             reviewer_uid = current_user.id
             if already_reviewed:
-                msg3 = 'Already reviewed this product!'
+                flash('Already reviewed this product!')
+                # msg3 = 'Already reviewed this product!'
+                reviews_and_names = get_reviews_and_names(product_name)
                 return render_template("reviews2.html", pname=product_name,
                                        reviews_and_names=reviews_and_names, upvote_receiver_uid=upvote_receiver_uid,
-                                       reviewer_uid=reviewer_uid, msg3=msg3)
+                                       reviewer_uid=reviewer_uid)
             else:
                 review = request.form.get('review')
                 result = Rated.add_review(uid, pid, review)
-                msg4 = 'Review added successfully!'
+                flash('Review added successfully!')
+                # msg4 = 'Review added successfully!'
+                reviews_and_names = get_reviews_and_names(product_name)
                 return render_template("reviews2.html", pname=product_name,
                                        reviews_and_names=reviews_and_names, upvote_receiver_uid=upvote_receiver_uid,
-                                       reviewer_uid=reviewer_uid, msg4=msg4)
+                                       reviewer_uid=reviewer_uid)
+    else:
+        reviews_and_names = get_reviews_and_names(product_name)
+        return render_template("reviews2.html", pname=product_name,
+                           reviews_and_names=reviews_and_names, upvote_receiver_uid=None, reviewer_uid=None)
 
-    return render_template("reviews2.html", pname=product_name,
-                           reviews_and_names=reviews_and_names, upvote_receiver_uid=upvote_receiver_uid, reviewer_uid=reviewer_uid)
 
 
 @bp.route('/<uid>/seller-reviews', methods=['GET', 'POST'])
@@ -260,7 +265,6 @@ def seller_reviews(uid):
         print("review: ", review)
         bid = review['bid']
         review_and_name = Seller.get_reviewers_by_bid(bid)[0]
-        # print("review+ reviewer: ", review_and_name)
         reviews_and_names.append(review_and_name)
 
     if request.method == 'POST':

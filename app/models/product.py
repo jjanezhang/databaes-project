@@ -52,6 +52,18 @@ class Product:
         return [Product(*row) for row in rows]
 
     @staticmethod
+    def get_pid(product_name):
+        rows = app.db.execute('''
+            SELECT id
+            FROM Products
+            WHERE name = :product_name
+            ''', product_name=product_name)
+        ans = rows[0]['id']
+        print("rows of pid: ", ans)
+        return int(ans)
+        
+
+    @staticmethod
     def get_sellers_and_quantities_for_product(product_name):
         rows = app.db.execute('''
             SELECT I.pid AS pid, U.id AS id, U.firstname AS firstname, U.lastname AS lastname, I.quantity AS quantity

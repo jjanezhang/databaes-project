@@ -27,6 +27,21 @@
         <form action="{{ url_for('index.display_reviews', product_name=pname) }}" method="post">
           <input class="addRatingButton" placeholder="Type Something .." type="text" name="review" />
           <input class="viewProductButton" type="submit" value="Submit" />
+<<<<<<< HEAD
+          </form>
+          {% if rn[4] == reviewer_uid %}
+          <div class="flashMessages">
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <ul class="flashes">
+                {% for message in messages %}
+                    {{ message }}
+                {% endfor %}
+                </ul>
+            {% endif %} 
+            {% endwith %}
+          </div>
+=======
         </form>
         {% if rn[4] == reviewer_uid %}
         <div class="flashMessages">
@@ -34,6 +49,7 @@
           {{msg3}}
           {% elif msg4 %}
           {{msg4}}
+>>>>>>> main
           {% endif %}
         </div>
         {% endif %}
@@ -44,6 +60,29 @@
       {% endif %}
       {% endif %}
       {% endif %}
+<<<<<<< HEAD
+      {% if rn[4] != current_user.id and current_user.is_authenticated %}
+        {% set receiver = rn[4] %}
+          <td> Upvotes: {{num_upvotes}} 
+            <form action="{{ url_for('index.display_reviews', product_name=pname) }}" method="post">
+            <input class="upvoteButton" type="submit" name="upvote" value="Upvote" />
+            <input type="hidden" name="receiver_uid" value={{receiver}} />
+          </form>
+          {% if rn[4]==upvote_receiver_uid %}
+            <div class="flashMessages">
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <ul class="flashes">
+                {% for message in messages %}
+                    {{ message }}
+                {% endfor %}
+                </ul>
+            {% endif %} 
+            {% endwith %}
+          </div>
+        {% endif %}
+          </td>
+=======
       {% if rn[4] != current_user.id %}
       {% set receiver = rn[4] %}
       <td> Upvotes: {{num_upvotes}}
@@ -61,6 +100,7 @@
         </div>
         {% endif %}
       </td>
+>>>>>>> main
       {% else %}
       <td> Upvotes: {{num_upvotes}} </td>
       {% endif %}

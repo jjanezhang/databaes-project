@@ -164,8 +164,8 @@ class Rated:   # a rated item
             WHERE U.rid = :rid AND U.pid = :pid AND U.cid = :cid
         ''', rid=reviewer_id, pid=pid, cid=upvoter_id)
 
-        print("result: ", result)
-        return result != []
+        # print("result: ", result)
+        return result !=[]
 
     @staticmethod
     # Update the rating of an item previously rated

@@ -18,12 +18,21 @@ bp = Blueprint('index', __name__)
 
 @bp.route('/')
 def index():
-    # get all available products for sale:
+    # get all available products and their info for sale:
     products = Product.get_all(True)
+
+
+    pids = [product.id for product in products]
+    avg_ratings = [Rated.avg_rating_for_product(pid) for pid in pids]
+    integer_ratings = [int(avg_rating) for avg_rating in avg_ratings]
+    num_ratings = [Rated.num_ratings_for_product(pid) for pid in pids]
     # render the page by adding information to the index.html file
 
+    # return render_template('index.html',
+    #                        avail_products=products)
     return render_template('index.html',
-                           avail_products=products)
+                           avail_products=products,integer_ratings=integer_ratings,
+                           avg_ratings=avg_ratings, num_ratings=num_ratings)
 
 
 @bp.route('/profile/<uid>', methods=['GET', 'POST'])
@@ -125,10 +134,7 @@ def display_product(product_name):
 
     avg_rating = Rated.avg_rating_for_product(pid)
     integer_rating = int(avg_rating)
-    # integer_rating = get_integer_rating(avg_rating)
-
     num_ratings = Rated.num_ratings_for_product(pid)
-    # num_ratings = format_num_ratings(num_ratings)
 
     if current_user.is_authenticated:
         uid = current_user.id

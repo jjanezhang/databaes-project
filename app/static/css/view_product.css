@@ -4,6 +4,9 @@
     flex-direction: column;
 }
 
+.centerImg{
+    text-align: center;
+}
 .rateProduct {
     text-align: center;
 }

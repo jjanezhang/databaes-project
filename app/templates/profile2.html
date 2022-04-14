@@ -39,33 +39,28 @@
         {% if user_profile.is_seller %}
         <p> {{ user_profile.firstname }} {{ user_profile.lastname }} is a seller. You can reach them at {{
             user_profile.email }}</p>
-        {% if current_user.is_authenticated: %}
-            <h3><a href="{{ url_for('index.seller_reviews', uid=user_profile.id) }}" class="rlink">
-                {{user_profile.firstname}} {{user_profile.lastname}}'s Seller Reviews </a></h3>
-        {% endif %}
+        <h3><a href="{{ url_for('index.seller_reviews', uid=user_profile.id) }}" class="rlink">
+                {{user_profile.firstname}} {{user_profile.lastname}}'s Reviews </a></h3>
         <div>
             {% if integer_rating ==0 and ceiling==0: %}
-            This seller has not been rated yet
+                This seller has not been rated yet
             {% else %}
-
-            {% for a in avg_rating %}
-            Average rating for this seller: {{a['rating']}}
-            {% endfor %}
+                Average rating for this seller: {{avg_rating}}
             <link rel="stylesheet"
                 href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-            {% for i in range(integer_rating) %}
-            <span class="fa fa-star checked"></span>
-            {% endfor %}
-            {% for i in range(5-integer_rating) %}
-            <span class="fa fa-star"></span>
-            {% endfor %}
+                {% for i in range(integer_rating) %}
+                    <span class="fa fa-star checked"></span>
+                {% endfor %}
+                {% for i in range(5-integer_rating) %}
+                    <span class="fa fa-star"></span>
+                {% endfor %}
+                <div>Rated by: {{num_ratings}} people</div>
             {% endif %}
-            <div>Rated by: {{num_ratings}} people</div>
         </div>
-        {% if current_user.id != user_profile.id %}
+        {% if current_user.id != user_profile.id and bought_from_this_seller %}
         <div class="rateProduct">
             <div class="seller">Rate this seller</div>
-            <form action="{{ url_for('index.get_profile', uid=user_profile.id ) }}" method="post">
+            <form action="{{ url_for('index.add_rating_seller', seller_id=user_profile.id ) }}" method="post">
                 <input class="addRatingButton" placeholder="1-5" type="number" name="Rating" min="1" max="5" />
                 <input class="viewProductButton" type="submit" value="Rate" />
             </form>

@@ -69,6 +69,13 @@ CREATE TABLE Upvotes (
     PRIMARY KEY (rid, pid, cid)
 );
 
+CREATE TABLE SellerUpvotes (
+    rid INT NOT NULL REFERENCES Users(id),
+    sid INT NOT NULL REFERENCES Users(id),
+    bid INT NOT NULL REFERENCES Users(id),
+    PRIMARY KEY (rid, sid, bid)
+);
+
 CREATE TABLE Cart (
     uid INT NOT NULL REFERENCES Users(id),
     pid INT NOT NULL REFERENCES Products(id),

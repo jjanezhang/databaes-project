@@ -5,10 +5,10 @@
 
 <link rel="stylesheet" href="{{ url_for('static', filename='css/view_product.css') }}">
 
-<h3>Reviews for this product </h3>
+<h3> Reviews for this Seller </h3>
+{% if got_any_reviews %}
 <table class='table table-hover table-bordered container'>
   <thead class="thead-dark">
-
     <tr>
       <th scope="col"> Reviewer </th>
       <th scope="col"> Review </th>
@@ -16,29 +16,93 @@
     </tr>
   </thead>
   <tbody>
-    {% for rn in reviews_and_names %}
-    {% if rn['review']=="" %}
-    <tr>
-      <th scope="row">{{rn['firstname']}} &#160 {{rn['lastname']}}</th>
-      {% if rn['bid'] ==current_user.id %}
-      <td> Review: {{rn['review']}}
-        <form action="{{ url_for('index.get_profile', uid=uid) }}" method="post">
-          <input class=".addReviewButton" placeholder="Type Something .." type="text" name="reviewText" />
+{% else %}
+No reviews for this seller yet!
+{% endif %}
+
+{% if bought_from_this_seller and not already_reviewed %}
+    {% if current_user.is_authenticated %}
+      <td scope="row"> {{current_user.firstname}} &#160 {{current_user.lastname}} </td>
+      <td> Review: 
+        <form action="{{ url_for('index.seller_reviews', uid=seller_id) }}" method="post">
+          <input class="addRatingButton" placeholder="Type Something .." type="text" name="review" />
           <input class="viewProductButton" type="submit" value="Submit" />
-        </form>
+          </form>
+        <!-- show this when current user has reviewed but not upvoted and  -->
+        {% if current_user.id == reviewer_uid and current_user.id != upvote_receiver_uid %}
+            <div class="flashMessages" id="hideMe"> 
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <ul class="flashes">
+                {% for message in messages %}
+                    {{ message }}
+                {% endfor %}
+                </ul>
+            {% endif %} 
+            {% endwith %}
+            </div>
+        {% endif %}
       </td>
-      {% else %}
-      <td> Review: {{rn['review']}} </td>
-      {% endif %}
-      <td>
-        <form action="{{ url_for('index.get_profile', uid=uid) }}" method="post">
-          <input class="upvoteButton" type="submit" value="Upvote" />
-          <br>Upvotes: {{rn['upvotes']}} <br>
-        </form>
-      </td>
-    </tr>
+    {% else %}
+      Log in to submit a review
     {% endif %}
-    {% endfor %}
+  {% endif %}
+
+  {% for rn in reviews_and_names %}
+    {% set num_upvotes= rn[0] %}
+    <tr>
+      {% if rn[4] == current_user.id %}
+        <td scope="row">{{rn[2]}}</td>
+        <td> Review: {{rn[3]}}
+          <form action="{{ url_for('index.seller_reviews', uid=seller_id) }}" method="post">
+            <input class="addRatingButton" placeholder="Type Something .." type="text" name="review" />
+            <input class="viewProductButton" type="submit" value="Submit" />
+            </form>
+            {% if current_user.id == reviewer_uid and current_user.id != upvote_receiver_uid %}
+                <div class="flashMessages" id="hideMe"> 
+                {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <ul class="flashes">
+                    {% for message in messages %}
+                        {{ message }}
+                    {% endfor %}
+                    </ul>
+                {% endif %} 
+                {% endwith %}
+                </div>
+            {% endif %}
+        </td>
+
+      {% else %}
+        <td scope="row">{{rn[2]}}</td>
+        <td> Review: {{rn[3]}} </td>
+        {% if current_user.is_authenticated %}
+          {% set receiver = rn[4] %}
+            <td> Upvotes: {{num_upvotes}} 
+              <form action="{{ url_for('index.seller_reviews', uid=seller_id) }}" method="post">
+              <input class="upvoteButton" type="submit" name="upvote" value="Upvote" />
+              <input type="hidden" name="receiver_uid" value={{receiver}} />
+            </form>
+              {% if rn[4]==upvote_receiver_uid %}
+                <div class="flashMessages" id="hideMe">
+                {% with messages = get_flashed_messages() %}
+                  {% if messages %}
+                    <ul class="flashes">
+                    {% for message in messages %}
+                        {{ message }}
+                    {% endfor %}
+                    </ul>
+                  {% endif %} 
+                {% endwith %}
+                </div>
+              {% endif %}
+            </td>
+        {% else %}
+          <td> Upvotes: {{num_upvotes}} </td>
+        {% endif %}
+      {% endif %}
+    </tr>
+  {% endfor %}
   </tbody>
 </table>
 

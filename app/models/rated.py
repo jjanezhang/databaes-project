@@ -64,7 +64,7 @@ class Rated:   # a rated item
             WHERE R.pid = P.id AND R.uid = :uid AND R.pid = :pid
         ''', uid=uid, pid=pid)
         result = [row['review'] for row in rows]
-        print("ROWSS for already reviewed: ", result)
+        # print("ROWSS for already reviewed: ", result)
         if result == []:
             return False
         return True

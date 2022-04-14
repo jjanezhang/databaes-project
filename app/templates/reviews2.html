@@ -26,7 +26,7 @@
           <input class="addRatingButton" placeholder="Type Something .." type="text" name="review" />
           <input class="viewProductButton" type="submit" value="Submit" />
           </form>
-        {% if current_user.id == reviewer_uid and current_user.id != upvote_receiver_uid %}
+        {% if current_user.id == reviewer_uid and upvote_receiver_uid==None %}
             <div class="flashMessages" id="hideMe"> 
             {% with messages = get_flashed_messages() %}
             {% if messages %}
@@ -55,7 +55,7 @@
             <input class="addRatingButton" placeholder="Type Something .." type="text" name="review" />
             <input class="viewProductButton" type="submit" value="Submit" />
             </form>
-            {% if current_user.id == reviewer_uid and current_user.id != upvote_receiver_uid %}
+            {% if current_user.id == reviewer_uid and upvote_receiver_uid==None %}
                 <div class="flashMessages" id="hideMe"> 
                 {% with messages = get_flashed_messages() %}
                 {% if messages %}
@@ -80,7 +80,7 @@
               <input class="upvoteButton" type="submit" name="upvote" value="Upvote" />
               <input type="hidden" name="receiver_uid" value={{receiver}} />
             </form>
-              {% if rn[4]==upvote_receiver_uid %}
+              {% if rn[4]== upvote_receiver_uid %}
                 <div class="flashMessages" id="hideMe">
                 {% with messages = get_flashed_messages() %}
                   {% if messages %}

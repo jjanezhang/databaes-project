@@ -1,6 +1,5 @@
 from flask import current_app as app
 
-
 class Seller:   # a rated item
     def __init__(self, uid, bid, rating, review, time_added):
         self.uid = uid
@@ -8,6 +7,32 @@ class Seller:   # a rated item
         self.rating = rating
         self.review = review
         self.time_added = time_added
+
+    # @staticmethod
+    # def get_all_by_bid(bid):
+    #     # uid is buyer, match on U.id to get names,
+    #     rows = app.db.execute('''
+    #         SELECT P.sid as sid, 
+    #         CONCAT(U.firstname, ' ', U.lastname) AS name,
+    #         S.rating as rating, S.review as review
+    #         FROM Sellers S, Purchases P, Users U, Orders O
+    #         WHERE O.uid = :bid AND O.id=P.oid AND P.sid = S.sid AND U.id = S.sid
+    #         ORDER BY time_added DESC
+    #     ''', bid=bid)
+    #     return rows
+    
+    @staticmethod
+    def get_all_by_bid(bid):
+        # uid is buyer, match on U.id to get names,
+        rows = app.db.execute('''
+            SELECT S.sid as sid, 
+            CONCAT(U.firstname, ' ', U.lastname) AS name,
+            S.rating as rating, S.review as review
+            FROM Sellers S, Users U
+            WHERE S.bid = :bid AND U.id=S.sid
+            ORDER BY time_added DESC
+        ''', bid=bid)
+        return rows
 
     @staticmethod
     def get_all_reviews_for_sid(sid):
@@ -17,7 +42,7 @@ class Seller:   # a rated item
             S.upvotes as upvotes, S.time_added as time_added,
             U.firstname as firstname, U.lastname as lastname
             FROM Sellers S, Users U
-            WHERE S.sid = U.id AND S.sid = :sid
+            WHERE S.bid = U.id AND S.sid = :sid
             ORDER BY S.time_added DESC
         ''', sid=sid)
         return rows
@@ -93,7 +118,7 @@ class Seller:   # a rated item
         ''', sid=sid, bid=bid)
         result = [row['bid'] for row in rows]
 
-        print("checking if already reviewed. Matches(bid) are: ... ", result)
+        # print("checking if already reviewed. Matches(bid) are: ... ", result)
         if result == []:
             return False
         return True
@@ -105,7 +130,7 @@ class Seller:   # a rated item
             FROM Sellers S
             WHERE S.sid = :sid AND S.bid = :bid
         ''', sid=sid, bid=bid)
-        print("is this already rated? ", len(rows))
+        # print("is this already rated? ", len(rows))
         if len(rows) > 0:
             return True
         return False
@@ -174,3 +199,34 @@ class Seller:   # a rated item
         ''', sid=seller_id, bid=buyer_id, rating=0, review=review, upvotes=0)
         return result
 
+    @staticmethod
+    def update_rating(bid,sid, rating):
+        result = app.db.execute('''
+            UPDATE Sellers SET rating = :rating
+            WHERE sid = :sid AND bid = :bid
+        ''', sid=sid, bid=bid, rating=rating)
+        return result
+    
+    @staticmethod
+    def update_review(bid, sid, review):
+        result = app.db.execute('''
+            UPDATE Sellers SET review = :review
+            WHERE bid = :bid AND sid = :sid
+        ''', bid=bid, sid=sid, review=review)
+        return result
+    
+    @staticmethod
+    def remove_rating(bid, sid):
+        result = app.db.execute('''
+            DELETE FROM Sellers
+            WHERE bid = :bid AND sid = :sid
+        ''', bid=bid, sid=sid)
+        return result
+
+    @staticmethod
+    def remove_review(bid, sid):
+        result = app.db.execute('''
+            UPDATE Sellers SET review = :review
+            WHERE bid = :bid AND sid = :sid
+        ''', bid=bid, sid=sid, review="")
+        return result

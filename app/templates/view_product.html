@@ -24,7 +24,11 @@
         Price:
         <span class="viewProductPrice">
             ${{product.price}}
+            {% if current_user.is_authenticated: %}
             <a href="{{ url_for('index.display_reviews', product_name=pname) }}" class="reviewsLink"> Reviews </a>
+            {% else %}
+            <p><a href="{{ url_for('users.login') }}">Log in</a> to check reviews !</p>
+            {% endif %}
         </span>
     </div>
     <br />

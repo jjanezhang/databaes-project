@@ -9,6 +9,10 @@ Team Name: Databaes
 Link to Github Repository: https://github.com/jjanezhang/databaes-project
 
 ## How to Run Mini Amazon
+0. Clone this repo
+```
+git clone git@github.com:jjanezhang/databaes-project.git
+```
 
 1. Change directory to databaes-project
 ```

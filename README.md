@@ -9,6 +9,10 @@ Team Name: Databaes
 Link to Github Repository: https://github.com/jjanezhang/databaes-project
 
 ## How to Run Mini Amazon
+0. Clone this repo
+```
+git clone git@github.com:jjanezhang/databaes-project.git
+```
 
 1. Change directory to databaes-project
 ```
@@ -46,3 +50,10 @@ flask run
 6. Go to http://localhost:5000/ and start using Mini Amazon!
 
 7. To stop the website, press <kbd>Ctrl</kbd><kbd>C</kbd> in the shell where flask is running.
+
+
+## Generating the Test Dataset
+
+1. Run db/generated/gen.py. This should generate a couple of csv files.
+2. Copy these csv files over to db/data.
+3. Run db/setup.sh, and the test dataset should be loaded into Postgres!

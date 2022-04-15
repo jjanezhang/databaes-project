@@ -112,14 +112,14 @@ class Seller:   # a rated item
     # Already reviewed this seller by this uid?
     def already_reviewed(sid, bid):
         rows = app.db.execute('''
-            SELECT S.bid as bid
+            SELECT S.review as review
             FROM Sellers S
             WHERE S.bid = :bid AND S.sid = :sid
         ''', sid=sid, bid=bid)
-        result = [row['bid'] for row in rows]
+        result = [row['review'] for row in rows]
 
-        # print("checking if already reviewed. Matches(bid) are: ... ", result)
-        if result == []:
+        print("checking if already reviewed. Matches(bid) are: ... ", result)
+        if result == [""] or result ==[]:
             return False
         return True
 

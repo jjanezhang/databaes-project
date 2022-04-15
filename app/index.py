@@ -186,6 +186,8 @@ def get_reviews_and_names(product_name, for_product=True, sid=None):
         for review in reviews:
             uid = review['bid']
             # review_and_name = Rated.get_reviews_and_reviewers_by_pid_uid(pid, uid)[0]
+            if review['review'] =="" or review['bid']==current_user.id:
+                continue
             review_and_name = review
             upvotes = review_and_name['upvotes'] # rn[0]
             time_added = review_and_name['time_added'] # rn[1]
@@ -233,7 +235,7 @@ def display_reviews(product_name):
                 result2 = Rated.record_upvote(upvote_receiver_uid, pid, current_user.id)
                 flash('Review upvoted!')
                 reviews_and_names = get_reviews_and_names(product_name)
-                all_uids = [ rn[4] for rn in reviews_and_names]
+                all_uids = [ rn[4] for rn in reviews_and_names ]
                 already_reviewed = False
                 if current_user.id in all_uids:
                     already_reviewed = True
@@ -270,7 +272,7 @@ def display_reviews(product_name):
                                        already_reviewed=already_reviewed)
     else:
         reviews_and_names = get_reviews_and_names(product_name)
-        all_uids = [ rn[4] for rn in reviews_and_names]
+        all_uids =[ rn[4] for rn in reviews_and_names]
         already_reviewed = False
         if current_user.id in all_uids:
             already_reviewed = True
@@ -287,6 +289,7 @@ def seller_reviews(uid):
     if current_user.is_authenticated:
         bought_from_this_seller = Seller.check_bought_by_sid_bid(uid, current_user.id) # uid=sid, bid=current_user.id
     got_any_reviews=True
+    already_reviewed = Seller.already_reviewed(uid, current_user.id)
     if request.method == 'POST':
         if current_user.is_authenticated:
             upvote_receiver_uid = request.form.get('receiver_uid') # whose review was upvoted?
@@ -298,10 +301,6 @@ def seller_reviews(uid):
                     reviews_and_names = get_reviews_and_names("None", False, uid) # product name, is it for product?, seller id
                     if reviews_and_names==[]:
                         got_any_reviews=False
-                    all_uids = [ rn[4] for rn in reviews_and_names]
-                    already_reviewed = False # if current user was a buyer who reviewed
-                    if current_user.id in all_uids:
-                        already_reviewed = True
                     return render_template("seller_reviews.html",
                            reviews_and_names=reviews_and_names, upvote_receiver_uid=upvote_receiver_uid, 
                            reviewer_uid=reviewer_uid,bought_from_this_seller=bought_from_this_seller,
@@ -315,28 +314,18 @@ def seller_reviews(uid):
                 reviews_and_names = get_reviews_and_names("None", False, uid)
                 if reviews_and_names==[]:
                     got_any_reviews=False
-                all_uids = [ rn[4] for rn in reviews_and_names]
-                already_reviewed = False
-                if current_user.id in all_uids:
-                    already_reviewed = True
+
                 return render_template("seller_reviews.html",
                            reviews_and_names=reviews_and_names, upvote_receiver_uid=upvote_receiver_uid, 
                            reviewer_uid=reviewer_uid,bought_from_this_seller=bought_from_this_seller,
                            already_reviewed=already_reviewed, seller_id=uid,got_any_reviews=got_any_reviews)
             # if not upvote, then it's a review post request
-            already_reviewed = Seller.already_reviewed(uid, current_user.id) # (sid, bid)
             reviewer_uid = current_user.id
             if already_reviewed:
                 flash('Already reviewed this seller!')
                 reviews_and_names = get_reviews_and_names("None", False, uid)
                 if reviews_and_names==[]:
                     got_any_reviews=False
-                all_uids = [ rn[4] for rn in reviews_and_names]
-                # print("all uids: ", all_uids)
-                # print("current user id: ", current_user.id)
-                already_reviewed = False
-                if current_user.id in all_uids:
-                    already_reviewed = True
                 return render_template("seller_reviews.html",
                            reviews_and_names=reviews_and_names, upvote_receiver_uid=upvote_receiver_uid, 
                            reviewer_uid=reviewer_uid,bought_from_this_seller=bought_from_this_seller,
@@ -348,10 +337,6 @@ def seller_reviews(uid):
                 reviews_and_names = get_reviews_and_names("None", False, uid)
                 if reviews_and_names==[]:
                     got_any_reviews=False
-                all_uids = [ rn[4] for rn in reviews_and_names]
-                already_reviewed = False
-                if current_user.id in all_uids:
-                    already_reviewed = True
                 return render_template("seller_reviews.html",
                            reviews_and_names=reviews_and_names, upvote_receiver_uid=upvote_receiver_uid, 
                            reviewer_uid=reviewer_uid,bought_from_this_seller=bought_from_this_seller,
@@ -360,10 +345,6 @@ def seller_reviews(uid):
         reviews_and_names = get_reviews_and_names("None", False, uid)
         if reviews_and_names==[]:
             got_any_reviews=False
-        all_uids = [ rn[4] for rn in reviews_and_names]
-        already_reviewed = False
-        if current_user.id in all_uids:
-            already_reviewed = True
         return render_template("seller_reviews.html",
                            reviews_and_names=reviews_and_names, upvote_receiver_uid=None, 
                            reviewer_uid=None,bought_from_this_seller=bought_from_this_seller,

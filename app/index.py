@@ -157,36 +157,38 @@ def get_reviews_and_names(product_name, for_product=True, sid=None):
     if for_product:
         product = Product.get_product_by_name(product_name)[0]
         pid = product.id
-        reviews = Rated.get_all_reviews_by_pid(pid)
+        reviews = Rated.get_all_reviews_for_pid(pid) #Rated.get_all_reviews_by_pid(pid)
         review_dict = {}
 
         for review in reviews:
             uid = review['uid']
-            review_and_name = Rated.get_reviews_and_reviewers_by_pid_uid(pid, uid)[0]
-
+            if review['review'] =="" or review['uid']==current_user.id: # don't double count
+                continue
+            # review_and_name = Rated.get_reviews_and_reviewers_by_pid_uid(pid, uid)[0]
+            review_and_name = review
             upvotes = review_and_name['upvotes'] # rn[0]
             time_added = review_and_name['time_added'] # rn[1]
             name = review_and_name['firstname'] + " " + review_and_name['lastname'] # rn[2]
             review = review_and_name['review'] # rn[3]
             review_dict[uid] = [upvotes, time_added, name, review, uid] # uid = rn[4]
-            # review_dict[uid]= [upvotes, time_added, name, review, uid]
         
         sorted_by_upvotes = sorted(list(review_dict.values()), key=lambda x: x[0], reverse=True)
         top3 = sorted_by_upvotes[0:3]
         remaining = sorted_by_upvotes[3:]
+        
         remaining_sorted_by_time = sorted(remaining, key=lambda x: x[1], reverse=True)
         final_list = top3 + remaining_sorted_by_time
         return final_list  # top3 by number of upvotes, then by time
 
     else: # if not for product but for seller
         reviews = Seller.get_all_reviews_for_sid(sid)
-        print("got reviews for sellers: ", reviews)
+        # print("got reviews for sellers: ", reviews)
         review_dict = {}
 
         for review in reviews:
             uid = review['bid']
             # review_and_name = Rated.get_reviews_and_reviewers_by_pid_uid(pid, uid)[0]
-            if review['review'] =="" or review['bid']==current_user.id:
+            if review['review'] =="" or review['bid']==current_user.id: # don't double count
                 continue
             review_and_name = review
             upvotes = review_and_name['upvotes'] # rn[0]
@@ -201,7 +203,6 @@ def get_reviews_and_names(product_name, for_product=True, sid=None):
 
         remaining_sorted_by_time = sorted(remaining, key=lambda x: x[1], reverse=True)
         final_list = top3 + remaining_sorted_by_time
-        # print("final list is: ", final_list)
         return final_list  # top3 by number of upvotes, then by time
 
 @bp.route('/<product_name>/product-reviews', methods=['GET', 'POST'])
@@ -210,7 +211,8 @@ def display_reviews(product_name):
     reviewer_uid = None
     upvote_receiver_uid = None
     purchased_this_product = Purchase.check_purchased_by_uid_pid(current_user.id, pid)
-    # got_any_reviews = False
+    already_reviewed = Rated.already_reviewed(current_user.id, pid) #(uid, pid)
+    got_any_reviews = True
     if request.method == 'POST':
         if current_user.is_authenticated:
             uid = current_user.id
@@ -221,65 +223,55 @@ def display_reviews(product_name):
                 if Rated.already_upvoted(upvote_receiver_uid, pid, current_user.id):# check if already upvoted
                     flash('Already upvoted this review!')
                     reviews_and_names = get_reviews_and_names(product_name)
-                    all_uids = [ rn[4] for rn in reviews_and_names]
-                    already_reviewed = False
-                    if current_user.id in all_uids:
-                        already_reviewed = True
+                    if reviews_and_names==[]:
+                        got_any_reviews=False
                     return render_template("reviews2.html", pname=product_name,
                         reviews_and_names=reviews_and_names, upvote_receiver_uid=upvote_receiver_uid,
                         reviewer_uid=reviewer_uid, purchased_this_product=purchased_this_product,
-                        already_reviewed=already_reviewed)
+                        already_reviewed=already_reviewed, got_any_reviews=got_any_reviews)
                 # else add the upvote to upvote_receiver_uid
                 current_upvotes = Rated.get_current_upvotes(upvote_receiver_uid, pid)['current_upvotes']
                 result = Rated.add_upvote(upvote_receiver_uid, pid, current_upvotes)
                 result2 = Rated.record_upvote(upvote_receiver_uid, pid, current_user.id)
                 flash('Review upvoted!')
                 reviews_and_names = get_reviews_and_names(product_name)
-                all_uids = [ rn[4] for rn in reviews_and_names ]
-                already_reviewed = False
-                if current_user.id in all_uids:
-                    already_reviewed = True
+                if reviews_and_names==[]:
+                    got_any_reviews=False
                 return render_template("reviews2.html", pname=product_name,
                                        reviews_and_names=reviews_and_names, upvote_receiver_uid=upvote_receiver_uid,
                                        reviewer_uid=reviewer_uid, purchased_this_product=purchased_this_product,
-                                       already_reviewed=already_reviewed)
+                                       already_reviewed=already_reviewed, got_any_reviews=got_any_reviews)
 
-            already_reviewed = Rated.already_reviewed(uid, pid)
+            # already_reviewed = Rated.already_reviewed(uid, pid)
             reviewer_uid = current_user.id  # a post request that is not 'upvote'== a review request by current user
             if already_reviewed:
                 flash('Already reviewed this product!')
                 reviews_and_names = get_reviews_and_names(product_name)
-                all_uids = [ rn[4] for rn in reviews_and_names]
-                already_reviewed = False
-                if current_user.id in all_uids:
-                    already_reviewed = True
+                if reviews_and_names==[]:
+                    got_any_reviews=False
                 return render_template("reviews2.html", pname=product_name,
                                        reviews_and_names=reviews_and_names, upvote_receiver_uid=upvote_receiver_uid,
                                        reviewer_uid=reviewer_uid, purchased_this_product=purchased_this_product,
-                                       already_reviewed=already_reviewed)
+                                       already_reviewed=already_reviewed, got_any_reviews=got_any_reviews)
             else:
                 review = request.form.get('review')
                 result = Rated.add_review(uid, pid, review)
                 flash('Review added successfully!')
                 reviews_and_names = get_reviews_and_names(product_name)
-                all_uids = [ rn[4] for rn in reviews_and_names]
-                already_reviewed = False
-                if current_user.id in all_uids:
-                    already_reviewed = True
+                if reviews_and_names==[]:
+                    got_any_reviews=False
                 return render_template("reviews2.html", pname=product_name,
                                        reviews_and_names=reviews_and_names, upvote_receiver_uid=upvote_receiver_uid,
                                        reviewer_uid=reviewer_uid, purchased_this_product=purchased_this_product,
-                                       already_reviewed=already_reviewed)
+                                       already_reviewed=already_reviewed, got_any_reviews=got_any_reviews)
     else:
         reviews_and_names = get_reviews_and_names(product_name)
-        all_uids =[ rn[4] for rn in reviews_and_names]
-        already_reviewed = False
-        if current_user.id in all_uids:
-            already_reviewed = True
+        if reviews_and_names==[]:
+            got_any_reviews=False
         return render_template("reviews2.html", pname=product_name,
                            reviews_and_names=reviews_and_names, upvote_receiver_uid=None, 
                            reviewer_uid=None, purchased_this_product=purchased_this_product,
-                           already_reviewed=already_reviewed)
+                           already_reviewed=already_reviewed, got_any_reviews=got_any_reviews)
 
 @bp.route('/<uid>/seller-reviews', methods=['GET', 'POST'])
 def seller_reviews(uid):

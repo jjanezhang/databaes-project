@@ -118,7 +118,7 @@ class Seller:   # a rated item
         ''', sid=sid, bid=bid)
         result = [row['review'] for row in rows]
 
-        print("checking if already reviewed. Matches(bid) are: ... ", result)
+        # print("checking if already reviewed. Matches(bid) are: ... ", result)
         if result == [""] or result ==[]:
             return False
         return True

@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/reviews.css') }}">
 
 <h3> Reviews for this product </h3>
-
+{% if got_any_reviews %}
 <table class='table table-hover table-bordered container'>
   <thead class="thead-dark">
     <tr>
@@ -17,8 +17,10 @@
     </tr>
   </thead>
   <tbody>
-    
-  {% if purchased_this_product and not already_reviewed %}
+{% else %}
+  No reviews for this product yet!
+{% endif %}
+  {% if purchased_this_product %}
     {% if current_user.is_authenticated %}
       <td scope="row"> {{current_user.firstname}} &#160 {{current_user.lastname}} </td>
       <td> Review: 
@@ -26,7 +28,7 @@
           <input class="addRatingButton" placeholder="Type Something .." type="text" name="review" />
           <input class="viewProductButton" type="submit" value="Submit" />
           </form>
-        {% if current_user.id == reviewer_uid and upvote_receiver_uid==None %}
+        {% if current_user.id == reviewer_uid and current_user.id != upvote_receiver_uid %}
             <div class="flashMessages" id="hideMe"> 
             {% with messages = get_flashed_messages() %}
             {% if messages %}
@@ -55,7 +57,7 @@
             <input class="addRatingButton" placeholder="Type Something .." type="text" name="review" />
             <input class="viewProductButton" type="submit" value="Submit" />
             </form>
-            {% if current_user.id == reviewer_uid and upvote_receiver_uid==None %}
+            {% if current_user.id == reviewer_uid and current_user.id != upvote_receiver_uid %}
                 <div class="flashMessages" id="hideMe"> 
                 {% with messages = get_flashed_messages() %}
                 {% if messages %}

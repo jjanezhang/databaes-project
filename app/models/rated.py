@@ -28,6 +28,18 @@ class Rated:   # a rated item
             ORDER BY R.time_added DESC
         ''', pid=pid)
         return rows
+    
+    @staticmethod
+    def get_all_reviews_for_pid(pid):
+        rows = app.db.execute('''
+            SELECT R.uid as uid, R.review as review, R.rating as rating,
+            R.upvotes as upvotes, R.time_added as time_added,
+            U.firstname as firstname, U.lastname as lastname
+            FROM Users U, Ratings R
+            WHERE R.uid = U.id AND R.pid = :pid
+            ORDER BY R.time_added DESC
+        ''', pid=pid)
+        return rows
 
     @staticmethod
     # TODO: Actually need all people who purchased this product
@@ -35,7 +47,7 @@ class Rated:   # a rated item
         rows = app.db.execute('''
             SELECT U.firstname as firstname, U.lastname as lastname, 
             R.rating as rating, R.review as review, R.upvotes as upvotes,
-            R.time_added as time_added
+            R.time_added as time_added, R.uid as 
             FROM Ratings R, Users U
             WHERE R.pid = :pid AND R.uid = U.id AND U.id = :uid
             ORDER BY R.time_added DESC
@@ -58,11 +70,11 @@ class Rated:   # a rated item
         rows = app.db.execute('''
             SELECT R.review as review
             FROM Ratings R, Products P
-            WHERE R.pid = P.id AND R.uid = :uid AND R.pid = :pid
+            WHERE R.uid = :uid AND R.pid = :pid
         ''', uid=uid, pid=pid)
         result = [row['review'] for row in rows]
-        # print("ROWSS for already reviewed: ", result)
-        if result == []:
+        print("checking if already reviewed. Matches(uid) are: ... ", result)
+        if result == [""] or result ==[]:
             return False
         return True
 

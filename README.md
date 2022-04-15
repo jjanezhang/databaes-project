@@ -6,6 +6,7 @@ Project: Mini-Amazon
 
 Team Name: Databaes
 
+Link to Demo: https://youtu.be/1C7od2dO60c
 Link to Github Repository: https://github.com/jjanezhang/databaes-project
 
 ## How to Run Mini Amazon

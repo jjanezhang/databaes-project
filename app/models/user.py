@@ -6,9 +6,10 @@ from .. import login
 
 
 class User(UserMixin):
-    def __init__(self, id, email, firstname, lastname, balance):
+    def __init__(self, id, email, address, firstname, lastname, balance):
         self.id = id
         self.email = email
+        self.address = address
         self.firstname = firstname
         self.lastname = lastname
         self.balance = 0 if not balance else balance
@@ -24,7 +25,7 @@ class User(UserMixin):
     @staticmethod
     def get_by_auth(email, password):
         rows = app.db.execute("""
-            SELECT password, id, email, firstname, lastname, balance
+            SELECT password, id, email, address, firstname, lastname, balance
             FROM Users
             WHERE email = :email
             """,
@@ -48,14 +49,14 @@ class User(UserMixin):
         return len(rows) > 0
 
     @staticmethod
-    def register(email, password, firstname, lastname):
+    def register(email, address, password, firstname, lastname):
         try:
             rows = app.db.execute("""
-                INSERT INTO Users(email, password, firstname, lastname, balance)
-                VALUES(:email, :password, :firstname, :lastname, :balance)
+                INSERT INTO Users(email, address, password, firstname, lastname, balance)
+                VALUES(:email, :address, :password, :firstname, :lastname, :balance)
                 RETURNING id
                 """,
-                                  email=email,
+                                  email=email, address=address,
                                   password=generate_password_hash(password),
                                   firstname=firstname, lastname=lastname,
                                   balance=0)
@@ -80,7 +81,7 @@ class User(UserMixin):
     @login.user_loader
     def get(id):
         rows = app.db.execute("""
-            SELECT id, email, firstname, lastname, balance
+            SELECT id, email, address, firstname, lastname, balance
             FROM Users
             WHERE id = :id
             """, id=id)

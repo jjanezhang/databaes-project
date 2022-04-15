@@ -34,12 +34,13 @@ def gen_users(num_users):
                 print(f'{uid}', end=' ', flush=True)
             profile = fake.profile()
             email = profile['mail']
+            address = profile['address'].replace('\n', ' ')
             plain_password = f'pass{uid}'
             password = generate_password_hash(plain_password)
             name_components = profile['name'].split(' ')
             firstname = name_components[0]
             lastname = name_components[-1]
-            writer.writerow([uid, email, password, firstname,
+            writer.writerow([uid, email, address, password, firstname,
                             lastname, random.randint(0, 1000)])
         print(f'{num_users} generated')
     return
@@ -55,14 +56,12 @@ def gen_products(num_products):
                 print(f'{pid}', end=' ', flush=True)
             name = fake.sentence(nb_words=4)[:-1]
             price = f'{str(fake.random_int(max=500))}.{fake.random_int(max=99):02}'
-            available = 'true'
             available_pids.append(pid)
             category = fake.random_element(elements=product_categories)
             description = fake.sentence()
             image_url = fake.random_element(elements=image_placeholders)
             created_by = fake.random_int(min=0, max=num_users - 1)
-            writer.writerow([pid, name, price, category,
-                            available, description, image_url, created_by])
+            writer.writerow([pid, name, price, category, description, image_url, created_by])
         print(f'{num_products} generated; {len(available_pids)} available')
     return available_pids
 

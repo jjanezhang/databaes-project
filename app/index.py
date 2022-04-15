@@ -19,15 +19,19 @@ bp = Blueprint('index', __name__)
 @bp.route('/')
 def index():
     # get all available products and their info for sale:
-    products = Product.get_all(True)
+    products = Product.get_all()
+    ratingsData = Rated.ratings_for_all_products()
 
-    pids = [product.id for product in products]
-    avg_ratings = [Rated.avg_rating_for_product(pid) for pid in pids]
+    # pids = [product.id for product in products]
+    # avg_ratings = [Rated.avg_rating_for_product(pid) for pid in pids]
+    # integer_ratings = [int(avg_rating) for avg_rating in avg_ratings]
+    # num_ratings = [Rated.num_ratings_for_product(pid) for pid in pids]
+
+    avg_ratings = list(map(lambda x: x['avg_rating'], ratingsData))
     integer_ratings = [int(avg_rating) for avg_rating in avg_ratings]
-    num_ratings = [Rated.num_ratings_for_product(pid) for pid in pids]
+    num_ratings = list(map(lambda x: x['num_ratings'], ratingsData))
 
-    # return render_template('index.html',
-    #                        avail_products=products)
+    # render the page by adding information to the index.html file
     return render_template('index.html',
                            avail_products=products,integer_ratings=integer_ratings,
                            avg_ratings=avg_ratings, num_ratings=num_ratings)

@@ -6,21 +6,23 @@
 
 {% if current_user.is_authenticated %}
 <h2>Products Previously Rated:</h2>
-<table class='table table-hover table-bordered container'>
+<table id="table" data-toggle="table" data-filter-control="true" data-show-search-clear-button="true"
+  data-sortable="true" classes="table-sm" data-pagination="true" class="table-responsive" data-search="true">
+
   <thead class="thead-dark">
     <tr>
-      <th scope="col">Product ID</th>
-      <th scope="col">Product Name</th>
-      <th scope="col">Rating</th>
-      <th scope="col">Review</th>
-      <th scope="col">Remove Rating?</th>
-      <th scope="col">Remove Review?</th>
+      <th data-field="id" data-filter-control="input" data-sortable="true">Product ID</th>
+      <th data-field="name" data-filter-control="input" data-sortable="true">Product Name</th>
+      <th data-field="rating" data-filter-control="input" data-sortable="true">Rating</th>
+      <th data-field="review" data-filter-control="input" data-sortable="true">Review</th>
+      <th data-field="remove" data-filter-control="input" data-sortable="false">Remove Rating?</th>
+      <th data-field="remove" data-filter-control="input" data-sortable="false">Remove Review?</th>
     </tr>
   </thead>
   <tbody>
-    {% for product in rated_products%}
+    {% for product in rated_products %}
     <tr>
-      <th scope="row">{{product.pid}}</th>
+      <td>{{product.pid}}</td>
       <td>{{product.name}} </td>
       <td>{{product.rating}}</td>
       <td>{{product.review}}</td>

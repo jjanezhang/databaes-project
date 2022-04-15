@@ -33,13 +33,18 @@ class Product:
     @staticmethod
     def get_product_by_name(product_name):
         rows = app.db.execute('''
-            SELECT id, name, price, category, description, image_url, created_by
-            FROM Products
+            SELECT P.id as id, P.name as name, P.price as price, 
+            P.category as category, P.description as description, 
+            P.image_url as image_url
+            FROM Products P
             WHERE name = :product_name
             ''', product_name=product_name)
-        if len(rows) == 0:
-            return [None]
-        return [Product(*row) for row in rows]
+        
+        print("Product rows: ", [row for row in rows])
+        # if len(rows) == 0:
+        #     return [None]
+        # return [Product(*row) for row in rows]
+        return rows
 
     @staticmethod
     def get_pid(product_name):

@@ -41,6 +41,7 @@ class Purchase:
             AND P.pid = Pr.id AND P.fulfilled=true
             ''', uid=uid, product_id=product_id)
 
+        # print("what is this even returning? ", [row for row in rows])
         rowcount = len(rows)
         if rowcount > 0:
             ret = [True]

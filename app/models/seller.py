@@ -118,10 +118,25 @@ class Seller:   # a rated item
         ''', sid=sid, bid=bid)
         result = [row['review'] for row in rows]
 
-        # print("checking if already reviewed. Matches(bid) are: ... ", result)
+        print("checking if already reviewed. Matches(bid) are: ... ", result)
         if result == [""] or result ==[]:
             return False
         return True
+    
+    # @staticmethod
+    # # Already reviewed this seller by this uid?
+    # def already_reviewed(sid, bid):
+    #     rows = app.db.execute('''
+    #         SELECT S.review as review
+    #         FROM Sellers S
+    #         WHERE S.bid = :bid AND S.sid = :sid
+    #     ''', sid=sid, bid=bid)
+    #     result = [row['review'] for row in rows]
+
+    #     print("checking if already reviewed. Matches(bid) are: ... ", result)
+    #     if result == [""] or result ==[]:
+    #         return False
+    #     return True
 
     @staticmethod
     def already_rated(sid, bid):

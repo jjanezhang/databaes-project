@@ -23,7 +23,7 @@
   {% if purchased_this_product %}
     {% if current_user.is_authenticated %}
       <td scope="row"> {{current_user.firstname}} &#160 {{current_user.lastname}} </td>
-      <td> Review: 
+      <td> Review: {{this_user_review}}
         <form action="{{ url_for('index.display_reviews', product_name=pname) }}" method="post">
           <input class="addRatingButton" placeholder="Type Something .." type="text" name="review" />
           <input class="viewProductButton" type="submit" value="Submit" />

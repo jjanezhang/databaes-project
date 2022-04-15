@@ -51,7 +51,7 @@
             <div>Rated by: {{num_ratings}} people</div>
         </div>
         {% if purchased_this_product %}
-            You purchased this product on: <span class="viewProductTimestamp">{{purchase.time_purchased}}</span>
+            Category: <span class="viewProductTimestamp">{{product.category}}</span>
             <br />
             <div class="rateProduct">
                 <form action="{{ url_for('index.add_rating', product_name=pname) }}" method="post">

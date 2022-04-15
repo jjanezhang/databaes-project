@@ -57,7 +57,7 @@ def create():
         response = upload_files_to_s3(create_product_form.image)
         if response[0]:
             image_url = response[1]
-            if Product.create_product(create_product_form.name.data, round(create_product_form.price.data, 2), create_product_form.description.data, image_url, current_user.id) == 0:
+            if Product.create_product(create_product_form.name.data, round(create_product_form.price.data, 2), create_product_form.category.data, create_product_form.description.data, image_url, current_user.id) == 0:
                 flash("Product name already taken!")
             else:
                 flash("Product successfully created!")

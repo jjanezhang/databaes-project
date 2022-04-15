@@ -60,7 +60,7 @@ def getTemplateVariables():
 @bp.route('/')
 def index():
     (rated_products, ratings_form, reviews_product_form,reviews_seller_form, seller_ratings_form,rated_sellers) = getTemplateVariables()
-    return render_template('ratings.html',
+    return render_template('ratings2.html',
                             rated_products=rated_products,
                             ratings_form=ratings_form,
                             reviews_product_form=reviews_product_form,
@@ -75,7 +75,7 @@ def update_rating():
     if current_user.is_authenticated and ratings_form.validate_on_submit():
         if Rated.update_rating(current_user.id, ratings_form.pid.data, ratings_form.new_rating.data):
             return redirect(url_for('ratings.index'))
-    return render_template('ratings.html',
+    return render_template('ratings2.html',
                             rated_products=rated_products,
                             ratings_form=ratings_form,
                             reviews_product_form=reviews_product_form,
@@ -89,7 +89,7 @@ def update_review():
     if current_user.is_authenticated and reviews_product_form.validate_on_submit():
         if Rated.update_review(current_user.id, reviews_product_form.pid.data, reviews_product_form.new_review.data):
             return redirect(url_for('ratings.index'))
-    return render_template('ratings.html',
+    return render_template('ratings2.html',
                             rated_products=rated_products,
                             ratings_form=ratings_form,
                             reviews_product_form=reviews_product_form,
@@ -103,7 +103,7 @@ def update_seller_rating():
     if current_user.is_authenticated and seller_ratings_form.validate_on_submit():
         if Seller.update_rating(current_user.id, seller_ratings_form.sid.data, seller_ratings_form.new_seller_rating.data):
             return redirect(url_for('ratings.index'))
-    return render_template('ratings.html',
+    return render_template('ratings2.html',
                             rated_products=rated_products,
                             ratings_form=ratings_form,
                             reviews_product_form=reviews_product_form,
@@ -117,7 +117,7 @@ def update_seller_review():
     if current_user.is_authenticated and reviews_seller_form.validate_on_submit():
         if Seller.update_review(current_user.id, reviews_seller_form.sid.data, reviews_seller_form.new_seller_review.data):
             return redirect(url_for('ratings.index'))
-    return render_template('ratings.html',
+    return render_template('ratings2.html',
                             rated_products=rated_products,
                             ratings_form=ratings_form,
                             reviews_product_form=reviews_product_form,

@@ -12,11 +12,7 @@ class Rated:   # a rated item
     def get_all_by_uid(uid):
         rows = app.db.execute('''
             SELECT R.uid as uid, R.pid AS pid, P.name AS name,
-<<<<<<< HEAD
             R.rating as rating, R.review as review
-=======
-            R.rating as rating, R.review AS review
->>>>>>> main
             FROM Ratings R, Products P
             WHERE R.pid = P.id AND R.uid = :uid
             ORDER BY time_added DESC

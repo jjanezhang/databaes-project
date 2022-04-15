@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<br><br>
+
+{% if current_user.is_authenticated %}
+<h2>Products Previously Rated:</h2>
+<table class='table table-hover table-bordered container'>
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">Product ID</th>
+      <th scope="col">Product Name</th>
+      <th scope="col">Rating</th>
+      <th scope="col">Review</th>
+      <th scope="col">Remove Rating?</th>
+      <th scope="col">Remove Review?</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for product in rated_products%}
+    <tr>
+      <th scope="row">{{product.pid}}</th>
+      <td>{{product.name}} </td>
+      <td>{{product.rating}}</td>
+      <td>{{product.review}}</td>
+      <td>
+        <form action="{{ url_for('ratings.remove_rating') }}" method="post">
+          <input type="hidden" name="pid" value="{{ product.pid }}" />
+          <input type="submit" value="Remove rating" />
+        </form>
+      </td>
+      <td>
+        <form action="{{ url_for('ratings.remove_review') }}" method="post">
+          <input type="hidden" name="pid" value="{{ product.pid }}" />
+          <input type="submit" value="Remove review" />
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<h2>Sellers Previously Rated:</h2>
+<table class='table table-hover table-bordered container'>
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">Seller ID</th>
+      <th scope="col">Seller Name</th>
+      <th scope="col">Rating</th>
+      <th scope="col">Review</th>
+      <th scope="col">Remove Rating?</th>
+      <th scope="col">Remove Review?</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for seller in rated_sellers%}
+    <tr>
+      <th scope="row">{{seller.sid}}</th>
+      <td>{{seller.name}} </td>
+      <td>{{seller.rating}}</td>
+      <td>{{seller.review}}</td>
+      <td>
+        <form action="{{ url_for('ratings.remove_seller_rating') }}" method="post">
+          <input type="hidden" name="sid" value="{{ seller.sid }}" />
+          <input type="submit" value="Remove rating" />
+        </form>
+      </td>
+      <td>
+        <form action="{{ url_for('ratings.remove_seller_review') }}" method="post">
+          <input type="hidden" name="sid" value="{{ seller.sid }}" />
+          <input type="submit" value="Remove review" />
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+
+
+<hr>
+<h2>Update the Rating of a Product:</h2>
+<form action="{{ url_for('ratings.update_rating') }}" method="post">
+  {{ ratings_form.hidden_tag() }}
+  <p>
+    {{ ratings_form.pid.label }}<br />
+    {{ ratings_form.pid }}<br />
+    {% for error in ratings_form.pid.errors %}
+    <span style="color: red;">[{{ error }}]</span>
+    {% endfor %}
+  </p>
+  <p>
+    {{ ratings_form.new_rating.label }}<br />
+    {{ ratings_form.new_rating(size=10) }}<br />
+    {% for error in ratings_form.new_rating.errors %}
+    <span style="color: red;">[{{ error }}]</span>
+    {% endfor %}
+  </p>
+  <p>{{ ratings_form.submit() }}</p>
+</form>
+
+<h2>Update the Review of a Product:</h2>
+<form action="{{ url_for('ratings.update_review') }}" method="post">
+  {{ reviews_product_form.hidden_tag() }}
+  <p>
+    {{ reviews_product_form.pid.label }}<br />
+    {{ reviews_product_form.pid }}<br />
+    {% for error in reviews_product_form.pid.errors %}
+    <span style="color: red;">[{{ error }}]</span>
+    {% endfor %}
+  </p>
+  <p>
+    {{ reviews_product_form.new_review.label }}<br />
+    {{ reviews_product_form.new_review(size=10) }}<br />
+    {% for error in reviews_product_form.new_review.errors %}
+    <span style="color: red;">[{{ error }}]</span>
+    {% endfor %}
+  </p>
+  <p>{{ reviews_product_form.submit() }}</p>
+</form>
+
+{% else %}
+<p><a href="{{ url_for('users.login') }}">Log in</a> to see your ratings!</p>
+{% endif %}
+
+{% endblock %}

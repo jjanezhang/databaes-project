@@ -39,8 +39,12 @@
         {% if user_profile.is_seller %}
         <p> {{ user_profile.firstname }} {{ user_profile.lastname }} is a seller. You can reach them at {{
             user_profile.email }}</p>
-        <h3><a href="{{ url_for('index.seller_reviews', uid=user_profile.id) }}" class="rlink">
-                {{user_profile.firstname}} {{user_profile.lastname}}'s Reviews </a></h3>
+        {% if current_user.is_authenticated: %}
+            <h3><a href="{{ url_for('index.seller_reviews', uid=user_profile.id) }}" class="rlink">
+                    {{user_profile.firstname}} {{user_profile.lastname}}'s Reviews </a></h3>
+        {% else: %}
+            <p><a href="{{ url_for('users.login') }}">Log in</a> to check this seller's reviews !</p>
+        {% endif %}
         <div>
             {% if integer_rating ==0 and ceiling==0: %}
                 This seller has not been rated yet

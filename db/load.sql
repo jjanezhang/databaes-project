@@ -21,4 +21,4 @@ SELECT pg_catalog.setval('public.orders_id_seq',
 
 \COPY Sellers FROM 'Sellers.csv' WITH DELIMITER ',' NULL '' CSV
 
--- \COPY Inventory FROM 'Inventory.csv' WITH DELIMITER ',' NULL '' CSV
+\COPY Inventory FROM 'Inventory.csv' WITH DELIMITER ',' NULL '' CSV

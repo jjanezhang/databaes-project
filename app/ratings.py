@@ -10,7 +10,6 @@ import datetime
 
 bp = Blueprint('ratings', __name__, url_prefix='/ratings')
 
-
 class RatingsForm(FlaskForm):
     pid = SelectField('Product Name', validators=[DataRequired()])
     new_rating = IntegerField('Rating', validators=[InputRequired(), NumberRange(min=1, max=5)])

@@ -77,11 +77,10 @@
   </tbody>
 </table>
 
-
-
 <hr>
+<div style="display: flex;">
 <div style="float:left;">
-<h2>Update the Rating of a Product:</h2>
+<h2>Update a Product Rating:</h2>
 <form action="{{ url_for('ratings.update_rating') }}" method="post">
   {{ ratings_form.hidden_tag() }}
   <p>
@@ -103,7 +102,7 @@
 </div>
 
 <div style="float:right;">
-<h2>Update the Review of a Product:</h2>
+<h2>Update a Product Review:</h2>
 <form action="{{ url_for('ratings.update_review') }}" method="post">
   {{ reviews_product_form.hidden_tag() }}
   <p>
@@ -123,9 +122,11 @@
   <p>{{ reviews_product_form.submit() }}</p>
 </form>
 </div>
+</div>
 
+<div style="display: flex;">
 <div style="float:left;">
-  <h2>Update the Rating of a Seller:</h2>
+  <h2>Update a Seller Rating:</h2>
   <form action="{{ url_for('ratings.update_seller_rating') }}" method="post">
     {{ seller_ratings_form.hidden_tag() }}
     <p>
@@ -144,37 +145,31 @@
     </p>
     <p>{{ seller_ratings_form.submit() }}</p>
   </form>
+</div>
+
+<div style="float:right;">
+  <h2>Update a Seller Review:</h2>
+  <form action="{{ url_for('ratings.update_seller_review') }}" method="post">
+    {{ reviews_seller_form.hidden_tag() }}
+    <p>
+      {{ reviews_seller_form.sid.label }}<br />
+      {{ reviews_seller_form.sid }}<br />
+      {% for error in reviews_seller_form.sid.errors %}
+      <span style="color: red;">[{{ error }}]</span>
+      {% endfor %}
+    </p>
+    <p>
+      {{ reviews_seller_form.new_seller_review.label }}<br />
+      {{ reviews_seller_form.new_seller_review(size=10) }}<br />
+      {% for error in reviews_seller_form.new_seller_review.errors %}
+      <span style="color: red;">[{{ error }}]</span>
+      {% endfor %}
+    </p>
+    <p>{{ reviews_seller_form.submit() }}</p>
+  </form>
   </div>
-
-  <div style="float:right;">
-    <h2>Update the Review of a Seller:</h2>
-    <form action="{{ url_for('ratings.update_seller_review') }}" method="post">
-      {{ reviews_seller_form.hidden_tag() }}
-      <p>
-        {{ reviews_seller_form.sid.label }}<br />
-        {{ reviews_seller_form.sid }}<br />
-        {% for error in reviews_seller_form.sid.errors %}
-        <span style="color: red;">[{{ error }}]</span>
-        {% endfor %}
-      </p>
-      <p>
-        {{ reviews_seller_form.new_seller_review.label }}<br />
-        {{ reviews_seller_form.new_seller_review(size=10) }}<br />
-        {% for error in reviews_seller_form.new_seller_review.errors %}
-        <span style="color: red;">[{{ error }}]</span>
-        {% endfor %}
-      </p>
-      <p>{{ reviews_seller_form.submit() }}</p>
-    </form>
-    </div>
-
-
-
-
-
-
-
-
+</div>
+</div>
 {% else %}
 <p><a href="{{ url_for('users.login') }}">Log in</a> to see your ratings!</p>
 {% endif %}

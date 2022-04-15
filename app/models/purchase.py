@@ -59,8 +59,13 @@ class Purchase:
         rows = app.db.execute('''
             SELECT P.oid AS oid
             FROM Purchases P, Orders O
-            WHERE O.id = P.oid AND P.pid = :pid AND O.uid = :uid 
+            WHERE O.uid = :uid AND P.pid = :pid AND O.id = P.oid
             ''', uid=uid, pid=pid)
 
         print("is this product purchased? ", [r for r in rows])
+        result = [r for r in rows]
+        if len(result)>0:
+            return True
+        return False
+
         return True

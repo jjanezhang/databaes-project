@@ -40,10 +40,7 @@ class Product:
             WHERE name = :product_name
             ''', product_name=product_name)
         
-        print("Product rows: ", [row for row in rows])
-        # if len(rows) == 0:
-        #     return [None]
-        # return [Product(*row) for row in rows]
+        # print("Product rows: ", [row for row in rows])
         return rows
 
     @staticmethod

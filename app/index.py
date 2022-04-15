@@ -78,24 +78,18 @@ class AddToCartForm(FlaskForm):
 
 @bp.route('/products/<product_name>/')
 def display_product(product_name):
-    products = Product.get_product_by_name(product_name)
-    product = products[0]
-    print("how many products?", len(products))
+    product = Product.get_product_by_name(product_name)[0]
     pid = product['id'] #product.id
-    # purchased_this_product = False
     purchased_this_product = Purchase.check_purchased_by_uid_pid(current_user.id, pid)
     sellers_and_quantities = Product.get_sellers_and_quantities_for_product(
         product_name)
     add_to_cart_form = AddToCartForm(pid=pid)
-    # print("sellers and quanitites: ", sellers_and_quantities)
     avg_rating = Rated.avg_rating_for_product(pid)
     integer_rating = int(avg_rating)
     num_ratings = Rated.num_ratings_for_product(pid)
 
     if current_user.is_authenticated:
         uid = current_user.id
-        # ret = Purchase.get_product_by_uid_pid(uid, pid)
-        # purchased_this_product = ret[0]  # boolean
         add_to_cart_form.seller.choices = [
             (val['seller_id'], val['firstname'] + " " + val['lastname']) for val in sellers_and_quantities]
         if purchased_this_product:

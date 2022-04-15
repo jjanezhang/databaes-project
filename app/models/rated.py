@@ -69,11 +69,13 @@ class Rated:   # a rated item
     def already_reviewed(uid, pid):
         rows = app.db.execute('''
             SELECT R.review as review
-            FROM Ratings R, Products P
+            FROM Ratings R
             WHERE R.uid = :uid AND R.pid = :pid
         ''', uid=uid, pid=pid)
         result = [row['review'] for row in rows]
-        print("checking if already reviewed. Matches(uid) are: ... ", result)
+        # print("checking if already reviewed. Matches(uid) are: ... ", result)
+        print("uid, pid: ", uid, pid)
+        print("size of matches: ", len(result))
         if result == [""] or result ==[]:
             return False
         return True

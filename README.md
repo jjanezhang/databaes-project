@@ -50,3 +50,10 @@ flask run
 6. Go to http://localhost:5000/ and start using Mini Amazon!
 
 7. To stop the website, press <kbd>Ctrl</kbd><kbd>C</kbd> in the shell where flask is running.
+
+
+## Generating the Test Dataset
+
+1. Run db/generated/gen.py. This should generate a couple of csv files.
+2. Copy these csv files over to db/data.
+3. Run db/setup.sh, and the test dataset should be loaded into Postgres!

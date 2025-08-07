@@ -19,37 +19,60 @@ git clone git@github.com:jjanezhang/databaes-project.git
 cd databaes-project
 ```
 
-2. Switch environments, you should see a `(env)` prefix in the command prompt 
+2. Create and activate a virtual environment
 ```
+python3 -m venv env
 source env/bin/activate
 ```
 
-3. Start Postgres
+3. Download and Install the latest PostgreSQL server
 
 MacOS:
 ```
+brew install postgresql@17
+echo 'export PATH="/opt/homebrew/opt/postgresql@17/bin:$PATH"' >> ~/.zshrc
+source ~/.zshrc
+psql --version # verify
 brew services start postgresql
 ```
+
 Linux:
 ```
 sudo service postgresql start
 ```
 
-4. Open`.flaskenv`and change the variables `DB_USER` and `DB_PASSWORD` to your own Postgres credentials. Then run the following command:
+4. Create a new db called 'amazon' and open psql command line using that db
 
+```commandline
+createdb amazon
+psql amazon
 ```
-db/setup.sh
-```
-Follow the instructions and enter your password when prompted.
 
-5. Run flask
+5. Set the following env vars (not necessarily the same value)
+```
+export DB_NAME=amazon     
+export DB_USER=amazon_user
+export DB_PASS=amazon_pass
+export FLASK_APP=amazon.py
+export FLASK_ENV=development
+export FLASK_RUN_HOST=0.0.0.0
+export FLASK_RUN_PORT=5001 
+
+SECRET_KEY=default_secret
+```
+
+5. Run the app!
 ```
 flask run
 ```
+Follow the prompt to view the running website!
+6. Explore:
+i) Sign up as a customer and explore products
+![Screenshot 2025-08-06 at 8.50.09 PM.png](../../../../../var/folders/z1/s419t3bj1ws4917vrtpdcflm0000gn/T/TemporaryItems/NSIRD_screencaptureui_fpb4u5/Screenshot%202025-08-06%20at%208.50.09%E2%80%AFPM.png)
+ii) Log in and create a new product (i.e. become a seller)
+![Screenshot 2025-08-06 at 8.49.39 PM.png](../../../../../var/folders/z1/s419t3bj1ws4917vrtpdcflm0000gn/T/TemporaryItems/NSIRD_screencaptureui_wDlD1g/Screenshot%202025-08-06%20at%208.49.39%E2%80%AFPM.png)
 
-6. Go to http://localhost:5000/ and start using Mini Amazon!
-
-7. To stop the website, press <kbd>Ctrl</kbd><kbd>C</kbd> in the shell where flask is running.
+6. To stop the website, press <kbd>Ctrl</kbd><kbd>C</kbd> in the shell where flask is running.
 
 
 ## Generating the Test Dataset
